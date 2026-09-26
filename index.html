@@ -168,6 +168,15 @@
             border: 1px solid rgba(138, 180, 248, 0.3);
         }
 
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin: 12px 0 4px 8px;
+            font-weight: 600;
+        }
+
         .sidebar-bottom {
             display: flex;
             flex-direction: column;
@@ -226,12 +235,28 @@
         header {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             padding: 12px 16px;
             font-size: 18px;
             font-weight: 500;
             color: var(--text-secondary);
             border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .model-badge-header {
+            font-size: 12px;
+            background-color: var(--surface-hover);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            border: 1px solid rgba(138, 180, 248, 0.2);
         }
 
         .top-left-3dots {
@@ -372,8 +397,9 @@
             color: white;
         }
 
-        /* Clean transparent background for AI messages */
+        /* Completely transparent background for AI messages to eliminate any white flash */
         .message.ai .message-content {
+            background: transparent !important;
             background-color: transparent !important;
             color: var(--text-primary);
             padding: 4px 0;
@@ -643,7 +669,25 @@
                 <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
                 New chat
             </button>
-            <div class="sidebar-nav">
+            
+            <div class="sidebar-section-title">Model Selector</div>
+            <div class="sidebar-nav" style="margin-top: 2px;">
+                <button class="nav-item model-select-btn active-mode" id="modelProBtn" onclick="setModel('Pro')">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    Vikea Pro
+                </button>
+                <button class="nav-item model-select-btn" id="modelFlashLiteBtn" onclick="setModel('Flash-Lite')">
+                    <span class="material-symbols-outlined">bolt</span>
+                    Flash-Lite
+                </button>
+                <button class="nav-item model-select-btn" id="modelFlashBtn" onclick="setModel('Flash')">
+                    <span class="material-symbols-outlined">flash_on</span>
+                    Flash
+                </button>
+            </div>
+
+            <div class="sidebar-section-title">Tools & Controls</div>
+            <div class="sidebar-nav" style="margin-top: 2px;">
                 <button class="nav-item" id="deepSearchNavBtn" onclick="toggleDeepSearchMode()">
                     <span class="material-symbols-outlined">psychology</span>
                     Deep Search Mode
@@ -682,10 +726,13 @@
     <!-- Main Container -->
     <div class="main-container">
         <header>
-            <button class="top-left-3dots" onclick="toggleSidebar()" title="Menu">
-                <span class="material-symbols-outlined">more_vert</span>
-            </button>
-            <span id="headerTitle">Vikea AI</span>
+            <div class="header-left">
+                <button class="top-left-3dots" onclick="toggleSidebar()" title="Menu">
+                    <span class="material-symbols-outlined">more_vert</span>
+                </button>
+                <span id="headerTitle">Vikea AI</span>
+            </div>
+            <div class="model-badge-header" id="currentModelBadge">Pro</div>
         </header>
 
         <!-- Chat Stream Area -->
@@ -813,6 +860,7 @@
     <script>
         let userName = localStorage.getItem('vikea_username') || 'Wahaj';
         let isAdmin = localStorage.getItem('vikea_admin_auth') === 'true';
+        let currentModel = localStorage.getItem('vikea_model') || 'Pro';
         let adminStepState = 0; // Tracks multi-step secret codes
         let activityLogs = JSON.parse(localStorage.getItem('vikea_activities') || '[]');
         let deepSearchActive = false;
@@ -822,6 +870,7 @@
 
         updateUserDisplay();
         checkAdminUIState();
+        applyModelUIState();
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('open');
@@ -831,6 +880,30 @@
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+
+        function setModel(modelName) {
+            currentModel = modelName;
+            localStorage.setItem('vikea_model', currentModel);
+            applyModelUIState();
+            closeSidebar();
+
+            const stream = document.getElementById('chatStream');
+            if (conversationStarted) {
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = 'message ai';
+                aiMsgDiv.innerHTML = `<div class="message-content">Switched model context to <strong>Vikea ${currentModel}</strong>. Ready for your next query!</div>`;
+                stream.appendChild(aiMsgDiv);
+                stream.scrollTop = stream.scrollHeight;
+            }
+        }
+
+        function applyModelUIState() {
+            document.getElementById('currentModelBadge').innerText = currentModel;
+            document.querySelectorAll('.model-select-btn').forEach(btn => btn.classList.remove('active-mode'));
+            if (currentModel === 'Pro') document.getElementById('modelProBtn').classList.add('active-mode');
+            if (currentModel === 'Flash-Lite') document.getElementById('modelFlashLiteBtn').classList.add('active-mode');
+            if (currentModel === 'Flash') document.getElementById('modelFlashBtn').classList.add('active-mode');
         }
 
         function updateUserDisplay() {
@@ -1154,7 +1227,7 @@
 
         function generateKnowledgeAnswer(text, currentImg) {
             if (currentImg) {
-                return `I have analyzed the visual content provided alongside your query ("${escapeHtml(text)}"). As Vikea AI, I can examine details, extract context, or answer questions based on this file.`;
+                return `I have analyzed the visual content provided alongside your query ("${escapeHtml(text)}") using Vikea ${currentModel}. As Vikea AI, I can examine details, extract context, or answer questions based on this file.`;
             }
 
             const cleanText = text.toLowerCase().trim();
@@ -1178,7 +1251,7 @@
                     let evalResult = eval(lastMathExpression);
                     let mathExpr = lastMathExpression;
                     lastMathExpression = null;
-                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong>, requested by ${userName}${isAdmin ? ' (Admin Editor)' : ''}:<br><br>
+                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong> (computed via Vikea ${currentModel}), requested by ${userName}${isAdmin ? ' (Admin Editor)' : ''}:<br><br>
                     1. **Expression Identification:** We begin by examining the formula <code>${escapeHtml(mathExpr)}</code>.<br>
                     2. **Execution Process:** Applying core foundational mathematical rules and computational sequence.<br>
                     3. **Final Result:** The precise computed outcome is <strong>${evalResult}</strong>.`;
@@ -1211,7 +1284,7 @@
                 let prompt = text.replace(/(make|generate|draw|create)\s+(a|an)?\s*(picture|image|drawing)\s*(of)?/i, '').trim();
                 if (!prompt) prompt = "beautiful aesthetic scenery";
                 let imgUrl = `https://picsum.photos/seed/${encodeURIComponent(prompt)}/500/350`;
-                return `Here is the image generated based on your request for "<strong>${escapeHtml(prompt)}</strong>":<br><img class="generated-image" src="${imgUrl}" alt="${escapeHtml(prompt)}">`;
+                return `Here is the image generated based on your request for "<strong>${escapeHtml(prompt)}</strong>" using Vikea ${currentModel}:<br><img class="generated-image" src="${imgUrl}" alt="${escapeHtml(prompt)}">`;
             }
 
             // General Knowledge
@@ -1224,9 +1297,9 @@
             } else if (cleanText.includes('code') || cleanText.includes('python') || cleanText.includes('javascript') || cleanText.includes('html')) {
                 return `I can help you build, debug, or refine your code across languages like Python, JavaScript, HTML/CSS, C++, and Java. What script or web project are we working on today, ${userName}?`;
             } else if (cleanText.includes('hello') || cleanText.includes('hi') || cleanText.includes('hey')) {
-                return `Hello, ${userName}! I am Vikea AI, equipped to answer general questions, generate images, explain subjects, and solve complex math or coding tasks. What's on your mind?`;
+                return `Hello, ${userName}! I am Vikea AI (running on Vikea ${currentModel}), equipped to answer general questions, generate images, explain subjects, and solve complex math or coding tasks. What's on your mind?`;
             } else {
-                return `Vikea AI Answer: Regarding "<strong>${escapeHtml(text)}</strong>", this topic involves key principles across general research and foundational facts. Feel free to ask for specific definitions, step-by-step breakdowns, or image creations!`;
+                return `Vikea AI Answer (Vikea ${currentModel}): Regarding "<strong>${escapeHtml(text)}</strong>", this topic involves key principles across general research and foundational facts. Feel free to ask for specific definitions, step-by-step breakdowns, or image creations!`;
             }
         }
 
