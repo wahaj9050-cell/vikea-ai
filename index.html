@@ -47,95 +47,102 @@
         
         .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 32px; }
         
-        /* BLACK & WHITE ANIMATION CONTAINER */
+        /* ULTRA SMOOTH 60FPS+ BLACK & WHITE ANIMATION STAGE */
         .animation-stage {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
+            will-change: transform;
         }
 
         /* Central V */
         .center-v {
             position: absolute;
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700;
             color: #ffffff;
             font-family: 'Google Sans', sans-serif;
             z-index: 2;
-            animation: vPulse 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            animation: vTransform 2.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform, opacity;
         }
 
-        @keyframes vPulse {
-            0%, 100% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.12); opacity: 1; text-shadow: 0 0 12px rgba(255,255,255,0.6); }
+        @keyframes vTransform {
+            0%, 65% { transform: scale(1); opacity: 1; }
+            75% { transform: scale(0.4); opacity: 0; }
+            80% { transform: scale(0); opacity: 0; }
+            90% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         /* 5 Orbiting Dots */
         .orbit-dot {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             background-color: #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 6px #ffffff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+            will-change: transform, opacity;
         }
 
-        /* Smooth Orbital Trajectories collapsing into the center */
-        .orbit-dot:nth-child(1) { animation: orbitAndSink1 3s infinite cubic-bezier(0.37, 0, 0.63, 1); }
-        .orbit-dot:nth-child(2) { animation: orbitAndSink2 3s infinite cubic-bezier(0.37, 0, 0.63, 1); animation-delay: 0.2s; }
-        .orbit-dot:nth-child(3) { animation: orbitAndSink3 3s infinite cubic-bezier(0.37, 0, 0.63, 1); animation-delay: 0.4s; }
-        .orbit-dot:nth-child(4) { animation-delay: 0.6s; animation: orbitAndSink4 3s infinite cubic-bezier(0.37, 0, 0.63, 1); }
-        .orbit-dot:nth-child(5) { animation-delay: 0.8s; animation: orbitAndSink5 3s infinite cubic-bezier(0.37, 0, 0.63, 1); }
+        /* Smooth High-Precision Frames Simulation */
+        .orbit-dot:nth-child(1) { animation: orbitSink1 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); }
+        .orbit-dot:nth-child(2) { animation: orbitSink2 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.15s; }
+        .orbit-dot:nth-child(3) { animation: orbitSink3 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.30s; }
+        .orbit-dot:nth-child(4) { animation: orbitSink4 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.45s; }
+        .orbit-dot:nth-child(5) { animation: orbitSink5 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.60s; }
 
-        @keyframes orbitAndSink1 {
-            0% { transform: rotate(0deg) translate(36px) rotate(0deg); opacity: 1; }
-            65% { transform: rotate(220deg) translate(28px) rotate(-220deg); opacity: 1; }
-            85% { transform: rotate(320deg) translate(4px) rotate(-320deg); opacity: 0.8; }
+        @keyframes orbitSink1 {
+            0% { transform: rotate(0deg) translate(40px) rotate(0deg); opacity: 1; }
+            65% { transform: rotate(240deg) translate(22px) rotate(-240deg); opacity: 1; }
+            82% { transform: rotate(340deg) translate(2px) rotate(-340deg); opacity: 0.9; }
             100% { transform: rotate(360deg) translate(0px) rotate(-360deg); opacity: 0; }
         }
-        @keyframes orbitAndSink2 {
-            0% { transform: rotate(72deg) translate(36px) rotate(-72deg); opacity: 1; }
-            65% { transform: rotate(292deg) translate(28px) rotate(-292deg); opacity: 1; }
-            85% { transform: rotate(392deg) translate(4px) rotate(-392deg); opacity: 0.8; }
+        @keyframes orbitSink2 {
+            0% { transform: rotate(72deg) translate(40px) rotate(-72deg); opacity: 1; }
+            65% { transform: rotate(312deg) translate(22px) rotate(-312deg); opacity: 1; }
+            82% { transform: rotate(412deg) translate(2px) rotate(-412deg); opacity: 0.9; }
             100% { transform: rotate(432deg) translate(0px) rotate(-432deg); opacity: 0; }
         }
-        @keyframes orbitAndSink3 {
-            0% { transform: rotate(144deg) translate(36px) rotate(-144deg); opacity: 1; }
-            65% { transform: rotate(364deg) translate(28px) rotate(-364deg); opacity: 1; }
-            85% { transform: rotate(464deg) translate(4px) rotate(-464deg); opacity: 0.8; }
+        @keyframes orbitSink3 {
+            0% { transform: rotate(144deg) translate(40px) rotate(-144deg); opacity: 1; }
+            65% { transform: rotate(384deg) translate(22px) rotate(-384deg); opacity: 1; }
+            82% { transform: rotate(484deg) translate(2px) rotate(-484deg); opacity: 0.9; }
             100% { transform: rotate(504deg) translate(0px) rotate(-504deg); opacity: 0; }
         }
-        @keyframes orbitAndSink4 {
-            0% { transform: rotate(216deg) translate(36px) rotate(-216deg); opacity: 1; }
-            65% { transform: rotate(436deg) translate(28px) rotate(-436deg); opacity: 1; }
-            85% { transform: rotate(536deg) translate(4px) rotate(-536deg); opacity: 0.8; }
+        @keyframes orbitSink4 {
+            0% { transform: rotate(216deg) translate(40px) rotate(-216deg); opacity: 1; }
+            65% { transform: rotate(456deg) translate(22px) rotate(-456deg); opacity: 1; }
+            82% { transform: rotate(556deg) translate(2px) rotate(-556deg); opacity: 0.9; }
             100% { transform: rotate(576deg) translate(0px) rotate(-576deg); opacity: 0; }
         }
-        @keyframes orbitAndSink5 {
-            0% { transform: rotate(288deg) translate(36px) rotate(-288deg); opacity: 1; }
-            65% { transform: rotate(508deg) translate(28px) rotate(-508deg); opacity: 1; }
-            85% { transform: rotate(608deg) translate(4px) rotate(-608deg); opacity: 0.8; }
+        @keyframes orbitSink5 {
+            0% { transform: rotate(288deg) translate(40px) rotate(-288deg); opacity: 1; }
+            65% { transform: rotate(528deg) translate(22px) rotate(-528deg); opacity: 1; }
+            82% { transform: rotate(628deg) translate(2px) rotate(-628deg); opacity: 0.9; }
             100% { transform: rotate(648deg) translate(0px) rotate(-648deg); opacity: 0; }
         }
 
         /* Star Manifestation Burst */
         .star-burst {
             position: absolute;
-            font-size: 26px;
+            font-size: 28px;
             color: #ffffff;
             z-index: 3;
-            animation: starFlash 3s infinite cubic-bezier(0.25, 1, 0.5, 1);
+            animation: starManifest 2.4s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
             opacity: 0;
             transform: scale(0);
+            will-change: transform, opacity;
         }
 
-        @keyframes starFlash {
-            0%, 78% { transform: scale(0) rotate(0deg); opacity: 0; }
-            85% { transform: scale(1.4) rotate(45deg); opacity: 1; text-shadow: 0 0 16px #fff; }
-            95% { transform: scale(1) rotate(90deg); opacity: 1; }
+        @keyframes starManifest {
+            0%, 75% { transform: scale(0) rotate(0deg); opacity: 0; }
+            83% { transform: scale(1.35) rotate(45deg); opacity: 1; text-shadow: 0 0 16px #fff; }
+            92% { transform: scale(1) rotate(90deg); opacity: 1; }
             100% { transform: scale(0.2) rotate(180deg); opacity: 0; }
         }
 
@@ -216,7 +223,7 @@
         <div class="chat-stream" id="chatStream">
             <!-- Welcome Screen with Custom B&W Star Animation -->
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
-                <!-- Smooth Black and White Animation Stage -->
+                <!-- Smooth High-Precision Animation Stage -->
                 <div class="animation-stage">
                     <div class="center-v">V</div>
                     <div class="orbit-dot"></div>
