@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vikea AI</title>
-    <!-- Google Fonts & Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -20,782 +19,106 @@
             --border-color: #333537;
             --admin-gold: #fbc02d;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
+        
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 40; }
+        .sidebar-overlay.active { display: block; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Google Sans', 'Roboto', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        sidebar { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); z-index: 50; transition: transform 0.3s ease; }
+        .sidebar-top { display: flex; flex-direction: column; gap: 16px; }
+        .brand-header { display: flex; align-items: center; justify-content: space-between; font-size: 18px; font-weight: 500; }
+        .brand-left { display: flex; align-items: center; gap: 10px; }
+        .brand-logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570); border-radius: 50%; }
+        
+        .icon-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { background-color: var(--surface-hover); color: var(--text-primary); }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            display: flex;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-        }
+        .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: none; padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; }
+        .new-chat-btn:hover { background-color: var(--border-color); }
 
-        /* Mobile Drawer Overlay */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 40;
-            backdrop-filter: blur(2px);
-        }
+        .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); margin: 12px 0 4px 8px; font-weight: 600; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { background: none; border: none; color: var(--text-secondary); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; text-align: left; width: 100%; }
+        .nav-item:hover { background-color: var(--surface-hover); color: var(--text-primary); }
+        .nav-item.active-mode { background-color: rgba(138, 180, 248, 0.15); color: var(--accent-blue); border: 1px solid rgba(138, 180, 248, 0.3); }
 
-        .sidebar-overlay.active {
-            display: block;
-        }
+        .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: var(--accent-blue); padding: 4px 10px; border-radius: 12px; }
 
-        /* Sidebar Styling */
-        sidebar {
-            width: 280px;
-            background-color: var(--sidebar-bg);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 16px;
-            border-right: 1px solid var(--border-color);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 50;
-        }
+        .chat-stream { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 20px; max-width: 800px; width: 100%; margin: 0 auto; }
+        
+        .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 24px; }
+        .welcome-title-vibe { font-size: 36px; font-weight: 500; background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shineGradient 6s linear infinite; text-align: center; }
 
-        .sidebar-top {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        @keyframes shineGradient { to { background-position: 300% center; } }
 
-        .brand-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4px 8px;
-            font-size: 18px;
-            font-weight: 500;
-        }
+        .glow-border-wrapper { position: relative; width: 100%; max-width: 680px; border-radius: 28px; padding: 2px; background: linear-gradient(60deg, #4285f4, #9b72cb, #d96570, #4285f4); background-size: 300% 300%; animation: rotateGlow 5s ease infinite; }
+        @keyframes rotateGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .brand-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .centered-prompt-box { background-color: var(--surface-color); border-radius: 26px; padding: 14px 18px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+        .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; }
+        .centered-input-actions { display: flex; justify-content: space-between; align-items: center; }
 
-        .brand-logo-icon {
-            width: 24px;
-            height: 24px;
-            background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570);
-            border-radius: 50%;
-        }
+        .message { display: flex; gap: 12px; max-width: 100%; }
+        .message.user { flex-direction: row-reverse; align-self: flex-end; }
+        .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
+        .message-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; background-color: #3c4043; color: white; flex-shrink: 0; }
+        .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; }
+        .message.user .message-content { background-color: var(--surface-hover); padding: 12px 16px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
 
-        .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .icon-btn:hover {
-            background-color: var(--surface-hover);
-            color: var(--text-primary);
-        }
-
-        .new-chat-btn {
-            background-color: var(--surface-hover);
-            color: var(--text-primary);
-            border: none;
-            padding: 10px 16px;
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.2s;
-            width: fit-content;
-        }
-
-        .new-chat-btn:hover {
-            background-color: var(--border-color);
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-top: 10px;
-        }
-
-        .nav-item {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            padding: 10px 12px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: left;
-            width: 100%;
-            transition: background 0.2s;
-        }
-
-        .nav-item:hover {
-            background-color: var(--surface-hover);
-            color: var(--text-primary);
-        }
-
-        .nav-item.active-mode {
-            background-color: rgba(138, 180, 248, 0.15);
-            color: var(--accent-blue);
-            border: 1px solid rgba(138, 180, 248, 0.3);
-        }
-
-        .sidebar-section-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--text-secondary);
-            margin: 12px 0 4px 8px;
-            font-weight: 600;
-        }
-
-        .sidebar-bottom {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .user-profile-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 8px;
-            border-radius: 8px;
-            background-color: var(--surface-hover);
-        }
-
-        .user-profile-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            overflow: hidden;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            background-color: #3c4043;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .user-info {
-            font-size: 13px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            color: var(--text-primary);
-        }
-
-        /* Main Container */
-        .main-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
-            position: relative;
-            overflow: hidden;
-        }
-
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .model-badge-header {
-            font-size: 12px;
-            background-color: var(--surface-hover);
-            color: var(--accent-blue);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 500;
-            border: 1px solid rgba(138, 180, 248, 0.2);
-        }
-
-        .top-left-3dots {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .top-left-3dots:hover {
-            background-color: var(--surface-hover);
-        }
-
-        /* Chat Stream Area */
-        .chat-stream {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        /* Welcome Vibe Screen */
-        .welcome-vibe-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            gap: 24px;
-            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 0 12px;
-        }
-
-        .welcome-title-vibe {
-            font-size: 36px;
-            font-weight: 500;
-            background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4);
-            background-size: 300% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shineGradient 6s linear infinite;
-            text-align: center;
-            letter-spacing: -0.5px;
-        }
-
-        @keyframes shineGradient {
-            to { background-position: 300% center; }
-        }
-
-        /* Circling Border Wrapper */
-        .glow-border-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 680px;
-            border-radius: 28px;
-            padding: 2px;
-            background: linear-gradient(60deg, #4285f4, #9b72cb, #d96570, #4285f4);
-            background-size: 300% 300%;
-            animation: rotateGlow 5s ease infinite;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-        }
-
-        @keyframes rotateGlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .centered-prompt-box {
-            background-color: var(--surface-color);
-            border-radius: 26px;
-            padding: 14px 18px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .centered-textarea {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 16px;
-            resize: none;
-            outline: none;
-            width: 100%;
-            max-height: 150px;
-        }
-
-        .centered-input-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .message {
-            display: flex;
-            gap: 12px;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            max-width: 100%;
-        }
-
-        .message.user {
-            flex-direction: row-reverse;
-            align-self: flex-end;
-        }
-
-        .message.ai {
-            justify-content: flex-start;
-            align-self: flex-start;
-            width: 100%;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .message.user .message-avatar {
-            background-color: #3c4043;
-            color: white;
-        }
-
-        .message.ai .message-content {
-            background: transparent !important;
-            background-color: transparent !important;
-            color: var(--text-primary);
-            padding: 4px 0;
-            font-size: 15px;
-            line-height: 1.6;
-            max-width: 90%;
-            word-break: break-word;
-            border: none !important;
-            box-shadow: none !important;
-        }
-
-        .message.user .message-content {
-            background-color: #2d2e30;
-            color: var(--text-primary);
-            padding: 12px 16px;
-            border-radius: 18px 18px 4px 18px;
-            font-size: 15px;
-            line-height: 1.5;
-            max-width: 85%;
-            word-break: break-word;
-        }
-
-        .generated-image {
-            max-width: 100%;
-            width: 320px;
-            border-radius: 12px;
-            margin-top: 8px;
-            border: 1px solid var(--border-color);
-            display: block;
-        }
-
-        .attached-preview-img {
-            max-width: 180px;
-            max-height: 180px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            display: block;
-            border: 1px solid var(--border-color);
-        }
-
-        /* 5 Circling Dots Thinking Animation */
-        .thinking-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            background-color: var(--surface-color);
-            border-radius: 20px;
-            width: fit-content;
-        }
-
-        .circle-dot {
-            width: 8px;
-            height: 8px;
-            background: linear-gradient(135deg, #4285f4, #9b72cb);
-            border-radius: 50%;
-            animation: pulseCircle 1.2s infinite ease-in-out;
-        }
-
-        .circle-dot:nth-child(1) { animation-delay: 0s; }
+        .thinking-container { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background-color: var(--surface-color); border-radius: 20px; width: fit-content; }
+        .circle-dot { width: 8px; height: 8px; background: linear-gradient(135deg, #4285f4, #9b72cb); border-radius: 50%; animation: pulseCircle 1.2s infinite ease-in-out; }
         .circle-dot:nth-child(2) { animation-delay: 0.2s; }
         .circle-dot:nth-child(3) { animation-delay: 0.4s; }
         .circle-dot:nth-child(4) { animation-delay: 0.6s; }
         .circle-dot:nth-child(5) { animation-delay: 0.8s; }
+        @keyframes pulseCircle { 0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; } 40% { transform: scale(1.2); opacity: 1; } }
 
-        @keyframes pulseCircle {
-            0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; }
-            40% { transform: scale(1.2); opacity: 1; }
-        }
-
-        /* Active Chat Input Area */
-        .input-area {
-            padding: 10px 16px 12px 16px;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .input-box-wrapper {
-            background-color: var(--surface-color);
-            border-radius: 28px;
-            padding: 10px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border: 1px solid var(--border-color);
-            transition: border-color 0.2s;
-        }
-
-        .input-box-wrapper:focus-within {
-            border-color: rgba(138, 180, 248, 0.5);
-        }
-
-        #activeInput {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 15px;
-            resize: none;
-            outline: none;
-            width: 100%;
-            max-height: 150px;
-        }
-
-        .input-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .send-btn {
-            background-color: var(--button-blue);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
-        .send-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.05);
-        }
-
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.75);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            padding: 16px;
-            backdrop-filter: blur(3px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-box {
-            background-color: var(--sidebar-bg);
-            border: 1px solid var(--border-color);
-            padding: 24px;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .modal-box h3 {
-            font-size: 20px;
-            font-weight: 500;
-        }
-
-        .modal-box p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.4;
-        }
-
-        .modal-box input {
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            padding: 12px 14px;
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 15px;
-            outline: none;
-            width: 100%;
-        }
-
-        .activity-list {
-            max-height: 250px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .activity-item {
-            padding: 10px 12px;
-            background-color: var(--surface-hover);
-            border-radius: 8px;
-            font-size: 13px;
-            color: var(--text-primary);
-            word-break: break-word;
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .modal-buttons button {
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-
-        .btn-cancel {
-            background: none;
-            color: var(--text-secondary);
-        }
-
-        .btn-save {
-            background-color: var(--button-blue);
-            color: white;
-        }
-
-        footer {
-            text-align: center;
-            padding: 8px;
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
-
-        @media (max-width: 768px) {
-            sidebar {
-                position: fixed;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                transform: translateX(-100%);
-            }
-            sidebar.open {
-                transform: translateX(0);
-            }
-            .welcome-title-vibe {
-                font-size: 28px;
-            }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .input-area { padding: 10px 16px 12px 16px; max-width: 800px; width: 100%; margin: 0 auto; }
+        .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
+        #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; }
+        .input-actions { display: flex; justify-content: space-between; align-items: center; }
+        
+        .send-btn { background-color: var(--button-blue); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        footer { text-align: center; padding: 8px; color: var(--text-secondary); font-size: 12px; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-    <!-- Sidebar -->
-    <sidebar id="sidebar">
-        <div class="sidebar-top">
-            <div class="brand-header">
-                <div class="brand-left">
-                    <div class="brand-logo-icon"></div>
-                    <span>Vikea AI</span>
-                </div>
-                <button class="icon-btn" onclick="closeSidebar()" style="display: flex;">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <button class="new-chat-btn" onclick="resetToVibeScreen(); closeSidebar();">
-                <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
-                New chat
-            </button>
-            
-            <div class="sidebar-section-title">Model Selector</div>
-            <div class="sidebar-nav" style="margin-top: 2px;">
-                <button class="nav-item model-select-btn active-mode" id="modelProBtn" onclick="setModel('Pro')">
-                    <span class="material-symbols-outlined">auto_awesome</span>
-                    Vikea Pro
-                </button>
-                <button class="nav-item model-select-btn" id="modelFlashLiteBtn" onclick="setModel('Flash-Lite')">
-                    <span class="material-symbols-outlined">bolt</span>
-                    Flash-Lite
-                </button>
-                <button class="nav-item model-select-btn" id="modelFlashBtn" onclick="setModel('Flash')">
-                    <span class="material-symbols-outlined">flash_on</span>
-                    Flash
-                </button>
-            </div>
-
-            <div class="sidebar-section-title">Tools & Controls</div>
-            <div class="sidebar-nav" style="margin-top: 2px;">
-                <button class="nav-item" id="deepSearchNavBtn" onclick="toggleDeepSearchMode()">
-                    <span class="material-symbols-outlined">psychology</span>
-                    Deep Search Mode
-                </button>
-                <button class="nav-item" id="adminCommandNav" style="display: none;" onclick="openAdminPanel(); closeSidebar();">
-                    <span class="material-symbols-outlined" style="color: var(--admin-gold);">admin_panel_settings</span>
-                    Admin Control Panel
-                </button>
-                <button class="nav-item" id="editorModeNav" style="display: none;" onclick="openEditorModal(); closeSidebar();">
-                    <span class="material-symbols-outlined" style="color: #4285f4;">edit_note</span>
-                    Live App Editor
-                </button>
-                <button class="nav-item" onclick="openActivityModal(); closeSidebar();">
-                    <span class="material-symbols-outlined">history</span>
-                    Activity
-                </button>
-                <button class="nav-item" onclick="openSettings(); closeSidebar();">
-                    <span class="material-symbols-outlined">settings</span>
-                    Settings & Name
-                </button>
-            </div>
-        </div>
-        <div class="sidebar-bottom">
-            <div class="user-profile-row">
-                <div class="user-profile-left">
-                    <div class="user-avatar" id="avatarLetter">W</div>
-                    <div class="user-info" id="userNameDisplay">Wahaj</div>
-                </div>
-                <button class="icon-btn" onclick="openSettings(); closeSidebar();" title="Settings">
-                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
-                </button>
-            </div>
-        </div>
-    </sidebar>
-
-    <!-- Main Container -->
     <div class="main-container">
         <header>
             <div class="header-left">
-                <button class="top-left-3dots" onclick="toggleSidebar()" title="Menu">
-                    <span class="material-symbols-outlined">more_vert</span>
-                </button>
                 <span id="headerTitle">Vikea AI</span>
             </div>
-            <div class="model-badge-header" id="currentModelBadge">Pro</div>
+            <div class="model-badge-header">Pro</div>
         </header>
 
-        <!-- Chat Stream Area -->
         <div class="chat-stream" id="chatStream">
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
                 <div class="welcome-title-vibe" id="vibeTitle">What's the vibe, Wahaj?</div>
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
-                        
-                        <div id="imagePreviewContainer" style="display:none; position:relative; width: fit-content;">
-                            <img id="previewImgElement" class="attached-preview-img" src="" alt="attachment preview">
-                            <button onclick="clearAttachedImage()" style="position:absolute; top:-8px; right:-8px; background:#333; color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer;">×</button>
-                        </div>
-
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="centered-input-actions">
-                            <div style="display:flex; gap:4px;">
-                                <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="Attach image or video">
-                                    <span class="material-symbols-outlined">add</span>
-                                </button>
-                                <input type="file" id="fileInput" style="display:none" accept="image/*,video/*" onchange="handleFileSelect(event)">
-                                <button class="icon-btn" onclick="toggleSpeechRecognition('vibe')" title="Speech to text">
-                                    <span class="material-symbols-outlined" id="micIconVibe">mic</span>
-                                </button>
-                            </div>
+                            <div></div>
                             <button class="send-btn" onclick="sendFromVibeScreen()">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
                             </button>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- Fixed Bottom Input Area -->
         <div class="input-area" id="activeInputArea" style="display: none;">
             <div class="input-box-wrapper">
-                <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'active')"></textarea>
-                
-                <div id="imagePreviewContainerActive" style="display:none; position:relative; width: fit-content;">
-                    <img id="previewImgElementActive" class="attached-preview-img" src="" alt="attachment preview">
-                    <button onclick="clearAttachedImage()" style="position:absolute; top:-8px; right:-8px; background:#333; color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer;">×</button>
-                </div>
-
+                <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event, 'active')"></textarea>
                 <div class="input-actions">
-                    <div style="display:flex; gap:4px;">
-                        <button class="icon-btn" onclick="document.getElementById('fileInputActive').click()" title="Attach image or video">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                        <input type="file" id="fileInputActive" style="display:none" accept="image/*,video/*" onchange="handleFileSelect(event)">
-                        <button class="icon-btn" onclick="toggleSpeechRecognition('active')" title="Speech to text">
-                            <span class="material-symbols-outlined" id="micIconActive">mic</span>
-                        </button>
-                    </div>
+                    <div></div>
                     <button class="send-btn" onclick="sendFromActiveArea()">
                         <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
                     </button>
@@ -805,260 +128,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
-    <div class="modal-overlay" id="settingsModal">
-        <div class="modal-box">
-            <h3>Settings & Name</h3>
-            <p>Update your display name.</p>
-            <input type="text" id="nameInputModal" placeholder="Enter your name">
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('settingsModal')">Cancel</button>
-                <button class="btn-save" onclick="saveSettings()">Save</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal-box">
-            <h3>👑 Admin Command Panel</h3>
-            <p>Superfast Admin Editor privileges active for Wahaj.</p>
-            <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                <button class="nav-item" onclick="openEditorModal(); closeModal('adminModal');" style="background:var(--surface-hover);">🛠️ Launch Live App Editor</button>
-                <button class="nav-item" onclick="adminResetLogs()" style="background:var(--surface-hover);">🗑️ Wipe All Activity Logs</button>
-                <button class="nav-item" onclick="adminRevokeAccess()" style="background:rgba(217,101,112,0.15); color:#d96570;">🔒 Revoke Admin Session</button>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-save" onclick="closeModal('adminModal')">Close Panel</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="editorModal">
-        <div class="modal-box">
-            <h3>🛠️ Live App Editor</h3>
-            <p>Customize header title or brand subtitle instantly:</p>
-            <label style="font-size:12px; color:var(--text-secondary);">Header Title:</label>
-            <input type="text" id="editHeaderTitle" value="Vikea AI">
-            <label style="font-size:12px; color:var(--text-secondary);">Greeting Subtitle / Vibe:</label>
-            <input type="text" id="editGreetingText" value="What's the vibe, Wahaj?">
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('editorModal')">Cancel</button>
-                <button class="btn-save" onclick="applyEditorChanges()">Apply Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="activityModal">
-        <div class="modal-box">
-            <h3>Activity History</h3>
-            <p>Your recent prompts and saved interactions.</p>
-            <div class="activity-list" id="activityListContainer"></div>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="clearActivityLogs()">Clear Log</button>
-                <button class="btn-save" onclick="closeModal('activityModal')">Close</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        let userName = localStorage.getItem('vikea_username') || 'Wahaj';
-        let isAdmin = localStorage.getItem('vikea_admin_auth') === 'true';
-        let currentModel = localStorage.getItem('vikea_model') || 'Pro';
-        let adminStepState = 0;
-        let activityLogs = JSON.parse(localStorage.getItem('vikea_activities') || '[]');
-        let deepSearchActive = false;
-        let lastMathExpression = null;
-        let attachedImageData = null;
-        let conversationStarted = false;
-
-        updateUserDisplay();
-        checkAdminUIState();
-        applyModelUIState();
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('active');
-        }
-
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-
-        function setModel(modelName) {
-            currentModel = modelName;
-            localStorage.setItem('vikea_model', currentModel);
-            applyModelUIState();
-            closeSidebar();
-
-            const stream = document.getElementById('chatStream');
-            if (conversationStarted) {
-                const aiMsgDiv = document.createElement('div');
-                aiMsgDiv.className = 'message ai';
-                aiMsgDiv.innerHTML = `<div class="message-content">Switched model context to <strong>Vikea ${currentModel}</strong>. Ready for your next query!</div>`;
-                stream.appendChild(aiMsgDiv);
-                stream.scrollTop = stream.scrollHeight;
-            }
-        }
-
-        function applyModelUIState() {
-            document.getElementById('currentModelBadge').innerText = currentModel;
-            document.querySelectorAll('.model-select-btn').forEach(btn => btn.classList.remove('active-mode'));
-            if (currentModel === 'Pro') document.getElementById('modelProBtn').classList.add('active-mode');
-            if (currentModel === 'Flash-Lite') document.getElementById('modelFlashLiteBtn').classList.add('active-mode');
-            if (currentModel === 'Flash') document.getElementById('modelFlashBtn').classList.add('active-mode');
-        }
-
-        function updateUserDisplay() {
-            document.getElementById('userNameDisplay').innerText = userName;
-            document.getElementById('avatarLetter').innerText = userName.charAt(0).toUpperCase();
-            const vibeTitle = document.getElementById('vibeTitle');
-            if (vibeTitle) {
-                vibeTitle.innerText = `What's the vibe, ${userName.split(' ')[0]}?`;
-            }
-        }
-
-        function checkAdminUIState() {
-            const adminBtn = document.getElementById('adminCommandNav');
-            const editorBtn = document.getElementById('editorModeNav');
-            if (isAdmin) {
-                adminBtn.style.display = 'flex';
-                editorBtn.style.display = 'flex';
-            } else {
-                adminBtn.style.display = 'none';
-                editorBtn.style.display = 'none';
-            }
-        }
-
-        function openSettings() {
-            document.getElementById('nameInputModal').value = userName;
-            document.getElementById('settingsModal').classList.add('active');
-        }
-
-        function openAdminPanel() {
-            document.getElementById('adminModal').classList.add('active');
-        }
-
-        function openEditorModal() {
-            document.getElementById('editHeaderTitle').value = document.getElementById('headerTitle').innerText;
-            const vibeTitle = document.getElementById('vibeTitle');
-            if (vibeTitle) document.getElementById('editGreetingText').value = vibeTitle.innerText;
-            document.getElementById('editorModal').classList.add('active');
-        }
-
-        function applyEditorChanges() {
-            const newHead = document.getElementById('editHeaderTitle').value.trim();
-            const newGreet = document.getElementById('editGreetingText').value.trim();
-            if (newHead) document.getElementById('headerTitle').innerText = newHead;
-            const vibeTitle = document.getElementById('vibeTitle');
-            if (vibeTitle && newGreet) vibeTitle.innerText = newGreet;
-            closeModal('editorModal');
-            alert("App updated successfully via Editor Mode!");
-        }
-
-        function openActivityModal() {
-            const container = document.getElementById('activityListContainer');
-            if (activityLogs.length === 0) {
-                container.innerHTML = `<div style="color:var(--text-secondary); font-size:13px;">No recent activity yet.</div>`;
-            } else {
-                container.innerHTML = activityLogs.map(item => `<div class="activity-item">${escapeHtml(item)}</div>`).join('');
-            }
-            document.getElementById('activityModal').classList.add('active');
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-        }
-
-        function saveSettings() {
-            const val = document.getElementById('nameInputModal').value.trim();
-            if (val) {
-                userName = val;
-                localStorage.setItem('vikea_username', userName);
-                updateUserDisplay();
-            }
-            closeModal('settingsModal');
-        }
-
-        function logActivity(promptText) {
-            if (!promptText) return;
-            activityLogs.unshift(promptText);
-            if (activityLogs.length > 20) activityLogs.pop();
-            localStorage.setItem('vikea_activities', JSON.stringify(activityLogs));
-        }
-
-        function clearActivityLogs() {
-            activityLogs = [];
-            localStorage.removeItem('vikea_activities');
-            openActivityModal();
-        }
-
-        function adminResetLogs() {
-            clearActivityLogs();
-            alert("Activity logs wiped by Admin.");
-            closeModal('adminModal');
-        }
-
-        function adminRevokeAccess() {
-            isAdmin = false;
-            adminStepState = 0;
-            localStorage.removeItem('vikea_admin_auth');
-            checkAdminUIState();
-            closeModal('adminModal');
-            alert("Admin privileges revoked.");
-        }
-
-        function toggleDeepSearchMode() {
-            deepSearchActive = !deepSearchActive;
-            const navBtn = document.getElementById('deepSearchNavBtn');
-            const stream = document.getElementById('chatStream');
-            
-            if (deepSearchActive) {
-                navBtn.classList.add('active-mode');
-            } else {
-                navBtn.classList.remove('active-mode');
-            }
-
-            if (conversationStarted) {
-                const aiMsgDiv = document.createElement('div');
-                aiMsgDiv.className = 'message ai';
-                if (deepSearchActive) {
-                    aiMsgDiv.innerHTML = `<div class="message-content">Deep search mode activated. Turn off deep search to unactivate.</div>`;
-                } else {
-                    aiMsgDiv.innerHTML = `<div class="message-content">Deep search mode turned off. Standard search mode activated.</div>`;
-                }
-                stream.appendChild(aiMsgDiv);
-                stream.scrollTop = stream.scrollHeight;
-            }
-        }
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                attachedImageData = e.target.result;
-                document.getElementById('previewImgElement').src = attachedImageData;
-                document.getElementById('imagePreviewContainer').style.display = 'block';
-                document.getElementById('previewImgElementActive').src = attachedImageData;
-                document.getElementById('imagePreviewContainerActive').style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function clearAttachedImage() {
-            attachedImageData = null;
-            document.getElementById('imagePreviewContainer').style.display = 'none';
-            document.getElementById('imagePreviewContainerActive').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('fileInputActive').value = '';
-        }
-
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        }
-
         function handleKey(event, origin) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -1067,270 +137,53 @@
             }
         }
 
-        function resetToVibeScreen() {
-            conversationStarted = false;
-            lastMathExpression = null;
-            clearAttachedImage();
-            const stream = document.getElementById('chatStream');
-            stream.innerHTML = `
-                <div class="welcome-vibe-container" id="vibeWelcomeScreen">
-                    <div class="welcome-title-vibe" id="vibeTitle">What's the vibe, ${userName.split(' ')[0]}?</div>
-                    
-                    <div class="glow-border-wrapper">
-                        <div class="centered-prompt-box">
-                            <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
-                            
-                            <div id="imagePreviewContainer" style="display:none; position:relative; width: fit-content;">
-                                <img id="previewImgElement" class="attached-preview-img" src="" alt="attachment preview">
-                                <button onclick="clearAttachedImage()" style="position:absolute; top:-8px; right:-8px; background:#333; color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer;">×</button>
-                            </div>
-
-                            <div class="centered-input-actions">
-                                <div style="display:flex; gap:4px;">
-                                    <button class="icon-btn" onclick="document.getElementById('fileInput').click()" title="Attach image or video">
-                                        <span class="material-symbols-outlined">add</span>
-                                    </button>
-                                    <input type="file" id="fileInput" style="display:none" accept="image/*,video/*" onchange="handleFileSelect(event)">
-                                    <button class="icon-btn" onclick="toggleSpeechRecognition('vibe')" title="Speech to text">
-                                        <span class="material-symbols-outlined" id="micIconVibe">mic</span>
-                                    </button>
-                                </div>
-                                <button class="send-btn" onclick="sendFromVibeScreen()">
-                                    <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            `;
-            document.getElementById('activeInputArea').style.display = 'none';
-        }
-
         function sendFromVibeScreen() {
             const input = document.getElementById('vibeInput');
             const text = input.value.trim();
-            if (!text && !attachedImageData) return;
+            if (!text) return;
 
-            const vibeScreen = document.getElementById('vibeWelcomeScreen');
-            if (vibeScreen) vibeScreen.remove();
+            document.getElementById('vibeWelcomeScreen').remove();
             document.getElementById('activeInputArea').style.display = 'block';
-            conversationStarted = true;
-
             processUserQuery(text);
         }
 
         function sendFromActiveArea() {
             const input = document.getElementById('activeInput');
             const text = input.value.trim();
-            if (!text && !attachedImageData) return;
-
+            if (!text) return;
             input.value = '';
-            input.style.height = 'auto';
             processUserQuery(text);
         }
 
         function processUserQuery(text) {
             const stream = document.getElementById('chatStream');
 
-            logActivity(text || "Uploaded image/media");
-
-            let userHtml = '';
-            if (attachedImageData) {
-                userHtml += `<img class="attached-preview-img" src="${attachedImageData}" alt="user upload">`;
-            }
-            if (text) {
-                userHtml += `<div>${escapeHtml(text)}</div>`;
-            }
-
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user';
-            userMsgDiv.innerHTML = `
-                <div class="message-avatar">${userName.charAt(0).toUpperCase()}</div>
-                <div class="message-content">${userHtml}</div>
-            `;
+            userMsgDiv.innerHTML = `<div class="message-avatar">W</div><div class="message-content">${text}</div>`;
             stream.appendChild(userMsgDiv);
-
-            const vibeInput = document.getElementById('vibeInput');
-            if (vibeInput) vibeInput.value = '';
-            const activeInput = document.getElementById('activeInput');
-            if (activeInput) activeInput.value = '';
-            const currentImg = attachedImageData;
-            clearAttachedImage();
-
             stream.scrollTop = stream.scrollHeight;
 
-            const cleanText = text.toLowerCase().trim();
-
-            // Admin Step 1 (Handles uppercase/lowercase properly now)
-            if (cleanText === 'admin42571') {
-                adminStepState = 1;
-                setTimeout(() => {
-                    const aiMsgDiv = document.createElement('div');
-                    aiMsgDiv.className = 'message ai';
-                    aiMsgDiv.innerHTML = `<div class="message-content">whats the next code after that</div>`;
-                    stream.appendChild(aiMsgDiv);
-                    stream.scrollTop = stream.scrollHeight;
-                }, 600);
-                return;
-            }
-
-            // Admin Step 2
-            if (cleanText === '3057' && adminStepState === 1) {
-                isAdmin = true;
-                adminStepState = 2;
-                localStorage.setItem('vikea_admin_auth', 'true');
-                checkAdminUIState();
-
-                setTimeout(() => {
-                    const aiMsgDiv = document.createElement('div');
-                    aiMsgDiv.className = 'message ai';
-                    aiMsgDiv.innerHTML = `<div class="message-content">👑 <strong>Superfast Admin & Editor Mode Activated!</strong> Welcome back, ${userName}. You can now use the <strong>Live App Editor</strong> and <strong>Admin Control Panel</strong> from the sidebar menu to change elements instantly!</div>`;
-                    stream.appendChild(aiMsgDiv);
-                    stream.scrollTop = stream.scrollHeight;
-                }, 600);
-                return;
-            }
-
-            // Append Thinking Bubble
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'message ai';
             thinkingDiv.id = 'thinkingBubble';
             thinkingDiv.innerHTML = `
                 <div class="thinking-container">
-                    <div class="circle-dot"></div>
-                    <div class="circle-dot"></div>
-                    <div class="circle-dot"></div>
-                    <div class="circle-dot"></div>
-                    <div class="circle-dot"></div>
+                    <div class="circle-dot"></div><div class="circle-dot"></div><div class="circle-dot"></div><div class="circle-dot"></div><div class="circle-dot"></div>
                 </div>
             `;
             stream.appendChild(thinkingDiv);
             stream.scrollTop = stream.scrollHeight;
 
-            let delayTime = deepSearchActive 
-                ? Math.floor(Math.random() * 2000) + 2000 
-                : Math.floor(Math.random() * 800) + 1000;
-
             setTimeout(() => {
-                const bubble = document.getElementById('thinkingBubble');
-                if (bubble) bubble.remove();
-
-                let response = generateKnowledgeAnswer(text, currentImg);
-
-                if (deepSearchActive) {
-                    response = `Deep search mode activated. Turn off deep search to unactivate.<br><br>` + response;
-                }
+                document.getElementById('thinkingBubble').remove();
 
                 const aiMsgDiv = document.createElement('div');
                 aiMsgDiv.className = 'message ai';
-                aiMsgDiv.innerHTML = `<div class="message-content">${response}</div>`;
+                aiMsgDiv.innerHTML = `<div class="message-content">Vikea AI Response: I received your message: "<strong>${text}</strong>"!</div>`;
                 stream.appendChild(aiMsgDiv);
                 stream.scrollTop = stream.scrollHeight;
-            }, delayTime);
-        }
-
-        function generateKnowledgeAnswer(text, currentImg) {
-            if (currentImg) {
-                return `I have analyzed the visual content provided alongside your query ("${escapeHtml(text)}") using Vikea ${currentModel}. As Vikea AI, I can examine details, extract context, or answer questions based on this file.`;
-            }
-
-            const cleanText = text.toLowerCase().trim();
-            const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
-
-            let mathCandidate = null;
-            const matches = text.match(/[\d\s\+\-\*\/\.\(\)]+/g);
-            if (matches) {
-                for (let m of matches) {
-                    let trimmed = m.trim();
-                    if (trimmed.length >= 3 && /[\+\-\*\/]/.test(trimmed) && /\d/.test(trimmed)) {
-                        mathCandidate = trimmed;
-                        break;
-                    }
-                }
-            }
-
-            if (wantsBreakdown && lastMathExpression) {
-                try {
-                    let evalResult = eval(lastMathExpression);
-                    let mathExpr = lastMathExpression;
-                    lastMathExpression = null;
-                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong> (computed via Vikea ${currentModel}):<br><br>
-                    1. **Expression Identification:** We evaluate formula <code>${escapeHtml(mathExpr)}</code>.<br>
-                    2. **Execution Process:** Applying standard mathematical sequence operations.<br>
-                    3. **Final Result:** Computed outcome is <strong>${evalResult}</strong>.`;
-                } catch (e) {
-                    lastMathExpression = null;
-                }
-            }
-
-            if (mathCandidate) {
-                try {
-                    let evalResult = eval(mathCandidate);
-                    lastMathExpression = mathCandidate;
-                    return `${evalResult} should i brake it down?`;
-                } catch (e) {}
-            }
-
-            if (cleanText.includes('weather') || cleanText.includes('forecast')) {
-                return `The forecast shows mostly sunny skies with pleasant temperatures around 20°C (68°F) and gentle breezes.`;
-            }
-
-            if (cleanText.includes('make a picture') || cleanText.includes('generate an image') || cleanText.includes('draw') || cleanText.includes('create an image') || cleanText.includes('picture of')) {
-                let prompt = text.replace(/(make|generate|draw|create)\s+(a|an)?\s*(picture|image|drawing)\s*(of)?/i, '').trim();
-                if (!prompt) prompt = "aesthetic scenery";
-                let imgUrl = `https://picsum.photos/seed/${encodeURIComponent(prompt)}/500/350`;
-                return `Here is the image generated based on your request for "<strong>${escapeHtml(prompt)}</strong>" using Vikea ${currentModel}:<br><img class="generated-image" src="${imgUrl}" alt="${escapeHtml(prompt)}">`;
-            }
-
-            if (cleanText.includes('criminology')) {
-                return `<strong>Criminology</strong> is the scientific study of crime, criminal behavior, and law enforcement practices.`;
-            } else if (cleanText.includes('photosynthesis')) {
-                return `<strong>Photosynthesis</strong> is the process green plants use to convert light energy into chemical energy: <code>6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂</code>.`;
-            } else if (cleanText.includes('capital of france')) {
-                return `The capital of France is <strong>Paris</strong>.`;
-            } else if (cleanText.includes('hello') || cleanText.includes('hi') || cleanText.includes('hey')) {
-                return `Hello, ${userName}! I am Vikea AI (running on Vikea ${currentModel}). What can I help you with today?`;
-            } else {
-                return `Vikea AI Answer (Vikea ${currentModel}): Regarding "<strong>${escapeHtml(text)}</strong>", I am fully ready to assist you with data, coding scripts, math equations, or creative ideas!`;
-            }
-        }
-
-        function toggleSpeechRecognition(origin) {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('Speech recognition is not supported in this browser.');
-                return;
-            }
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
-
-            recognition.onstart = function() {
-                const icon = origin === 'vibe' ? document.getElementById('micIconVibe') : document.getElementById('micIconActive');
-                if (icon) icon.style.color = '#8ab4f8';
-            };
-
-            recognition.onresult = function(event) {
-                const speechText = event.results[0][0].transcript;
-                if (origin === 'vibe') {
-                    document.getElementById('vibeInput').value = speechText;
-                    autoResize(document.getElementById('vibeInput'));
-                } else {
-                    document.getElementById('activeInput').value = speechText;
-                    autoResize(document.getElementById('activeInput'));
-                }
-            };
-
-            recognition.onend = function() {
-                const icon = origin === 'vibe' ? document.getElementById('micIconVibe') : document.getElementById('micIconActive');
-                if (icon) icon.style.color = '';
-            };
-
-            recognition.start();
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            }, 1000);
         }
     </script>
 </body>
