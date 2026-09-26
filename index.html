@@ -8,15 +8,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         :root {
-            --bg-color: #131314;
-            --sidebar-bg: #1e1f20;
-            --surface-color: #1e1f20;
-            --surface-hover: #2d2e30;
-            --text-primary: #e3e3e3;
-            --text-secondary: #c4c7c5;
-            --accent-blue: #8ab4f8;
-            --button-blue: #1a73e8;
-            --border-color: #333537;
+            --bg-color: #000000;
+            --sidebar-bg: #0a0a0a;
+            --surface-color: #121212;
+            --surface-hover: #1f1f1f;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border-color: #262626;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
@@ -24,68 +22,158 @@
         /* Permanent Sidebar */
         aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; }
         .sidebar-top { display: flex; flex-direction: column; gap: 16px; }
-        .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; }
-        .brand-logo-icon { width: 24px; height: 24px; background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570); border-radius: 50%; }
+        .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; color: #fff; }
+        .brand-logo-icon { width: 24px; height: 24px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
         
-        .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: none; padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; }
-        .new-chat-btn:hover { background-color: var(--border-color); }
+        .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
+        .new-chat-btn:hover { background-color: #333; }
 
         .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); margin: 12px 0 4px 8px; font-weight: 600; }
         .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-        .nav-item { background: none; border: none; color: var(--text-secondary); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; text-align: left; width: 100%; }
+        .nav-item { background: none; border: none; color: var(--text-secondary); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; text-align: left; width: 100%; transition: 0.2s; }
         .nav-item:hover { background-color: var(--surface-hover); color: var(--text-primary); }
-        .nav-item.active-mode { background-color: rgba(138, 180, 248, 0.15); color: var(--accent-blue); border: 1px solid rgba(138, 180, 248, 0.3); }
+        .nav-item.active-mode { background-color: #262626; color: #fff; border: 1px solid #404040; }
 
-        .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); }
-        .user-avatar { width: 32px; height: 32px; background-color: #3c4043; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; color: white; font-size: 14px; }
+        .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); border: 1px solid var(--border-color); }
+        .user-avatar { width: 32px; height: 32px; background-color: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
         .user-info { font-size: 13px; color: var(--text-primary); }
 
         /* Main Container */
         .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
-        header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: var(--accent-blue); padding: 4px 10px; border-radius: 12px; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); }
+        .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 900px; width: 100%; margin: 0 auto; }
+        .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 900px; width: 100%; margin: 0 auto; scroll-behavior: smooth; }
         
-        .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 24px; }
-        .welcome-title-vibe { font-size: 38px; font-weight: 500; background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570, #4285f4); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shineGradient 6s linear infinite; text-align: center; }
+        .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 32px; }
+        
+        /* BLACK & WHITE ANIMATION CONTAINER */
+        .animation-stage {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        @keyframes shineGradient { to { background-position: 300% center; } }
+        /* Central V */
+        .center-v {
+            position: absolute;
+            font-size: 28px;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'Google Sans', sans-serif;
+            z-index: 2;
+            animation: vPulse 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        .glow-border-wrapper { position: relative; width: 100%; max-width: 720px; border-radius: 28px; padding: 2px; background: linear-gradient(60deg, #4285f4, #9b72cb, #d96570, #4285f4); background-size: 300% 300%; animation: rotateGlow 5s ease infinite; }
-        @keyframes rotateGlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes vPulse {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.12); opacity: 1; text-shadow: 0 0 12px rgba(255,255,255,0.6); }
+        }
 
-        .centered-prompt-box { background-color: var(--surface-color); border-radius: 26px; padding: 14px 18px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
+        /* 5 Orbiting Dots */
+        .orbit-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #ffffff;
+        }
+
+        /* Smooth Orbital Trajectories collapsing into the center */
+        .orbit-dot:nth-child(1) { animation: orbitAndSink1 3s infinite cubic-bezier(0.37, 0, 0.63, 1); }
+        .orbit-dot:nth-child(2) { animation: orbitAndSink2 3s infinite cubic-bezier(0.37, 0, 0.63, 1); animation-delay: 0.2s; }
+        .orbit-dot:nth-child(3) { animation: orbitAndSink3 3s infinite cubic-bezier(0.37, 0, 0.63, 1); animation-delay: 0.4s; }
+        .orbit-dot:nth-child(4) { animation-delay: 0.6s; animation: orbitAndSink4 3s infinite cubic-bezier(0.37, 0, 0.63, 1); }
+        .orbit-dot:nth-child(5) { animation-delay: 0.8s; animation: orbitAndSink5 3s infinite cubic-bezier(0.37, 0, 0.63, 1); }
+
+        @keyframes orbitAndSink1 {
+            0% { transform: rotate(0deg) translate(36px) rotate(0deg); opacity: 1; }
+            65% { transform: rotate(220deg) translate(28px) rotate(-220deg); opacity: 1; }
+            85% { transform: rotate(320deg) translate(4px) rotate(-320deg); opacity: 0.8; }
+            100% { transform: rotate(360deg) translate(0px) rotate(-360deg); opacity: 0; }
+        }
+        @keyframes orbitAndSink2 {
+            0% { transform: rotate(72deg) translate(36px) rotate(-72deg); opacity: 1; }
+            65% { transform: rotate(292deg) translate(28px) rotate(-292deg); opacity: 1; }
+            85% { transform: rotate(392deg) translate(4px) rotate(-392deg); opacity: 0.8; }
+            100% { transform: rotate(432deg) translate(0px) rotate(-432deg); opacity: 0; }
+        }
+        @keyframes orbitAndSink3 {
+            0% { transform: rotate(144deg) translate(36px) rotate(-144deg); opacity: 1; }
+            65% { transform: rotate(364deg) translate(28px) rotate(-364deg); opacity: 1; }
+            85% { transform: rotate(464deg) translate(4px) rotate(-464deg); opacity: 0.8; }
+            100% { transform: rotate(504deg) translate(0px) rotate(-504deg); opacity: 0; }
+        }
+        @keyframes orbitAndSink4 {
+            0% { transform: rotate(216deg) translate(36px) rotate(-216deg); opacity: 1; }
+            65% { transform: rotate(436deg) translate(28px) rotate(-436deg); opacity: 1; }
+            85% { transform: rotate(536deg) translate(4px) rotate(-536deg); opacity: 0.8; }
+            100% { transform: rotate(576deg) translate(0px) rotate(-576deg); opacity: 0; }
+        }
+        @keyframes orbitAndSink5 {
+            0% { transform: rotate(288deg) translate(36px) rotate(-288deg); opacity: 1; }
+            65% { transform: rotate(508deg) translate(28px) rotate(-508deg); opacity: 1; }
+            85% { transform: rotate(608deg) translate(4px) rotate(-608deg); opacity: 0.8; }
+            100% { transform: rotate(648deg) translate(0px) rotate(-648deg); opacity: 0; }
+        }
+
+        /* Star Manifestation Burst */
+        .star-burst {
+            position: absolute;
+            font-size: 26px;
+            color: #ffffff;
+            z-index: 3;
+            animation: starFlash 3s infinite cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        @keyframes starFlash {
+            0%, 78% { transform: scale(0) rotate(0deg); opacity: 0; }
+            85% { transform: scale(1.4) rotate(45deg); opacity: 1; text-shadow: 0 0 16px #fff; }
+            95% { transform: scale(1) rotate(90deg); opacity: 1; }
+            100% { transform: scale(0.2) rotate(180deg); opacity: 0; }
+        }
+
+        .welcome-title-vibe { font-size: 38px; font-weight: 500; color: #fff; text-align: center; letter-spacing: -0.5px; }
+
+        .glow-border-wrapper { position: relative; width: 100%; max-width: 720px; border-radius: 28px; padding: 1px; background: #333; border: 1px solid var(--border-color); }
+
+        .centered-prompt-box { background-color: var(--surface-color); border-radius: 27px; padding: 14px 18px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
         .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; }
         
-        .prompt-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
+        .prompt-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
         .toolbar-left { display: flex; gap: 8px; align-items: center; }
         
-        .deep-search-chip { display: flex; align-items: center; gap: 6px; background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 16px; font-size: 13px; color: var(--text-secondary); cursor: pointer; user-select: none; transition: 0.2s; }
-        .deep-search-chip:hover { border-color: var(--accent-blue); color: var(--text-primary); }
-        .deep-search-chip.active { background-color: rgba(138, 180, 248, 0.15); border-color: var(--accent-blue); color: var(--accent-blue); }
+        .deep-search-chip { display: flex; align-items: center; gap: 6px; background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 16px; font-size: 13px; color: var(--text-secondary); cursor: pointer; user-select: none; transition: 0.2s; }
+        .deep-search-chip:hover { border-color: #fff; color: var(--text-primary); }
+        .deep-search-chip.active { background-color: #fff; border-color: #fff; color: #000; font-weight: 500; }
 
         .message { display: flex; gap: 14px; max-width: 100%; }
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
         .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
-        .message-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; background-color: #3c4043; color: white; flex-shrink: 0; }
+        .message-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; background-color: #fff; color: #000; flex-shrink: 0; }
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; }
-        .message.user .message-content { background-color: var(--surface-hover); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
+        .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
 
         .thinking-container { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background-color: var(--surface-color); border-radius: 20px; width: fit-content; border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 14px; }
-        .circle-dot { width: 8px; height: 8px; background: linear-gradient(135deg, #4285f4, #9b72cb); border-radius: 50%; animation: pulseCircle 1.2s infinite ease-in-out; }
+        .circle-dot { width: 6px; height: 6px; background-color: #fff; border-radius: 50%; animation: pulseCircle 1.2s infinite ease-in-out; }
         .circle-dot:nth-child(2) { animation-delay: 0.2s; }
         .circle-dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes pulseCircle { 0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; } 40% { transform: scale(1.2); opacity: 1; } }
 
-        .deep-thought-box { background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent-blue); padding: 10px 14px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; }
+        .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 10px 14px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
 
-        .input-area { padding: 12px 24px 16px 24px; max-width: 900px; width: 100%; margin: 0 auto; }
+        .input-area { padding: 12px 24px 16px 24px; max-width: 900px; width: 100%; margin: 0 auto; background-color: var(--bg-color); }
         .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
         #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; }
         
-        .send-btn { background-color: var(--button-blue); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-        .send-btn:hover { opacity: 0.9; transform: scale(1.05); }
+        .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        .send-btn:hover { opacity: 0.85; transform: scale(1.05); }
         footer { text-align: center; padding: 6px; color: var(--text-secondary); font-size: 12px; }
     </style>
 </head>
@@ -95,7 +183,7 @@
     <aside>
         <div class="sidebar-top">
             <div class="brand-header">
-                <div class="brand-logo-icon"></div>
+                <div class="brand-logo-icon">V</div>
                 <span>Vikea AI</span>
             </div>
             <button class="new-chat-btn" onclick="location.reload()">
@@ -122,12 +210,23 @@
     <div class="main-container">
         <header>
             <span id="headerTitle">Vikea AI Assistant</span>
-            <div class="model-badge-header">Pro / Deep Search Ready</div>
+            <div class="model-badge-header">Monochrome Pro</div>
         </header>
 
         <div class="chat-stream" id="chatStream">
-            <!-- Welcome Screen with Integrated Toolbar -->
+            <!-- Welcome Screen with Custom B&W Star Animation -->
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
+                <!-- Smooth Black and White Animation Stage -->
+                <div class="animation-stage">
+                    <div class="center-v">V</div>
+                    <div class="orbit-dot"></div>
+                    <div class="orbit-dot"></div>
+                    <div class="orbit-dot"></div>
+                    <div class="orbit-dot"></div>
+                    <div class="orbit-dot"></div>
+                    <div class="star-burst">✦</div>
+                </div>
+
                 <div class="welcome-title-vibe">What's the vibe, Wahaj?</div>
                 
                 <div class="glow-border-wrapper">
@@ -149,7 +248,7 @@
             </div>
         </div>
 
-        <!-- Sticky Bottom Input Area (Hidden initially, reveals after first message) -->
+        <!-- Sticky Bottom Input Area -->
         <div class="input-area" id="activeInputArea" style="display: none;">
             <div class="input-box-wrapper">
                 <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event, 'active')"></textarea>
@@ -233,7 +332,7 @@
             thinkingDiv.className = 'message ai';
             thinkingDiv.id = 'thinkingBubble';
             thinkingDiv.innerHTML = `
-                <div class="message-avatar" style="background:linear-gradient(135deg, #4285f4, #9b72cb);">V</div>
+                <div class="message-avatar" style="background:#fff; color:#000;">V</div>
                 <div class="thinking-container">
                     <div class="circle-dot"></div><div class="circle-dot"></div><div class="circle-dot"></div>
                     <span>${deepSearchEnabled ? 'Performing Deep Search & reasoning...' : 'Thinking...'}</span>
@@ -253,7 +352,7 @@
                 let answerHtml = generateSmartAnswer(query, deepSearchEnabled);
 
                 aiMsgDiv.innerHTML = `
-                    <div class="message-avatar" style="background:linear-gradient(135deg, #4285f4, #9b72cb);">V</div>
+                    <div class="message-avatar" style="background:#fff; color:#000;">V</div>
                     <div class="message-content">${answerHtml}</div>
                 `;
                 stream.appendChild(aiMsgDiv);
@@ -264,22 +363,22 @@
         function generateSmartAnswer(q, isDeep) {
             const lower = q.toLowerCase();
             let response = "";
-            let reasoning = isDeep ? `<div class="deep-thought-box">🔍 Deep Search executed across multiple knowledge bases & web indices for: "${escapeHtml(q)}"</div>` : "";
+            let reasoning = isDeep ? `<div class="deep-thought-box">🔍 Deep Search executed across multiple knowledge indices for: "${escapeHtml(q)}"</div>` : "";
 
             if (lower.includes('1+1') || lower.includes('1 + 1') || lower.includes('what is 1')) {
                 response = "1 + 1 = <strong>2</strong>.";
             } else if (lower.includes('hello') || lower.includes('hi')) {
-                response = "Hello Wahaj! How can Vikea AI assist you with your projects today?";
+                response = "Hello Wahaj! How can Vikea AI assist you today?";
             } else if (lower.includes('weather')) {
-                response = "To check exact weather conditions, please specify your city or region!";
+                response = "Please specify your location to check current weather conditions.";
             } else if (lower.includes('code') || lower.includes('html') || lower.includes('javascript')) {
-                response = `Here is a quick snippet based on your request:<br><pre style="background:#1e1f20; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Vikea AI Code Engine
-function greetUser(name) {
-    console.log("Hello, " + name + "!");
+                response = `Here is your code response:<br><pre style="background:#121212; border:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Vikea Monochrome Engine
+function processRequest(user) {
+    return "Ready, " + user;
 }
-greetUser("Wahaj");</code></pre>`;
+processRequest("Wahaj");</code></pre>`;
             } else {
-                response = `Here is the analysis regarding <em>"${escapeHtml(q)}"</em>:<br><br>Vikea AI processed your inquiry successfully. Everything is fully functional and operating on custom parameters. Let me know if you need deeper adjustments!`;
+                response = `Analysis for <em>"${escapeHtml(q)}"</em>:<br><br>Vikea AI processed your inquiry successfully under monochrome parameters. Let me know if you need any adjustments!`;
             }
 
             return reasoning + response;
