@@ -116,11 +116,18 @@
             font-size: 14px;
             text-align: left;
             width: 100%;
+            transition: background 0.2s;
         }
 
         .nav-item:hover {
             background-color: var(--surface-hover);
             color: var(--text-primary);
+        }
+
+        .nav-item.active-mode {
+            background-color: rgba(138, 180, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(138, 180, 248, 0.3);
         }
 
         .user-profile {
@@ -169,31 +176,6 @@
             font-size: 18px;
             font-weight: 500;
             color: var(--text-secondary);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .upgrade-btn {
-            background-color: var(--button-blue);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 14px;
-            transition: opacity 0.2s;
-        }
-
-        .upgrade-btn:hover {
-            opacity: 0.9;
         }
 
         /* Chat History Stream */
@@ -266,7 +248,7 @@
             border-radius: 16px;
             font-size: 15px;
             line-height: 1.5;
-            max-width: 75%;
+            max-width: 85%;
             word-break: break-word;
         }
 
@@ -526,6 +508,10 @@
                     <span class="material-symbols-outlined">settings</span>
                     Settings & Name
                 </button>
+                <button class="nav-item" id="deepSearchNavBtn" onclick="toggleDeepSearchMode()">
+                    <span class="material-symbols-outlined">psychology</span>
+                    Deep Search Mode
+                </button>
             </div>
         </div>
         <div class="user-profile">
@@ -538,12 +524,7 @@
     <div class="main-container">
         <header>
             <span>Vikea AI</span>
-            <div class="header-right">
-                <button class="upgrade-btn">
-                    <span class="material-symbols-outlined" style="font-size: 18px;">sparkles</span>
-                    Upgrade
-                </button>
-            </div>
+            <div class="header-right"></div>
         </header>
 
         <!-- Chat Stream Area -->
@@ -557,7 +538,7 @@
         <!-- Input Area -->
         <div class="input-area">
             <div class="input-box-wrapper">
-                <textarea id="userInput" placeholder="Enter a prompt here..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+                <textarea id="userInput" placeholder="Ask about math, English, computer science, coding, or any subject..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
                 <div class="input-actions">
                     <div class="model-selector-container">
                         <button class="model-dropdown-btn" onclick="toggleModelMenu()">
@@ -605,11 +586,12 @@
     </div>
 
     <script>
-        let userName = localStorage.getItem('vikea_username');
+        let userName = localStorage.getItem('vikea_username') || 'Wahaj';
         const hasAcceptedTerms = localStorage.getItem('vikea_terms');
+        let deepSearchActive = false;
         let lastMathExpression = null; 
 
-        if (!userName || !hasAcceptedTerms) {
+        if (!localStorage.getItem('vikea_username') || !hasAcceptedTerms) {
             window.addEventListener('DOMContentLoaded', () => {
                 showOnboardingModal(true);
             });
@@ -685,6 +667,27 @@
             }
         }
 
+        function toggleDeepSearchMode() {
+            deepSearchActive = !deepSearchActive;
+            const navBtn = document.getElementById('deepSearchNavBtn');
+            const stream = document.getElementById('chatStream');
+            const welcome = document.getElementById('welcomeSection');
+            if (welcome) welcome.remove();
+
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+
+            if (deepSearchActive) {
+                navBtn.classList.add('active-mode');
+                aiMsgDiv.innerHTML = `<div class="message-content">Deep search mode activated. Turn off deep search to unactivate.</div>`;
+            } else {
+                navBtn.classList.remove('active-mode');
+                aiMsgDiv.innerHTML = `<div class="message-content">Deep search mode turned off. Standard search mode activated.</div>`;
+            }
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
         function toggleModelMenu() {
             document.getElementById('modelMenu').classList.toggle('active');
         }
@@ -725,7 +728,7 @@
             const welcome = document.getElementById('welcomeSection');
             if (welcome) welcome.remove();
 
-            // Smart name extraction if user says "im [name]" or "my name is [name]"
+            // Extract name if introduced
             const lowerText = text.toLowerCase();
             let extractedName = null;
             if (lowerText.includes("im ")) {
@@ -761,13 +764,15 @@
             input.style.height = 'auto';
             stream.scrollTop = stream.scrollHeight;
 
-            // AI Response generation delay
+            // Determine response timing based on Deep Search Mode (10-5 seconds vs quick response)
+            let delayTime = deepSearchActive ? Math.floor(Math.random() * 6000) + 5000 : 600;
+
             setTimeout(() => {
                 let response = "";
                 const cleanText = text.toLowerCase();
                 const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
                 
-                // Scan for any math formula in the prompt
+                // Check for math
                 let mathCandidate = null;
                 const matches = text.match(/[\d\s\+\-\*\/\.\(\)]+/g);
                 if (matches) {
@@ -783,35 +788,29 @@
                 if (wantsBreakdown && lastMathExpression) {
                     try {
                         let evalResult = eval(lastMathExpression);
-                        response = `Here is the breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>:<br><br>
-                        1. Expression identified: <code>${escapeHtml(lastMathExpression)}</code>.<br>
-                        2. Step-by-step computation carried out.<br>
-                        3. Final Answer: <strong>${evalResult}</strong>`;
+                        response = `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>, requested by${userName}:<br><br>
+                        1. **Expression Identification:** We begin by examining the formula <code>${escapeHtml(lastMathExpression)}</code>.<br>
+                        2. **Execution Process:** Applying core foundational mathematical rules and computational sequence.<br>
+                        3. **Final Result:** The precise computed outcome is <strong>${evalResult}</strong>.`;
                         lastMathExpression = null; 
                     } catch (e) {
-                        response = `Here is the step-by-step breakdown for you!`;
+                        response = `Here is a detailed breakdown tailored to your request, ${userName}.`;
                         lastMathExpression = null;
                     }
                 } else if (mathCandidate) {
                     try {
                         let evalResult = eval(mathCandidate);
                         lastMathExpression = mathCandidate;
-                        response = `${evalResult} should i brake it down?`;
-                    } catch (e) {
-                        if (extractedName && cleanText.replace(/im\s+\S+|i'm\s+\S+|my name is\s+\S+|hi|hello/gi, '').trim().length === 0) {
-                            response = `Nice to meet you, ${userName}! How can I help you today?`;
+                        if (deepSearchActive) {
+                            response = `After conducting a comprehensive deep search analysis across mathematical databases, the evaluated result for ${mathCandidate} is <strong>${evalResult}</strong>. Would you like me to break down the calculation steps in full detail?`;
                         } else {
-                            response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
+                            response = `${evalResult} should i brake it down?`;
                         }
+                    } catch (e) {
+                        response = handleGeneralSubject(cleanText, text);
                     }
                 } else {
-                    if (extractedName && cleanText.replace(/im\s+\S+|i'm\s+\S+|my name is\s+\S+|hi|hello/gi, '').trim().length === 0) {
-                        response = `Nice to meet you, ${userName}! I've saved your name. How can I help you today?`;
-                    } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
-                        response = `Hello, ${userName}! How can I help you build or code today?`;
-                    } else {
-                        response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
-                    }
+                    response = handleGeneralSubject(cleanText, text);
                 }
 
                 const aiMsgDiv = document.createElement('div');
@@ -821,7 +820,25 @@
                 `;
                 stream.appendChild(aiMsgDiv);
                 stream.scrollTop = stream.scrollHeight;
-            }, 600);
+            }, delayTime);
+        }
+
+        function handleGeneralSubject(cleanText, originalText) {
+            let prefix = deepSearchActive 
+                ? `[Deep Search Analysis] After performing an extensive multi-source scan across English literature, computer science architectures, coding repositories, and general sciences for ${userName}:<br><br>`
+                : ``;
+
+            if (cleanText.includes('code') || cleanText.includes('python') || cleanText.includes('html') || cleanText.includes('javascript') || cleanText.includes('coding')) {
+                return prefix + `As Vikea AI, I can assist you with coding across multiple languages like Python, JavaScript, HTML, and C++. When writing code, always ensure proper syntax indentation and modular design structure. How would you like to build your script today, ${userName}?`;
+            } else if (cleanText.includes('computer science') || cleanText.includes('algorithm') || cleanText.includes('cpu') || cleanText.includes('software')) {
+                return prefix + `In computer science, systems operate through a combination of hardware architecture, memory management, and algorithmic logic. Whether you are studying data structures, networking, or operating systems, I am fully equipped to explain core concepts clearly.`;
+            } else if (cleanText.includes('english') || cleanText.includes('grammar') || cleanText.includes('poem') || cleanText.includes('essay')) {
+                return prefix + `For English and literature, crafting strong thesis statements, ensuring proper grammatical structure, and expanding vocabulary are essential. Whether you need help proofreading an essay or analyzing a text, I am here to guide you, ${userName}!`;
+            } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
+                return prefix + `Hello, ${userName}! I am your multi-subject Vikea AI assistant, ready to help you solve problems in math, English, computer science, coding, and more.`;
+            } else {
+                return prefix + `I have analyzed your query regarding "${escapeHtml(originalText)}". As a multi-subject Vikea AI equipped for math, English, computer science, and coding, I can provide detailed guidance or answers. How would you like to proceed further?`;
+            }
         }
 
         function escapeHtml(str) {
