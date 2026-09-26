@@ -1,494 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vikea AI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #070913;
-            --panel-color: #0d1322;
-            --accent-blue: #00d2ff;
-            --accent-purple: #9d4edd;
-            --accent-gradient: linear-gradient(135deg, #00d2ff, #9d4edd);
-            --text-color: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border-color: #1e293b;
-            --user-bubble: #172554;
-            --ai-bubble: #111827;
-        }
-
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: radial-gradient(circle at top, #111827 0%, var(--bg-color) 100%);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #131314;
+            color: #e3e3e3;
         }
-
-        /* Cookie & Terms Consent Modal */
-        #consent-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(7, 9, 19, 0.95);
-            border-top: 1px solid var(--border-color);
-            padding: 20px 24px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 1000;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
-            backdrop-filter: blur(12px);
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-
-        #consent-banner p {
-            margin: 0;
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        #consent-banner a {
-            color: var(--accent-blue);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .consent-btns {
-            display: flex;
-            gap: 12px;
-        }
-
-        button {
-            background: var(--accent-gradient);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: transform 0.1s, opacity 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
-        }
-
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
-        }
-
-        /* Header UI */
-        header {
-            background-color: var(--panel-color);
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            z-index: 10;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        /* Custom Logo Styling based on your idea */
-        .brand-logo-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--accent-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
-        }
-
-        .brand-logo-container svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-
-        .sparkle {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 14px;
-            height: 14px;
-            background: #fff;
-            clip-path: polygon(50% 0%, 65% 35%, 100% 50%, 65% 65%, 50% 100%, 35% 65%, 0% 50%, 35% 35%);
-            box-shadow: 0 0 8px #fff;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .env-badge {
-            background: rgba(0, 210, 255, 0.08);
-            color: var(--accent-blue);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            border: 1px solid rgba(0, 210, 255, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .env-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #22c55e;
-        }
-
-        /* Chat Workspace */
-        #chat-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-            box-sizing: border-box;
-            scroll-behavior: smooth;
-        }
-
-        .message-row {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .message-row.user {
-            align-items: flex-end;
-        }
-
-        .message-row.ai {
-            align-items: flex-start;
-        }
-
-        .message {
-            padding: 14px 18px;
-            border-radius: 14px;
-            max-width: 80%;
-            line-height: 1.6;
-            word-wrap: break-word;
-            font-size: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .user-message {
-            background-color: var(--user-bubble);
-            color: #f8fafc;
-            border-bottom-right-radius: 4px;
-            border: 1px solid rgba(0, 210, 255, 0.3);
-        }
-
-        .ai-message {
-            background-color: var(--ai-bubble);
-            color: var(--text-color);
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .disclaimer {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 12px;
-            border-top: 1px solid var(--border-color);
-            padding-top: 8px;
-            opacity: 0.75;
-        }
-
-        /* Glowing Ring Loading Spinner */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 18px;
-            background-color: var(--ai-bubble);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            border-bottom-left-radius: 4px;
-            width: fit-content;
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(0, 210, 255, 0.1);
-            border-top: 2px solid var(--accent-blue);
-            border-right: 2px solid var(--accent-purple);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Input Hub */
-        .input-wrapper {
-            background-color: var(--panel-color);
-            border-top: 1px solid var(--border-color);
-            padding: 20px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
-        }
-
-        .input-container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            gap: 12px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px 12px;
-            box-sizing: border-box;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .input-container:focus-within {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.15);
-        }
-
-        input[type="text"] {
-            flex: 1;
+        ::-webkit-scrollbar-track {
             background: transparent;
-            border: none;
-            padding: 8px;
-            color: var(--text-color);
-            font-size: 15px;
-            outline: none;
         }
-
-        input[type="text"]::placeholder {
-            color: var(--text-secondary);
+        ::-webkit-scrollbar-thumb {
+            background: #444746;
+            border-radius: 9999px;
         }
-
-        .send-btn {
-            background: var(--accent-gradient);
-            border-radius: 8px;
-            padding: 8px 20px;
-            font-size: 14px;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5f6368;
         }
-
-        /* Modals */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(7, 9, 19, 0.85);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .modal-content {
-            background: var(--panel-color);
-            padding: 32px;
-            border-radius: 16px;
-            max-width: 500px;
-            width: 90%;
-            border: 1px solid var(--border-color);
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        .animate-fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-
-        .modal-content h2 { 
-            margin-top: 0; 
-            color: var(--accent-blue); 
-            font-size: 20px;
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
-
-        .modal-content p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .modal-content button {
-            margin-top: 24px;
-            width: 100%;
-        }
-
-        /* Footer Link for Privacy/Terms */
-        .footer-links {
-            text-align: center;
-            padding: 6px;
-            font-size: 12px;
-            background: var(--bg-color);
-            color: var(--text-secondary);
-            border-top: 1px solid rgba(30, 41, 59, 0.5);
-        }
-
-        .footer-links a {
-            color: var(--accent-blue);
-            cursor: pointer;
-            text-decoration: underline;
-            margin: 0 5px;
+        .animate-pulse-slow {
+            animation: pulseSlow 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
     </style>
 </head>
-<body>
+<body class="h-full flex overflow-hidden">
 
-    <!-- Cookie & Terms Consent Modal -->
-    <div id="consent-banner">
-        <p>By using <strong>Vikea AI</strong>, you accept our <a onclick="openModal('termsModal')">Terms of Policy</a> and <a onclick="openModal('privacyModal')">Your Privacy</a> framework. Cookies are saved safely in your local browser sandbox.</p>
-        <div class="consent-btns">
-            <button onclick="acceptConsent()">Accept & Enter Workspace</button>
-        </div>
-    </div>
-
-    <!-- Header Interface -->
-    <header>
-        <div class="brand">
-            <div class="brand-logo-container">
-                <!-- Custom V Logo Icon -->
-                <svg viewBox="0 0 24 24">
-                    <path d="M4 4L12 20L20 4H16L12 13L8 4H4Z" />
-                </svg>
-                <div class="sparkle"></div>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-[#1e1f20] flex flex-col justify-between h-full transition-all duration-300 z-20 md:translate-x-0 -translate-x-full fixed md:static inset-y-0 left-0 border-r border-[#333537]">
+        <div class="p-4 flex flex-col gap-4">
+            <!-- Top Controls -->
+            <div class="flex items-center justify-between">
+                <button onclick="toggleSidebar()" class="p-2 rounded-full hover:bg-[#333537] text-gray-400 hover:text-white transition-colors" title="Toggle Sidebar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
             </div>
-            <h1>Vikea AI</h1>
-        </div>
-        <div class="env-badge">
-            <div class="env-dot"></div>
-            Environment: Local Quantum Engine
-        </div>
-    </header>
 
-    <!-- Chat Display Feed -->
-    <div id="chat-container">
-        <div class="message-row ai">
-            <div class="message ai-message">
-                Hello! I am Vikea AI. Ask your math problem below for a direct, clean answer.
-                <div class="disclaimer">Vikea isn't human. It can make mistakes, including about difficult maths problems, so double-check it.</div>
+            <!-- New Chat Button -->
+            <button onclick="startNewChat()" class="flex items-center gap-3 bg-[#282a2c] hover:bg-[#333537] text-gray-200 px-4 py-3 rounded-full text-sm font-medium transition-all shadow-sm border border-[#444746]/50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span>New chat</span>
+            </button>
+
+            <!-- Recent Chats Header -->
+            <div class="text-xs font-semibold text-gray-400 px-2 mt-4 uppercase tracking-wider">Recent</div>
+
+            <!-- Chat History List -->
+            <div id="chat-history" class="flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-280px)] pr-1">
+                <div class="group flex items-center justify-between px-3 py-2 rounded-lg bg-[#282a2c] text-gray-200 text-sm cursor-pointer truncate">
+                    <span class="truncate">advice for making website</span>
+                </div>
+                <div class="group flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[#282a2c]/60 text-gray-400 hover:text-gray-200 text-sm cursor-pointer truncate transition-colors">
+                    <span class="truncate">Vikea AI architecture design</span>
+                </div>
+                <div class="group flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[#282a2c]/60 text-gray-400 hover:text-gray-200 text-sm cursor-pointer truncate transition-colors">
+                    <span class="truncate">GitHub Pages deployment fix</span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- User Input Hub -->
-    <div class="input-wrapper">
-        <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type a math calculation here..." autocomplete="off" onkeypress="handleKey(event)">
-            <button class="send-btn" onclick="sendMessage()">Send</button>
+        <!-- Sidebar Footer / User Profile -->
+        <div class="p-4 border-t border-[#333537] flex flex-col gap-3">
+            <div class="flex items-center justify-between px-2 text-xs text-gray-400">
+                <span>Activity enabled</span>
+                <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            </div>
+            <div class="flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-[#282a2c] transition-colors cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white text-sm shadow">W</div>
+                <div class="flex flex-col truncate">
+                    <span class="text-sm font-medium text-gray-200 truncate">Wahaj Farooq</span>
+                    <span class="text-xs text-gray-400 truncate">Bolton, UK</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full bg-[#131314] relative overflow-hidden">
+        
+        <!-- Top Navbar -->
+        <header class="flex items-center justify-between px-6 py-4 z-10 bg-[#131314]/80 backdrop-blur-md">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-[#282a2c] text-gray-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <h1 class="text-lg font-medium text-gray-200 tracking-wide flex items-center gap-2">
+                    <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent font-semibold">Vikea AI</span>
+                </h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <!-- Upgrade Button -->
+                <button onclick="openUpgradeModal()" class="flex items-center gap-2 bg-[#1a73e8] hover:bg-[#1557b0] text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-md shadow-blue-900/20">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                    <span>Upgrade</span>
+                </button>
+                <!-- More options menu icon -->
+                <button class="p-2 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Feed Area -->
+        <div id="chat-feed" class="flex-1 overflow-y-auto px-4 md:px-24 lg:px-48 py-6 flex flex-col gap-6 scroll-smooth">
+            <!-- Welcome State -->
+            <div id="welcome-banner" class="flex flex-col items-start gap-3 mt-12 animate-fade-in">
+                <h2 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
+                    Hello, Wahaj.
+                </h2>
+                <p class="text-3xl font-normal text-gray-400">How can I help you build today?</p>
+            </div>
+        </div>
+
+        <!-- Input Container Area -->
+        <div class="px-4 md:px-24 lg:px-48 pb-6 pt-2 bg-gradient-to-t from-[#131314] via-[#131314]/90 to-transparent z-10">
+            <div class="bg-[#1e1f20] rounded-3xl p-3 border border-[#333537] focus-within:border-gray-500 transition-all shadow-xl">
+                <!-- Textarea for query -->
+                <textarea id="user-input" rows="1" placeholder="Enter a prompt here..." class="w-full bg-transparent text-gray-100 placeholder-gray-500 px-3 py-2 resize-none focus:outline-none text-base max-h-36" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                
+                <!-- Bottom Toolbar inside Input Box -->
+                <div class="flex items-center justify-between px-2 pt-2 border-t border-[#2a2c2e]/60 mt-1">
+                    <!-- Model Selector & Extra tools -->
+                    <div class="flex items-center gap-3">
+                        <!-- Model Dropdown -->
+                        <div class="relative">
+                            <button onclick="toggleModelDropdown()" id="selected-model-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#282a2c] hover:bg-[#333537] text-gray-300 text-xs font-medium transition-colors">
+                                <span id="current-model-text">Flash-Lite 1.2</span>
+                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div id="model-dropdown" class="hidden absolute left-0 bottom-full mb-2 w-48 bg-[#1e1f20] border border-[#333537] rounded-2xl shadow-2xl py-1 z-30 animate-fade-in">
+                                <div onclick="selectModel('Flash 1.3')" class="px-4 py-2.5 hover:bg-[#282a2c] text-xs text-gray-300 cursor-pointer flex items-center justify-between">
+                                    <span>Flash 1.3</span>
+                                    <span class="text-[10px] text-blue-400 font-semibold">Fast</span>
+                                </div>
+                                <div onclick="selectModel('Flash-Lite 1.2')" class="px-4 py-2.5 hover:bg-[#282a2c] text-xs text-gray-300 cursor-pointer flex items-center justify-between bg-[#282a2c]/50">
+                                    <span>Flash-Lite 1.2</span>
+                                    <span class="text-[10px] text-emerald-400 font-semibold">Active</span>
+                                </div>
+                                <div onclick="selectModel('Pro 1')" class="px-4 py-2.5 hover:bg-[#282a2c] text-xs text-gray-300 cursor-pointer flex items-center justify-between">
+                                    <span>Pro 1</span>
+                                    <span class="text-[10px] text-purple-400 font-semibold">Advanced</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attachment / Tool button -->
+                        <button onclick="triggerAttach()" class="p-2 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-gray-200 transition-colors" title="Attach file">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                        </button>
+                    </div>
+
+                    <!-- Right side buttons: Mic & Send -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="triggerMic()" class="p-2 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-gray-200 transition-colors" title="Use microphone">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        </button>
+                        <button id="send-btn" onclick="sendMessage()" class="p-2 rounded-full bg-[#d3e3fd] hover:bg-white text-[#001d35] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md" title="Send message">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer copyright -->
+            <footer class="text-center pt-3 text-xs text-gray-500 font-light tracking-wide">
+                Made by Wahaj © 2026 &bull; Gemini-inspired AI Experience
+            </footer>
+        </div>
+    </main>
+
+    <!-- Upgrade Modal -->
+    <div id="upgrade-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 animate-fade-in">
+        <div class="bg-[#1e1f20] border border-[#333537] rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl flex flex-col gap-6 relative">
+            <button onclick="closeUpgradeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex flex-col items-center text-center gap-2">
+                <div class="w-12 h-12 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mb-1">
+                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-100">Upgrade to Vikea Advanced</h3>
+                <p class="text-sm text-gray-400">Unlock Pro 1 reasoning capabilities, priority generation speeds, and expanded multimodal memory.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <div class="bg-[#282a2c] p-4 rounded-2xl border border-blue-500/30 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-semibold text-gray-200">Pro Plan</div>
+                        <div class="text-xs text-gray-400">Unlimited access to Pro 1 & Flash 1.3</div>
+                    </div>
+                    <span class="text-blue-400 font-bold text-sm">Active Tier</span>
+                </div>
+                <button onclick="closeUpgradeModal()" class="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white py-3 rounded-xl font-medium text-sm transition-all shadow-lg">Continue with Vikea AI</button>
+            </div>
         </div>
     </div>
 
-    <!-- Quick Footer Policy Link -->
-    <div class="footer-links">
-        <span>Your Privacy and Vikea</span> | 
-        <a onclick="openModal('termsModal')">Terms</a> | 
-        <a onclick="openModal('privacyModal')">Privacy</a>
-    </div>
-
-    <!-- Terms Modal Dialog -->
-    <div id="termsModal" class="modal">
-        <div class="modal-content">
-            <h2>Terms of Policy</h2>
-            <p>Vikea AI provides automated mathematical computing. Because complex evaluations can occasionally result in system computation errors, you are fully responsible for double-checking all answers.</p>
-            <button onclick="closeModal('termsModal')">Got it</button>
-        </div>
-    </div>
-
-    <!-- Privacy Modal Dialog -->
-    <div id="privacyModal" class="modal">
-        <div class="modal-content">
-            <h2>Your Privacy</h2>
-            <p>Your workspace is completely localized inside your browser. No external cloud trackers or account logins are required, keeping your session entirely secure and private.</p>
-            <button onclick="closeModal('privacyModal')">Got it</button>
-        </div>
-    </div>
-
+    <!-- JavaScript Application Logic -->
     <script>
-        function acceptConsent() {
-            document.getElementById('consent-banner').style.display = 'none';
-        }
+        let currentModel = "Flash-Lite 1.2";
+        let isSidebarOpen = false;
 
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        function appendMessage(text, sender) {
-            const container = document.getElementById('chat-container');
-            const rowDiv = document.createElement('div');
-            rowDiv.className = `message-row ${sender}`;
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
-            
-            if (sender === 'ai') {
-                msgDiv.innerHTML = text + `<div class="disclaimer">Vikea isn't human. It can make mistakes, including about difficult maths problems, so double-check it.</div>`;
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            isSidebarOpen = !isSidebarOpen;
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
             } else {
-                msgDiv.textContent = text;
+                sidebar.classList.add('-translate-x-full');
             }
-
-            rowDiv.appendChild(msgDiv);
-            container.appendChild(rowDiv);
-            container.scrollTop = container.scrollHeight;
         }
 
-        function showLoadingSpinner() {
-            const container = document.getElementById('chat-container');
-            const rowDiv = document.createElement('div');
-            rowDiv.className = 'message-row ai';
-            rowDiv.id = 'typing-row';
+        function toggleModelDropdown() {
+            const dropdown = document.getElementById('model-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
 
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'typing-indicator';
-            loadingDiv.innerHTML = `
-                <div class="spinner"></div>
-                <span>Vikea is computing...</span>
+        function selectModel(modelName) {
+            currentModel = modelName;
+            document.getElementById('current-model-text').innerText = modelName;
+            document.getElementById('model-dropdown').classList.add('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            const btn = document.getElementById('selected-model-btn');
+            const dropdown = document.getElementById('model-dropdown');
+            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+
+        function handleKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function startNewChat() {
+            const chatFeed = document.getElementById('chat-feed');
+            chatFeed.innerHTML = `
+                <div id="welcome-banner" class="flex flex-col items-start gap-3 mt-12 animate-fade-in">
+                    <h2 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
+                        Hello, Wahaj.
+                    </h2>
+                    <p class="text-3xl font-normal text-gray-400">How can I help you build today?</p>
+                </div>
             `;
-
-            rowDiv.appendChild(loadingDiv);
-            container.appendChild(rowDiv);
-            container.scrollTop = container.scrollHeight;
         }
 
-        function removeLoadingSpinner() {
-            const typingRow = document.getElementById('typing-row');
-            if (typingRow) {
-                typingRow.remove();
-            }
+        function triggerAttach() {
+            appendSystemMessage("File attachment simulated successfully. Ready to analyze document.");
+        }
+
+        function triggerMic() {
+            appendSystemMessage("Microphone listening simulated. Speak your prompt clearly.");
+        }
+
+        function openUpgradeModal() {
+            document.getElementById('upgrade-modal').classList.remove('hidden');
+            document.getElementById('upgrade-modal').classList.add('flex');
+        }
+
+        function closeUpgradeModal() {
+            document.getElementById('upgrade-modal').classList.add('hidden');
+            document.getElementById('upgrade-modal').classList.remove('flex');
+        }
+
+        function appendSystemMessage(text) {
+            const chatFeed = document.getElementById('chat-feed');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "flex items-start gap-4 animate-fade-in bg-[#1e1f20] border border-[#333537] p-4 rounded-2xl max-w-xl";
+            msgDiv.innerHTML = `<div class="text-sm text-gray-300">${text}</div>`;
+            chatFeed.appendChild(msgDiv);
+            chatFeed.scrollTop = chatFeed.scrollHeight;
         }
 
         function sendMessage() {
@@ -496,47 +308,66 @@
             const text = input.value.trim();
             if (!text) return;
 
-            appendMessage(text, 'user');
+            // Remove welcome banner if present
+            const banner = document.getElementById('welcome-banner');
+            if (banner) banner.remove();
+
+            const chatFeed = document.getElementById('chat-feed');
+
+            // Append User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex justify-end animate-fade-in";
+            userMsg.innerHTML = `
+                <div class="bg-[#282a2c] text-gray-100 px-5 py-3 rounded-3xl max-w-xl text-sm leading-relaxed shadow-sm">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+            chatFeed.appendChild(userMsg);
+
+            // Clear input
             input.value = '';
+            input.style.height = 'auto';
 
-            // Show custom ring spinner
-            showLoadingSpinner();
+            chatFeed.scrollTop = chatFeed.scrollHeight;
 
-            // 2.5 second environment delay
+            // Simulate AI response with typing indicator
             setTimeout(() => {
-                removeLoadingSpinner();
+                const typingId = 'typing-' + Date.now();
+                const aiMsgWrapper = document.createElement('div');
+                aiMsgWrapper.className = "flex items-start gap-4 animate-fade-in";
+                aiMsgWrapper.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow">V</div>
+                    <div id="${typingId}" class="bg-[#1e1f20] border border-[#333537] text-gray-200 px-5 py-3.5 rounded-3xl max-w-2xl text-sm leading-relaxed flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse-slow"></div>
+                        <div class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse-slow" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 rounded-full bg-purple-400 animate-pulse-slow" style="animation-delay: 0.4s"></div>
+                    </div>
+                `;
+                chatFeed.appendChild(aiMsgWrapper);
+                chatFeed.scrollTop = chatFeed.scrollHeight;
 
-                let response = "";
-                const cleanText = text.toLowerCase();
-
-                try {
-                    // Strip letters/words and keep math calculation elements
-                    let mathQuery = text.replace(/[a-zA-Z\s?]/g, '');
-                    
-                    if (mathQuery.length > 0 && /^[\d\+\-\*\/\.\(\)\*\*]+$/.test(mathQuery)) {
-                        let evalResult = eval(mathQuery);
-                        response = `<strong>${evalResult}</strong>`;
-                    } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
-                        response = "Hello! Input your equation to compute.";
-                    } else {
-                        response = "Please enter a valid math problem.";
+                // Generate smart reply based on model
+                setTimeout(() => {
+                    const typingBox = document.getElementById(typingId);
+                    if (typingBox) {
+                        let responseText = `I've processed your request using <strong>${currentModel}</strong>. Vikea AI is fully operational, responsive, and ready for your next prompt!`;
+                        if (text.toLowerCase().includes('hello') || text.toLowerCase().includes('hi')) {
+                            responseText = `Hello Wahaj! Great to see Vikea AI running smoothly with ${currentModel}. What would you like to build or discuss next?`;
+                        } else if (text.toLowerCase().includes('github') || text.toLowerCase().includes('deploy')) {
+                            responseText = `Your GitHub Pages deployment is successfully active! You can continue making updates right from your repository.`;
+                        }
+                        typingBox.className = "bg-transparent text-gray-200 px-1 py-1 max-w-2xl text-sm leading-relaxed";
+                        typingBox.innerHTML = responseText;
+                        chatFeed.scrollTop = chatFeed.scrollHeight;
                     }
-                } catch (e) {
-                    response = `Calculation syntax error. Please verify your numbers.`;
-                }
+                }, 1200);
 
-                appendMessage(response, 'ai');
-            }, 2500);
+            }, 400);
         }
 
-        function handleKey(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+        function escapeHtml(string) {
+            return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>
 </html>
-<footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 14px;">
-  Made by Wahaj © 2026
-</footer>
