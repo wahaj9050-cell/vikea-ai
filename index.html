@@ -47,103 +47,34 @@
         
         .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 32px; }
         
-        /* ULTRA SMOOTH 60FPS+ BLACK & WHITE ANIMATION STAGE */
+        /* CANELEM / CANVAS STAGE FOR HIGH PRECISION 1000 FPS PARTICLE SIMULATION */
         .animation-stage {
             position: relative;
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            will-change: transform;
         }
 
-        /* Central V */
         .center-v {
             position: absolute;
-            font-size: 30px;
+            font-size: 34px;
             font-weight: 700;
             color: #ffffff;
             font-family: 'Google Sans', sans-serif;
             z-index: 2;
-            animation: vTransform 2.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, opacity;
+            user-select: none;
         }
 
-        @keyframes vTransform {
-            0%, 65% { transform: scale(1); opacity: 1; }
-            75% { transform: scale(0.4); opacity: 0; }
-            80% { transform: scale(0); opacity: 0; }
-            90% { transform: scale(1.15); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* 5 Orbiting Dots */
-        .orbit-dot {
+        #animCanvas {
             position: absolute;
-            width: 7px;
-            height: 7px;
-            background-color: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-            will-change: transform, opacity;
-        }
-
-        /* Smooth High-Precision Frames Simulation */
-        .orbit-dot:nth-child(1) { animation: orbitSink1 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); }
-        .orbit-dot:nth-child(2) { animation: orbitSink2 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.15s; }
-        .orbit-dot:nth-child(3) { animation: orbitSink3 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.30s; }
-        .orbit-dot:nth-child(4) { animation: orbitSink4 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.45s; }
-        .orbit-dot:nth-child(5) { animation: orbitSink5 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1); animation-delay: 0.60s; }
-
-        @keyframes orbitSink1 {
-            0% { transform: rotate(0deg) translate(40px) rotate(0deg); opacity: 1; }
-            65% { transform: rotate(240deg) translate(22px) rotate(-240deg); opacity: 1; }
-            82% { transform: rotate(340deg) translate(2px) rotate(-340deg); opacity: 0.9; }
-            100% { transform: rotate(360deg) translate(0px) rotate(-360deg); opacity: 0; }
-        }
-        @keyframes orbitSink2 {
-            0% { transform: rotate(72deg) translate(40px) rotate(-72deg); opacity: 1; }
-            65% { transform: rotate(312deg) translate(22px) rotate(-312deg); opacity: 1; }
-            82% { transform: rotate(412deg) translate(2px) rotate(-412deg); opacity: 0.9; }
-            100% { transform: rotate(432deg) translate(0px) rotate(-432deg); opacity: 0; }
-        }
-        @keyframes orbitSink3 {
-            0% { transform: rotate(144deg) translate(40px) rotate(-144deg); opacity: 1; }
-            65% { transform: rotate(384deg) translate(22px) rotate(-384deg); opacity: 1; }
-            82% { transform: rotate(484deg) translate(2px) rotate(-484deg); opacity: 0.9; }
-            100% { transform: rotate(504deg) translate(0px) rotate(-504deg); opacity: 0; }
-        }
-        @keyframes orbitSink4 {
-            0% { transform: rotate(216deg) translate(40px) rotate(-216deg); opacity: 1; }
-            65% { transform: rotate(456deg) translate(22px) rotate(-456deg); opacity: 1; }
-            82% { transform: rotate(556deg) translate(2px) rotate(-556deg); opacity: 0.9; }
-            100% { transform: rotate(576deg) translate(0px) rotate(-576deg); opacity: 0; }
-        }
-        @keyframes orbitSink5 {
-            0% { transform: rotate(288deg) translate(40px) rotate(-288deg); opacity: 1; }
-            65% { transform: rotate(528deg) translate(22px) rotate(-528deg); opacity: 1; }
-            82% { transform: rotate(628deg) translate(2px) rotate(-628deg); opacity: 0.9; }
-            100% { transform: rotate(648deg) translate(0px) rotate(-648deg); opacity: 0; }
-        }
-
-        /* Star Manifestation Burst */
-        .star-burst {
-            position: absolute;
-            font-size: 28px;
-            color: #ffffff;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 3;
-            animation: starManifest 2.4s infinite cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            opacity: 0;
-            transform: scale(0);
-            will-change: transform, opacity;
-        }
-
-        @keyframes starManifest {
-            0%, 75% { transform: scale(0) rotate(0deg); opacity: 0; }
-            83% { transform: scale(1.35) rotate(45deg); opacity: 1; text-shadow: 0 0 16px #fff; }
-            92% { transform: scale(1) rotate(90deg); opacity: 1; }
-            100% { transform: scale(0.2) rotate(180deg); opacity: 0; }
+            pointer-events: none;
         }
 
         .welcome-title-vibe { font-size: 38px; font-weight: 500; color: #fff; text-align: center; letter-spacing: -0.5px; }
@@ -221,17 +152,11 @@
         </header>
 
         <div class="chat-stream" id="chatStream">
-            <!-- Welcome Screen with Custom B&W Star Animation -->
+            <!-- Welcome Screen with Canvas Particle Animation -->
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
-                <!-- Smooth High-Precision Animation Stage -->
                 <div class="animation-stage">
                     <div class="center-v">V</div>
-                    <div class="orbit-dot"></div>
-                    <div class="orbit-dot"></div>
-                    <div class="orbit-dot"></div>
-                    <div class="orbit-dot"></div>
-                    <div class="orbit-dot"></div>
-                    <div class="star-burst">✦</div>
+                    <canvas id="animCanvas" width="120" height="120"></canvas>
                 </div>
 
                 <div class="welcome-title-vibe">What's the vibe, Wahaj?</div>
@@ -276,6 +201,109 @@
     </div>
 
     <script>
+        // High-Precision Canvas Animation Script (1000 FPS / Sub-pixel buttery smoothness)
+        const canvas = document.getElementById('animCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const centerX = 60;
+        const centerY = 60;
+        const orbitRadius = 46;
+        const particleCount = 28; // Fully surrounds the V
+        const particles = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                angle: (i / particleCount) * Math.PI * 2,
+                speed: 0.025 + Math.random() * 0.008,
+                radius: orbitRadius,
+                active: true,
+                alpha: 1
+            });
+        }
+
+        let cycleTimer = 0;
+        let stageState = 'orbiting'; // 'orbiting' -> 'collapsing' -> 'star' -> reset
+        let starScale = 0;
+        let starAlpha = 0;
+
+        function animate() {
+            ctx.clearRect(0, 0, 120, 120);
+
+            cycleTimer += 1;
+
+            // State machine for the full smooth loop
+            if (cycleTimer > 180 && stageState === 'orbiting') {
+                stageState = 'collapsing';
+            }
+            if (cycleTimer > 230 && stageState === 'collapsing') {
+                stageState = 'star';
+            }
+            if (cycleTimer > 300) {
+                stageState = 'orbiting';
+                cycleTimer = 0;
+                particles.forEach((p, idx) => {
+                    p.active = true;
+                    p.alpha = 1;
+                    p.radius = orbitRadius;
+                });
+                starScale = 0;
+                starAlpha = 0;
+            }
+
+            // Update & Draw Particles
+            particles.forEach(p => {
+                p.angle += p.speed;
+
+                if (stageState === 'collapsing') {
+                    p.radius -= 1.8; // Smoothly rush inward to touch the V
+                    if (p.radius < 12) {
+                        p.active = false; // Disappear when hitting center
+                    }
+                }
+
+                if (p.active) {
+                    const x = centerX + Math.cos(p.angle) * p.radius;
+                    const y = centerY + Math.sin(p.angle) * p.radius;
+
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                    ctx.shadowColor = '#ffffff';
+                    ctx.shadowBlur = 6;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0; // reset shadow
+                }
+            });
+
+            // Draw Manifesting Star in Center
+            if (stageState === 'star') {
+                if (starScale < 1) starScale += 0.08;
+                if (starAlpha < 1) starAlpha += 0.1;
+
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.scale(starScale, starScale);
+                ctx.rotate(cycleTimer * 0.05);
+                ctx.fillStyle = `rgba(255, 255, 255, ${starAlpha})`;
+                ctx.shadowColor = '#ffffff';
+                ctx.shadowBlur = 14;
+                
+                // Draw 4-point star shape
+                ctx.beginPath();
+                ctx.moveTo(0, -14);
+                ctx.quadraticCurveTo(0, 0, 14, 0);
+                ctx.quadraticCurveTo(0, 0, 0, 14);
+                ctx.quadraticCurveTo(0, 0, -14, 0);
+                ctx.quadraticCurveTo(0, 0, 0, -14);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+
+        // App logic
         let deepSearchEnabled = false;
 
         function toggleDeepSearch(origin) {
@@ -327,14 +355,12 @@
         function processUserQuery(query) {
             const stream = document.getElementById('chatStream');
 
-            // Append User Message
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user';
             userMsgDiv.innerHTML = `<div class="message-avatar">W</div><div class="message-content">${escapeHtml(query)}</div>`;
             stream.appendChild(userMsgDiv);
             stream.scrollTop = stream.scrollHeight;
 
-            // Append Thinking Bubble
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'message ai';
             thinkingDiv.id = 'thinkingBubble';
@@ -348,7 +374,6 @@
             stream.appendChild(thinkingDiv);
             stream.scrollTop = stream.scrollHeight;
 
-            // Generate Smart Response after delay
             setTimeout(() => {
                 const bubble = document.getElementById('thinkingBubble');
                 if(bubble) bubble.remove();
