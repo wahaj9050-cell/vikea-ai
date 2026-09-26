@@ -381,7 +381,7 @@
                 const aiMsgDiv = document.createElement('div');
                 aiMsgDiv.className = 'message ai';
                 
-                let answerHtml = generateGeminiStyleAnswer(query, deepSearchEnabled);
+                let answerHtml = generateAccurateAnswer(query, deepSearchEnabled);
 
                 aiMsgDiv.innerHTML = `
                     <div class="message-avatar">V</div>
@@ -392,12 +392,12 @@
             }, deepSearchEnabled ? 1600 : 900);
         }
 
-        function generateGeminiStyleAnswer(q, isDeep) {
+        function generateAccurateAnswer(q, isDeep) {
             let reasoning = isDeep ? `<div class="deep-thought-box">🌐 Deep Search & Reasoning Active for: "${escapeHtml(q)}"</div>` : "";
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
-            // 1. Massive Math evaluation (BigInt support)
+            // 1. Math check (BigInt support for huge additions)
             const mathAddMatch = cleanQ.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
             if (mathAddMatch) {
                 try {
@@ -406,33 +406,38 @@
                 } catch(e) {}
             }
 
-            // General mathematical expressions evaluation using safe Function parse if numbers/operators only
-            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(cleanQ) && cleanQ.length > 0) {
+            // Standard basic math expression check
+            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(cleanQ) && cleanQ.length > 0 && /\d/.test(cleanQ)) {
                 try {
                     let calc = Function('"use strict";return (' + cleanQ + ')')();
                     return reasoning + `The result is **${calc}**.`;
                 } catch(e) {}
             }
 
-            // 2. Conversational & Direct Assistant Persona (Gemini style)
-            if (lower.includes('yoo') || lower.includes('whats up') || lower.includes('what is up')) {
-                return reasoning + `Not much! Just here and ready to help you out. What are we working on right now?`;
+            // 2. Exact match casual check (Fixing false triggers like "yo wsp")
+            if (lower === 'yo' || lower === 'wsp' || lower === 'yo wsp' || lower === 'whats up' || lower === 'what is up') {
+                return reasoning + `Yoo! Everything's running smooth. What are we working on right now, ${currentUserName}?`;
             }
-            if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
-                return reasoning + `Hello! How can I help you today?`;
+            if (lower === 'hi' || lower === 'hello' || lower === 'hey') {
+                return reasoning + `Hello ${currentUserName}! How can I assist you today?`;
             }
             if (lower.includes('creator') || lower.includes('made you') || lower.includes('build you')) {
-                return reasoning + `I was created as an advanced assistant running on the Vikea Engine, customized by you, ${currentUserName}.`;
+                return reasoning + `You built me! I'm running on the Vikea Engine created by you, ${currentUserName}.`;
             }
 
-            // 3. General knowledge fallback structured cleanly without robotic filler statements
-            return reasoning + `Here is what you need to know about **${escapeHtml(q)}**:<br><br>` +
-                   `This is a great topic to look into. When examining this, it helps to break it down clearly:<br>` +
-                   `<ul style="margin-left: 20px; margin-top: 8px; margin-bottom: 8px; line-height: 1.6;">` +
-                   `<li><strong>Core Analysis:</strong> The concept centers around structured logical execution and data accuracy.</li>` +
-                   `<li><strong>Key Consideration:</strong> Ensuring optimal performance and clear step-by-step logic.</li>` +
-                   `</ul>` +
-                   `Let me know if you want to dive deeper into any specific part of this!`;
+            // 3. Code review / Logical flaw queries
+            if (lower.includes('logical flaw') || lower.includes('code') || lower.includes('bug') || lower.includes('review')) {
+                return reasoning + `When reviewing code for hidden logical flaws, here are the primary areas where execution typically breaks down:<br>` +
+                       `<ul style="margin-left: 20px; margin-top: 8px; margin-bottom: 8px; line-height: 1.6;">` +
+                       `<li><strong>Edge Cases:</strong> Unhandled null, undefined, or zero-value inputs causing unexpected type coercion or crashes.</li>` +
+                       `<li><strong>Integer Overflow:</strong> Exceeding standard integer or memory boundaries (which can be avoided using structures like BigInt).</li>` +
+                       `<li><strong>Asynchronous Race Conditions:</strong> State modifications happening out of order during concurrent operations.</li>` +
+                       `</ul>` +
+                       `Paste the specific snippet you're working on right here and I'll walk through it line by line with you!`;
+            }
+
+            // 4. General conversational fallback
+            return reasoning + `I've analyzed your input regarding **"${escapeHtml(q)}"**. As your assistant running on the Vikea Engine, I'm ready to help you write code, solve problems, or break down concepts step-by-step. Let me know what specific details you'd like to explore!`;
         }
 
         function escapeHtml(str) {
