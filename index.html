@@ -18,7 +18,7 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
         
-        /* Custom Matching Dark Scrollbar for the entire page & containers */
+        /* Custom Matching Dark Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -78,20 +78,14 @@
 
         .center-v {
             position: absolute;
-            width: 40px;
-            height: 40px;
-            border: 1px solid #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 700;
             color: #ffffff;
             font-family: 'Google Sans', sans-serif;
             z-index: 2;
             user-select: none;
             background: none;
+            border: none; /* Removed white circle border */
         }
 
         #animCanvas {
@@ -127,7 +121,7 @@
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
 
-        /* THINKING ANIMATION */
+        /* THINKING ANIMATION (No circle border) */
         .thinking-stage {
             position: relative;
             width: 32px;
@@ -136,8 +130,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            border: 1px solid #fff;
-            border-radius: 50%;
+            border: none;
         }
         .thinking-canvas {
             position: absolute;
@@ -147,7 +140,7 @@
         }
         .thinking-v {
             position: absolute;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #fff;
             background: none;
@@ -552,7 +545,8 @@
             } else if (lower.includes('hello') || lower.includes('hi')) {
                 response = `Hello ${currentUserName}! How can Vikea AI assist you today?`;
             } else if (lower.includes('code') || lower.includes('algorithm') || lower.includes('cp')) {
-                response = `Analysis for competitive programming query:<br><pre style="background:#121212; border:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Optimal $O(N \\log N)$ Complexity Solver
+                response = `Analysis for competitive programming query:<br><pre style="background:#121212; bor
+                der:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Optimal $O(N \\log N)$ Complexity Solver
 #include &lt;bits/stdc++.h&gt;
 using namespace std;
 
@@ -565,7 +559,7 @@ int main() {
     solve();
     return 0;
 }</code></pre>`;
-    } else {
+            } else {
                 response = `Analysis for <em>"${escapeHtml(q)}"</em>:<br><br>Processed successfully under strict performance parameters. Let me know if you need any adjustments!`;
             }
 
