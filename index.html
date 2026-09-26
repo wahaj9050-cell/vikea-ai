@@ -240,6 +240,10 @@
             flex-direction: row-reverse;
         }
 
+        .message.ai {
+            justify-content: flex-start;
+        }
+
         .message-avatar {
             width: 36px;
             height: 36px;
@@ -253,11 +257,6 @@
 
         .message.user .message-avatar {
             background-color: #3c4043;
-            color: white;
-        }
-
-        .message.ai .message-avatar {
-            background: linear-gradient(135deg, #4285f4, #ea4335);
             color: white;
         }
 
@@ -562,7 +561,7 @@
                 <div class="input-actions">
                     <div class="model-selector-container">
                         <button class="model-dropdown-btn" onclick="toggleModelMenu()">
-                            <span id="currentModelText">Flash-Lite 1.2</span>
+                            <span id="currentModelText">Flash 1.3</span>
                             <span class="material-symbols-outlined" style="font-size: 16px;">keyboard_arrow_down</span>
                         </button>
                         <div class="model-menu" id="modelMenu">
@@ -608,8 +607,8 @@
     <script>
         let userName = localStorage.getItem('vikea_username');
         const hasAcceptedTerms = localStorage.getItem('vikea_terms');
+        let lastMathExpression = null; // Stores last question for breakdown
 
-        // If it's a brand new visitor, force them through the onboarding popup
         if (!userName || !hasAcceptedTerms) {
             window.addEventListener('DOMContentLoaded', () => {
                 showOnboardingModal(true);
@@ -636,7 +635,7 @@
                 modalTitle.innerText = "Settings & Name";
                 modalDesc.innerText = "Update what Vikea AI calls you.";
                 cancelBtn.style.display = 'block';
-                termsContainer.style.display = 'none'; // Already accepted previously
+                termsContainer.style.display = 'none';
                 saveBtn.innerText = "Save";
                 document.getElementById('nameInputModal').value = userName || '';
             }
@@ -708,6 +707,7 @@
         }
 
         function clearChat() {
+            lastMathExpression = null;
             const stream = document.getElementById('chatStream');
             stream.innerHTML = `
                 <div class="welcome-section" id="welcomeSection">
@@ -745,24 +745,41 @@
                 let response = "";
                 const cleanText = text.toLowerCase();
 
-                try {
-                    let mathQuery = text.replace(/[^a-zA-Z\-\*\/\+\.\(\)\s\d]/g, '');
-                    if (mathQuery.length > 0 && /^[\d\+\-\*\/\.\(\)\s]+$/.test(mathQuery)) {
-                        let evalResult = eval(mathQuery);
-                        response = `The result is: <strong>${evalResult}</strong>`;
-                    } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
-                        response = `Hello, ${userName}! How can I help you build or code today?`;
-                    } else {
-                        response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
+                // Check if user is asking to breakdown the previous question
+                const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
+                
+                if (wantsBreakdown && lastMathExpression) {
+                    try {
+                        let evalResult = eval(lastMathExpression);
+                        response = `Here is the breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>:<br>
+                        1. Identify the numbers and operation: <code>${escapeHtml(lastMathExpression)}</code>.<br>
+                        2. Compute the result step-by-step.<br>
+                        3. Final Answer: <strong>${evalResult}</strong>`;
+                        lastMathExpression = null; // reset after breakdown
+                    } catch (e) {
+                        response = `Here is a breakdown: We looked at your previous request and analyzed the core components to find the solution clearly for you!`;
+                        lastMathExpression = null;
                     }
-                } catch (e) {
-                    response = `I heard you say: "${escapeHtml(text)}"! Let me know if you need help with coding or math equations.`;
+                } else {
+                    try {
+                        let mathQuery = text.replace(/[^a-zA-Z\-\*\/\+\.\(\)\s\d]/g, '');
+                        if (mathQuery.length > 0 && /^[\d\+\-\*\/\.\(\)\s]+$/.test(mathQuery)) {
+                            let evalResult = eval(mathQuery);
+                            lastMathExpression = mathQuery; // Save for potential breakdown
+                            response = `${evalResult} should i brake it down?`;
+                        } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
+                            response = `Hello, ${userName}! How can I help you build or code today?`;
+                        } else {
+                            response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
+                        }
+                    } catch (e) {
+                        response = `I heard you say: "${escapeHtml(text)}"! Let me know if you need help with coding or math equations.`;
+                    }
                 }
 
                 const aiMsgDiv = document.createElement('div');
                 aiMsgDiv.className = 'message ai';
                 aiMsgDiv.innerHTML = `
-                    <div class="message-avatar">V</div>
                     <div class="message-content">${response}</div>
                 `;
                 stream.appendChild(aiMsgDiv);
