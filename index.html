@@ -18,28 +18,16 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
         
-        /* Custom Matching Dark Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #000000;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #262626;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #404040;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #404040; }
 
         body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
         
-        /* Permanent Sidebar */
         aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; }
         .sidebar-top { display: flex; flex-direction: column; gap: 16px; }
         .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; color: #fff; }
-        
         .brand-logo-icon { width: 28px; height: 28px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: #fff; background: none; }
         
         .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
@@ -53,11 +41,9 @@
 
         .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; }
         .user-profile-row:hover { border-color: #fff; }
-        
         .user-avatar { width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; background: none; }
         .user-info { font-size: 13px; color: var(--text-primary); }
 
-        /* Main Container */
         .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
@@ -66,42 +52,12 @@
         
         .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 32px; }
         
-        /* ANIMATION STAGE */
-        .animation-stage {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .center-v {
-            position: absolute;
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffffff;
-            font-family: 'Google Sans', sans-serif;
-            z-index: 2;
-            user-select: none;
-            background: none;
-            border: none;
-        }
-
-        #animCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 3;
-            pointer-events: none;
-        }
+        .animation-stage { position: relative; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; }
+        .center-v { position: absolute; font-size: 24px; font-weight: 700; color: #ffffff; font-family: 'Google Sans', sans-serif; z-index: 2; user-select: none; background: none; border: none; }
+        #animCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
 
         .welcome-title-vibe { font-size: 38px; font-weight: 500; color: #fff; text-align: center; letter-spacing: -0.5px; }
-
         .glow-border-wrapper { position: relative; width: 100%; max-width: 720px; border-radius: 28px; padding: 1px; background: #333; border: 1px solid var(--border-color); }
-
         .centered-prompt-box { background-color: var(--surface-color); border-radius: 27px; padding: 14px 18px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
         .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; }
         
@@ -121,32 +77,10 @@
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; }
 
-        /* THINKING ANIMATION */
-        .thinking-stage {
-            position: relative;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            border: none;
-        }
-        .thinking-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 32px; height: 32px;
-            pointer-events: none;
-        }
-        .thinking-v {
-            position: absolute;
-            font-size: 13px;
-            font-weight: 700;
-            color: #fff;
-            background: none;
-        }
-
-        .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 10px 14px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .thinking-stage { position: relative; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; }
+        .thinking-canvas { position: absolute; top: 0; left: 0; width: 32px; height: 32px; pointer-events: none; }
+        .thinking-v { position: absolute; font-size: 13px; font-weight: 700; color: #fff; background: none; }
+        .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 10px 14px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; border: 1px solid var(--border-color); }
 
         .input-area { padding: 12px 24px 16px 24px; max-width: 900px; width: 100%; margin: 0 auto; background-color: var(--bg-color); }
         .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
@@ -159,7 +93,6 @@
 </head>
 <body>
 
-    <!-- Permanent Sidebar -->
     <aside>
         <div class="sidebar-top">
             <div class="brand-header">
@@ -186,7 +119,6 @@
         </div>
     </aside>
 
-    <!-- Main App Container -->
     <div class="main-container">
         <header>
             <span id="headerTitle">Vikea AI Assistant</span>
@@ -194,13 +126,11 @@
         </header>
 
         <div class="chat-stream" id="chatStream">
-            <!-- Welcome Screen with Custom Animation -->
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
                 <div class="animation-stage" id="welcomeAnimStage">
                     <div class="center-v" id="welcomeVText">V</div>
                     <canvas id="animCanvas" width="120" height="120"></canvas>
                 </div>
-
                 <div class="welcome-title-vibe" id="vibeTitleText">What's the vibe, Wahaj?</div>
                 
                 <div class="glow-border-wrapper">
@@ -222,7 +152,6 @@
             </div>
         </div>
 
-        <!-- Sticky Bottom Input Area -->
         <div class="input-area" id="activeInputArea" style="display: none;">
             <div class="input-box-wrapper">
                 <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event, 'active')"></textarea>
@@ -256,96 +185,52 @@
             }
         }
 
-        // Canvas Animation Loop
         const canvas = document.getElementById('animCanvas');
         const ctx = canvas.getContext('2d');
-
-        const centerX = 60;
-        const centerY = 60;
-        const orbitRadius = 42;
-        const particleCount = 6;
+        const centerX = 60, centerY = 60, orbitRadius = 42, particleCount = 6;
         const particles = [];
 
         for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                angle: (i / particleCount) * Math.PI * 2,
-                speed: 0.03 + Math.random() * 0.01,
-                radius: orbitRadius,
-                active: true,
-                alpha: 1
-            });
+            particles.push({ angle: (i / particleCount) * Math.PI * 2, speed: 0.03 + Math.random() * 0.01, radius: orbitRadius, active: true, alpha: 1 });
         }
 
-        let cycleTimer = 0;
-        let stageState = 'orbiting';
-        let shakeOffset = {x: 0, y: 0};
-        let starScale = 0;
-        let starAlpha = 0;
-        let explosionParticles = [];
+        let cycleTimer = 0, stageState = 'orbiting', shakeOffset = {x: 0, y: 0}, starScale = 0, starAlpha = 0, explosionParticles = [];
 
         function animateWelcome() {
             ctx.clearRect(0, 0, 120, 120);
             cycleTimer += 1;
-
             const vElem = document.getElementById('welcomeVText');
 
-            if (cycleTimer > 160 && stageState === 'orbiting') {
-                stageState = 'collapsing';
-            }
-            if (cycleTimer > 200 && stageState === 'collapsing') {
-                stageState = 'shake';
-            }
+            if (cycleTimer > 160 && stageState === 'orbiting') stageState = 'collapsing';
+            if (cycleTimer > 200 && stageState === 'collapsing') stageState = 'shake';
             if (cycleTimer > 230 && stageState === 'shake') {
                 stageState = 'explode';
                 explosionParticles = [];
                 for(let i=0; i<14; i++) {
                     const ang = Math.random() * Math.PI * 2;
                     const spd = 2 + Math.random() * 4;
-                    explosionParticles.push({
-                        x: centerX, y: centerY,
-                        vx: Math.cos(ang) * spd,
-                        vy: Math.sin(ang) * spd,
-                        alpha: 1
-                    });
+                    explosionParticles.push({ x: centerX, y: centerY, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, alpha: 1 });
                 }
             }
-            if (cycleTimer > 280 && stageState === 'explode') {
-                stageState = 'star';
-            }
+            if (cycleTimer > 280 && stageState === 'explode') stageState = 'star';
             if (cycleTimer > 360) {
                 stageState = 'orbiting';
                 cycleTimer = 0;
-                particles.forEach(p => {
-                    p.active = true;
-                    p.alpha = 1;
-                    p.radius = orbitRadius;
-                });
-                shakeOffset = {x: 0, y: 0};
-                starScale = 0;
-                starAlpha = 0;
-                if(vElem) {
-                    vElem.style.transform = `translate(0px, 0px) scale(1)`;
-                    vElem.style.opacity = '1';
-                }
+                particles.forEach(p => { p.active = true; p.alpha = 1; p.radius = orbitRadius; });
+                shakeOffset = {x: 0, y: 0}; starScale = 0; starAlpha = 0;
+                if(vElem) { vElem.style.transform = `translate(0px, 0px) scale(1)`; vElem.style.opacity = '1'; }
             }
 
             if (stageState === 'orbiting' || stageState === 'collapsing') {
                 particles.forEach(p => {
                     p.angle += p.speed;
-                    if (stageState === 'collapsing') {
-                        p.radius -= 2.2;
-                        if (p.radius < 4) p.active = false;
-                    }
+                    if (stageState === 'collapsing') { p.radius -= 2.2; if (p.radius < 4) p.active = false; }
                     if (p.active) {
                         const x = centerX + Math.cos(p.angle) * p.radius;
                         const y = centerY + Math.sin(p.angle) * p.radius;
-
                         ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                        ctx.shadowColor = '#ffffff';
-                        ctx.shadowBlur = 6;
-                        ctx.beginPath();
-                        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-                        ctx.fill();
+                        ctx.shadowColor = '#ffffff'; ctx.shadowBlur = 6;
+                        ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2); ctx.fill();
                         ctx.shadowBlur = 0;
                     }
                 });
@@ -354,25 +239,16 @@
             if (stageState === 'shake') {
                 shakeOffset.x = (Math.random() - 0.5) * 6;
                 shakeOffset.y = (Math.random() - 0.5) * 6;
-                if(vElem) {
-                    vElem.style.transform = `translate(${shakeOffset.x}px, ${shakeOffset.y}px) scale(1.05)`;
-                }
+                if(vElem) vElem.style.transform = `translate(${shakeOffset.x}px, ${shakeOffset.y}px) scale(1.05)`;
             }
 
             if (stageState === 'explode') {
                 if(vElem) vElem.style.opacity = '0';
                 explosionParticles.forEach(ep => {
-                    ep.x += ep.vx;
-                    ep.y += ep.vy;
-                    ep.alpha -= 0.04;
-                    if(ep.alpha < 0) ep.alpha = 0;
-
+                    ep.x += ep.vx; ep.y += ep.vy; ep.alpha -= 0.04; if(ep.alpha < 0) ep.alpha = 0;
                     ctx.fillStyle = `rgba(255, 255, 255, ${ep.alpha})`;
-                    ctx.shadowColor = '#fff';
-                    ctx.shadowBlur = 8;
-                    ctx.beginPath();
-                    ctx.arc(ep.x, ep.y, 2.5, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.shadowColor = '#fff'; ctx.shadowBlur = 8;
+                    ctx.beginPath(); ctx.arc(ep.x, ep.y, 2.5, 0, Math.PI * 2); ctx.fill();
                     ctx.shadowBlur = 0;
                 });
             }
@@ -381,44 +257,29 @@
                 if (starScale < 1) starScale += 0.1;
                 if (starAlpha < 1) starAlpha += 0.12;
                 if(vElem) vElem.style.opacity = '0';
-
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.scale(starScale, starScale);
                 ctx.rotate(cycleTimer * 0.03);
                 ctx.fillStyle = `rgba(255, 255, 255, ${starAlpha})`;
-                ctx.shadowColor = '#ffffff';
-                ctx.shadowBlur = 16;
-                
+                ctx.shadowColor = '#ffffff'; ctx.shadowBlur = 16;
                 ctx.beginPath();
-                ctx.moveTo(0, -16);
-                ctx.quadraticCurveTo(0, 0, 16, 0);
-                ctx.quadraticCurveTo(0, 0, 0, 16);
-                ctx.quadraticCurveTo(0, 0, -16, 0);
-                ctx.quadraticCurveTo(0, 0, 0, -16);
-                ctx.fill();
+                ctx.moveTo(0, -16); ctx.quadraticCurveTo(0, 0, 16, 0);
+                ctx.quadraticCurveTo(0, 0, 0, 16); ctx.quadraticCurveTo(0, 0, -16, 0);
+                ctx.quadraticCurveTo(0, 0, 0, -16); ctx.fill();
                 ctx.restore();
             }
-
             requestAnimationFrame(animateWelcome);
         }
         requestAnimationFrame(animateWelcome);
 
-        // Thinking Animation Loop
         function initThinkingAnimation(canvasId) {
             const tCanvas = document.getElementById(canvasId);
             if (!tCanvas) return;
             const tCtx = tCanvas.getContext('2d');
-            const tCx = 16, tCy = 16;
-            const tRadius = 11;
-            const tCount = 4;
-            const tParts = [];
+            const tCx = 16, tCy = 16, tRadius = 11, tCount = 4, tParts = [];
             for(let i=0; i<tCount; i++) {
-                tParts.push({
-                    angle: (i / tCount) * Math.PI * 2,
-                    speed: 0.04,
-                    radius: tRadius
-                });
+                tParts.push({ angle: (i / tCount) * Math.PI * 2, speed: 0.04, radius: tRadius });
             }
 
             function drawThinking() {
@@ -429,11 +290,8 @@
                     const x = tCx + Math.cos(tp.angle) * tp.radius;
                     const y = tCy + Math.sin(tp.angle) * tp.radius;
                     tCtx.fillStyle = '#ffffff';
-                    tCtx.shadowColor = '#fff';
-                    tCtx.shadowBlur = 4;
-                    tCtx.beginPath();
-                    tCtx.arc(x, y, 2, 0, Math.PI * 2);
-                    tCtx.fill();
+                    tCtx.shadowColor = '#fff'; tCtx.shadowBlur = 4;
+                    tCtx.beginPath(); tCtx.arc(x, y, 2, 0, Math.PI * 2); tCtx.fill();
                     tCtx.shadowBlur = 0;
                 });
                 requestAnimationFrame(drawThinking);
@@ -475,7 +333,6 @@
             const input = document.getElementById('vibeInput');
             const text = input.value.trim();
             if (!text) return;
-
             document.getElementById('vibeWelcomeScreen').remove();
             document.getElementById('activeInputArea').style.display = 'block';
             processUserQuery(text);
@@ -509,7 +366,7 @@
                     <canvas class="thinking-canvas" id="${uniqueId}" width="32" height="32"></canvas>
                 </div>
                 <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ${deepSearchEnabled ? 'Performing Deep Search & reasoning...' : 'Thinking...'}
+                    ${deepSearchEnabled ? 'Analyzing context & synthesizing response...' : 'Thinking...'}
                 </div>
             `;
             stream.appendChild(thinkingDiv);
@@ -524,7 +381,7 @@
                 const aiMsgDiv = document.createElement('div');
                 aiMsgDiv.className = 'message ai';
                 
-                let answerHtml = generateSmartAnswer(query, deepSearchEnabled);
+                let answerHtml = generateGeminiStyleAnswer(query, deepSearchEnabled);
 
                 aiMsgDiv.innerHTML = `
                     <div class="message-avatar">V</div>
@@ -532,56 +389,50 @@
                 `;
                 stream.appendChild(aiMsgDiv);
                 stream.scrollTop = stream.scrollHeight;
-            }, deepSearchEnabled ? 1800 : 1000);
+            }, deepSearchEnabled ? 1600 : 900);
         }
 
-        function generateSmartAnswer(q, isDeep) {
-            const lower = q.toLowerCase();
-            let response = "";
-            let reasoning = isDeep ? `<div class="deep-thought-box">🔍 Deep Search executed across multiple knowledge indices for: "${escapeHtml(q)}"</div>` : "";
+        function generateGeminiStyleAnswer(q, isDeep) {
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 Deep Search & Reasoning Active for: "${escapeHtml(q)}"</div>` : "";
+            let cleanQ = q.trim();
+            let lower = cleanQ.toLowerCase();
 
-            // Check if query is a big addition / math sum (e.g. number + number)
-            const mathAddMatch = q.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
+            // 1. Massive Math evaluation (BigInt support)
+            const mathAddMatch = cleanQ.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
             if (mathAddMatch) {
                 try {
-                    const num1 = BigInt(mathAddMatch[1]);
-                    const num2 = BigInt(mathAddMatch[2]);
-                    const sum = num1 + num2;
-                    return reasoning + `The result of <strong>${mathAddMatch[1]} + ${mathAddMatch[2]}</strong> is:<br><br><span style="font-family: monospace; font-size: 16px; color: #fff;">${sum.toString()}</span>`;
+                    const sum = BigInt(mathAddMatch[1]) + BigInt(mathAddMatch[2]);
+                    return reasoning + `The sum of ${mathAddMatch[1]} and ${mathAddMatch[2]} is:<br><br><span style="font-family: monospace; font-size: 17px; color: #fff;">${sum.toString()}</span>`;
                 } catch(e) {}
             }
 
-            // General smart checks
-            if (lower.includes('yoo') || lower.includes('whats up') || lower.includes('what is up')) {
-                response = `Yoo! Everything's running smoothly here. What are we building or looking into today, ${currentUserName}?`;
-            } else if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
-                response = `Hello ${currentUserName}! How can Vikea AI assist you today?`;
-            } else if (lower.includes('creator') || lower.includes('made you') || lower.includes('build you')) {
-                response = `Yep, I know! You're Wahaj, my creator. Pretty proud of how this monochrome engine turned out, right? 😎`;
-            } else if (lower.includes('capital of france')) {
-                response = "The capital of France is <strong>Paris</strong>.";
-            } else if (lower.includes('capital of england') || lower.includes('capital of uk')) {
-                response = "The capital of England (and the UK) is <strong>London</strong>.";
-            } else if (lower.includes('code') || lower.includes('algorithm') || lower.includes('cp')) {
-                response = `Here is your high-performance snippet setup:<br><pre style="background:#121212; border:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Optimal $O(N \\log N)$ Complexity Solver
-#include &lt;bits/stdc++.h&gt;
-using namespace std;
-
-void solve() {
-    // Vikea AI High-Performance Engine
-    cout << "Optimized Execution Ready" << endl;
-}
-
-int main() {
-    solve();
-    return 0;
-}</code></pre>`;
-            } else {
-                // Intelligent fallback that breaks down or echoes answers cleanly without generic robotic filler text
-                response = `Regarding your input <em>"${escapeHtml(q)}"</em>:<br><br>I've processed your query through the Vikea neural engine. If you're looking for code templates, math problem solving, or specific factual lookups, feel free to drop the details and I'll lay them right out for you!`;
+            // General mathematical expressions evaluation using safe Function parse if numbers/operators only
+            if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(cleanQ) && cleanQ.length > 0) {
+                try {
+                    let calc = Function('"use strict";return (' + cleanQ + ')')();
+                    return reasoning + `The result is **${calc}**.`;
+                } catch(e) {}
             }
 
-            return reasoning + response;
+            // 2. Conversational & Direct Assistant Persona (Gemini style)
+            if (lower.includes('yoo') || lower.includes('whats up') || lower.includes('what is up')) {
+                return reasoning + `Not much! Just here and ready to help you out. What are we working on right now?`;
+            }
+            if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
+                return reasoning + `Hello! How can I help you today?`;
+            }
+            if (lower.includes('creator') || lower.includes('made you') || lower.includes('build you')) {
+                return reasoning + `I was created as an advanced assistant running on the Vikea Engine, customized by you, ${currentUserName}.`;
+            }
+
+            // 3. General knowledge fallback structured cleanly without robotic filler statements
+            return reasoning + `Here is what you need to know about **${escapeHtml(q)}**:<br><br>` +
+                   `This is a great topic to look into. When examining this, it helps to break it down clearly:<br>` +
+                   `<ul style="margin-left: 20px; margin-top: 8px; margin-bottom: 8px; line-height: 1.6;">` +
+                   `<li><strong>Core Analysis:</strong> The concept centers around structured logical execution and data accuracy.</li>` +
+                   `<li><strong>Key Consideration:</strong> Ensuring optimal performance and clear step-by-step logic.</li>` +
+                   `</ul>` +
+                   `Let me know if you want to dive deeper into any specific part of this!`;
         }
 
         function escapeHtml(str) {
