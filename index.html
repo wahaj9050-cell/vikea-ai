@@ -1,372 +1,691 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vikea AI</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
+        :root {
+            --bg-color: #131314;
+            --sidebar-bg: #1e1f20;
+            --surface-color: #1e1f20;
+            --surface-hover: #2d2e30;
+            --text-primary: #e3e3e3;
+            --text-secondary: #c4c7c5;
+            --accent-blue: #8ab4f8;
+            --button-blue: #1a73e8;
+            --border-color: #333537;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #131314;
-            color: #e3e3e3;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
-        /* Custom scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+
+        /* Sidebar Styling */
+        sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 16px;
+            border-right: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+            z-index: 10;
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
+
+        .sidebar-top {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #444746;
-            border-radius: 9999px;
+
+        .menu-btn-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #5f6368;
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .icon-btn:hover {
+            background-color: var(--surface-hover);
+            color: var(--text-primary);
+        }
+
+        .new-chat-btn {
+            background-color: var(--surface-hover);
+            color: var(--text-primary);
+            border: none;
+            padding: 12px 16px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+            width: fit-content;
+        }
+
+        .new-chat-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .nav-item:hover {
+            background-color: var(--surface-hover);
+            color: var(--text-primary);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            background-color: var(--surface-hover);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--button-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+
+        .user-info {
+            font-size: 13px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Main Chat Area */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upgrade-btn {
+            background-color: var(--button-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 14px;
+            transition: opacity 0.2s;
+        }
+
+        .upgrade-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Chat History Stream */
+        .chat-stream {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin: auto 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .welcome-title {
+            font-size: 36px;
+            font-weight: 600;
+            background: linear-gradient(45deg, #4285f4, #9b72cb, #d96570);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            font-size: 18px;
+        }
+
+        .message {
+            display: flex;
+            gap: 16px;
+            animation: fadeIn 0.3s ease;
+            max-width: 100%;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+
+        .message.user .message-avatar {
+            background-color: #3c4043;
+            color: white;
+        }
+
+        .message.ai .message-avatar {
+            background: linear-gradient(135deg, #4285f4, #ea4335);
+            color: white;
+        }
+
+        .message-content {
+            background-color: var(--surface-color);
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            max-width: 75%;
+            word-break: break-word;
+        }
+
+        .message.user .message-content {
+            background-color: var(--surface-hover);
+        }
+
+        /* Input Section */
+        .input-area {
+            padding: 20px 24px 10px 24px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .input-box-wrapper {
+            background-color: var(--surface-color);
+            border-radius: 28px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.2s;
+        }
+
+        .input-box-wrapper:focus-within {
+            border-color: var(--text-secondary);
+        }
+
+        textarea {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 16px;
+            resize: none;
+            outline: none;
+            max-height: 150px;
+            width: 100%;
+        }
+
+        .input-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .model-selector-container {
+            position: relative;
+        }
+
+        .model-dropdown-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+        .model-dropdown-btn:hover {
+            background-color: var(--surface-hover);
+            color: var(--text-primary);
+        }
+
+        .model-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            width: 180px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            z-index: 20;
+        }
+
+        .model-menu.active {
+            display: flex;
+        }
+
+        .model-option {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            padding: 10px 14px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .model-option:hover {
+            background-color: var(--surface-hover);
+        }
+
+        .input-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .send-btn {
+            background-color: var(--button-blue);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .send-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Modal Overlay for Settings */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background-color: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-box h3 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .modal-box input {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-cancel {
+            background: none;
+            color: var(--text-secondary);
+        }
+
+        .btn-save {
+            background-color: var(--button-blue);
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 12px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        @keyframes pulseSlow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        .animate-pulse-slow {
-            animation: pulseSlow 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
     </style>
 </head>
-<body class="h-full flex overflow-hidden">
+<body>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="w-64 bg-[#1e1f20] flex flex-col justify-between h-full transition-all duration-300 z-20 md:translate-x-0 -translate-x-full fixed md:static inset-y-0 left-0 border-r border-[#333537]">
-        <div class="p-4 flex flex-col gap-4">
-            <!-- Top Controls -->
-            <div class="flex items-center justify-between">
-                <button onclick="toggleSidebar()" class="p-2 rounded-full hover:bg-[#333537] text-gray-400 hover:text-white transition-colors" title="Toggle Sidebar">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    <sidebar>
+        <div class="sidebar-top">
+            <div class="menu-btn-container">
+                <button class="icon-btn" onclick="clearChat()">
+                    <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
-
-            <!-- New Chat Button -->
-            <button onclick="startNewChat()" class="flex items-center gap-3 bg-[#282a2c] hover:bg-[#333537] text-gray-200 px-4 py-3 rounded-full text-sm font-medium transition-all shadow-sm border border-[#444746]/50">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                <span>New chat</span>
+            <button class="new-chat-btn" onclick="clearChat()">
+                <span class="material-symbols-outlined">add</span>
+                New chat
             </button>
-
-            <!-- Recent Chats Header -->
-            <div class="text-xs font-semibold text-gray-400 px-2 mt-4 uppercase tracking-wider">Recent</div>
-
-            <!-- Chat History List -->
-            <div id="chat-history" class="flex flex-col gap-1 overflow-y-auto max-h-[calc(100vh-280px)] pr-1">
-                <div class="group flex items-center justify-between px-3 py-2 rounded-lg bg-[#282a2c] text-gray-200 text-sm cursor-pointer truncate">
-                    <span class="truncate">advice for making website</span>
-                </div>
-                <div class="group flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[#282a2c]/60 text-gray-400 hover:text-gray-200 text-sm cursor-pointer truncate transition-colors">
-                    <span class="truncate">Vikea AI architecture design</span>
-                </div>
-                <div class="group flex items-center justify-between px-3 py-2 rounded-lg hover:bg-[#282a2c]/60 text-gray-400 hover:text-gray-200 text-sm cursor-pointer truncate transition-colors">
-                    <span class="truncate">GitHub Pages deployment fix</span>
-                </div>
+            <div class="sidebar-nav">
+                <button class="nav-item" onclick="openSettings()">
+                    <span class="material-symbols-outlined">settings</span>
+                    Settings & Name
+                </button>
             </div>
         </div>
-
-        <!-- Sidebar Footer / User Profile -->
-        <div class="p-4 border-t border-[#333537] flex flex-col gap-3">
-            <div class="flex items-center justify-between px-2 text-xs text-gray-400">
-                <span>Activity enabled</span>
-                <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-            </div>
-            <div class="flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-[#282a2c] transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white text-sm shadow">W</div>
-                <div class="flex flex-col truncate">
-                    <span class="text-sm font-medium text-gray-200 truncate">Wahaj Farooq</span>
-                    <span class="text-xs text-gray-400 truncate">Bolton, UK</span>
-                </div>
-            </div>
+        <div class="user-profile">
+            <div class="user-avatar" id="avatarLetter">W</div>
+            <div class="user-info" id="userNameDisplay">Wahaj</div>
         </div>
-    </aside>
+    </sidebar>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-full bg-[#131314] relative overflow-hidden">
-        
-        <!-- Top Navbar -->
-        <header class="flex items-center justify-between px-6 py-4 z-10 bg-[#131314]/80 backdrop-blur-md">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-[#282a2c] text-gray-300">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
-                <h1 class="text-lg font-medium text-gray-200 tracking-wide flex items-center gap-2">
-                    <span class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent font-semibold">Vikea AI</span>
-                </h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <!-- Upgrade Button -->
-                <button onclick="openUpgradeModal()" class="flex items-center gap-2 bg-[#1a73e8] hover:bg-[#1557b0] text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-md shadow-blue-900/20">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
-                    <span>Upgrade</span>
-                </button>
-                <!-- More options menu icon -->
-                <button class="p-2 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-white transition-colors">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+    <!-- Main Container -->
+    <div class="main-container">
+        <header>
+            <span>Vikea AI</span>
+            <div class="header-right">
+                <button class="upgrade-btn">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">sparkles</span>
+                    Upgrade
                 </button>
             </div>
         </header>
 
-        <!-- Chat Feed Area -->
-        <div id="chat-feed" class="flex-1 overflow-y-auto px-4 md:px-24 lg:px-48 py-6 flex flex-col gap-6 scroll-smooth">
-            <!-- Welcome State -->
-            <div id="welcome-banner" class="flex flex-col items-start gap-3 mt-12 animate-fade-in">
-                <h2 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-                    Hello, Wahaj.
-                </h2>
-                <p class="text-3xl font-normal text-gray-400">How can I help you build today?</p>
+        <!-- Chat Stream Area -->
+        <div class="chat-stream" id="chatStream">
+            <div class="welcome-section" id="welcomeSection">
+                <div class="welcome-title" id="welcomeTitle">Hello, Wahaj</div>
+                <div class="welcome-subtitle">How can Vikea AI help you today?</div>
             </div>
         </div>
 
-        <!-- Input Container Area -->
-        <div class="px-4 md:px-24 lg:px-48 pb-6 pt-2 bg-gradient-to-t from-[#131314] via-[#131314]/90 to-transparent z-10">
-            <div class="bg-[#1e1f20] rounded-3xl p-3 border border-[#333537] focus-within:border-gray-500 transition-all shadow-xl">
-                <!-- Textarea for query -->
-                <textarea id="user-input" rows="1" placeholder="Enter a prompt here..." class="w-full bg-transparent text-gray-100 placeholder-gray-500 px-3 py-2 resize-none focus:outline-none text-base max-h-36" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-                
-                <!-- Bottom Toolbar inside Input Box -->
-                <div class="flex items-center justify-between px-2 pt-2 border-t border-[#2a2c2e]/60 mt-1">
-                    <!-- Model Selector & Extra tools -->
-                    <div class="flex items-center gap-3">
-                        <!-- Model Dropdown -->
-                        <div class="relative">
-                            <button onclick="toggleModelDropdown()" id="selected-model-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#282a2c] hover:bg-[#333537] text-gray-300 text-xs font-medium transition-colors">
-                                <span id="current-model-text">Flash-Lite 1.2</span>
-                                <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <!-- Dropdown Menu -->
-                            <div id="model-dropdown" class="hidden absolute left-0 bottom-full mb-2 w-48 bg-[#1e1f20] border border-[#333537] rounded-2xl shadow-2xl py-1 z-30 animate-fade-in">
-                                <div onclick="selectModel('Flash 1.3')" class="px-4 py-2.5 hover:bg-[#282a2c] text-xs text-gray-300 cursor-pointer flex items-center justify-between">
-                                    <span>Flash 1.3</span>
-                                    <span class="text-[10px] text-blue-400 font-semibold">Fast</span>
-                                </div>
-                                <div onclick="selectModel('Flash-Lite 1.2')" class="px-4 py-2.5 hover:bg-[#282a2c] text-xs text-gray-300 cursor-pointer flex items-center justify-between bg-[#282a2c]/50">
-                                    <span>Flash-Lite 1.2</span>
-                                    <span class="text-[10px] text-emerald-400 font-semibold">Active</span>
-                                </div>
-                                <div onclick="selectModel('Pro 1')" class="px-4 py-2.5 hover:bg-[#282a2c] text-xs text-gray-300 cursor-pointer flex items-center justify-between">
-                                    <span>Pro 1</span>
-                                    <span class="text-[10px] text-purple-400 font-semibold">Advanced</span>
-                                </div>
-                            </div>
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-box-wrapper">
+                <textarea id="userInput" placeholder="Enter a prompt or math equation..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+                <div class="input-actions">
+                    <div class="model-selector-container">
+                        <button class="model-dropdown-btn" onclick="toggleModelMenu()">
+                            <span id="currentModelText">Flash-Lite 1.2</span>
+                            <span class="material-symbols-outlined" style="font-size: 16px;">keyboard_arrow_down</span>
+                        </button>
+                        <div class="model-menu" id="modelMenu">
+                            <button class="model-option" onclick="selectModel('Flash 1.3')">Flash 1.3</button>
+                            <button class="model-option" onclick="selectModel('Flash-Lite 1.2')">Flash-Lite 1.2</button>
+                            <button class="model-option" onclick="selectModel('Pro 1')">Pro 1</button>
                         </div>
-
-                        <!-- Attachment / Tool button -->
-                        <button onclick="triggerAttach()" class="p-2 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-gray-200 transition-colors" title="Attach file">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
-                        </button>
                     </div>
-
-                    <!-- Right side buttons: Mic & Send -->
-                    <div class="flex items-center gap-2">
-                        <button onclick="triggerMic()" class="p-2 rounded-full hover:bg-[#282a2c] text-gray-400 hover:text-gray-200 transition-colors" title="Use microphone">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    <div class="input-right-actions">
+                        <button class="icon-btn">
+                            <span class="material-symbols-outlined">mic</span>
                         </button>
-                        <button id="send-btn" onclick="sendMessage()" class="p-2 rounded-full bg-[#d3e3fd] hover:bg-white text-[#001d35] transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md" title="Send message">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                        <button class="send-btn" onclick="sendMessage()">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- Footer copyright -->
-            <footer class="text-center pt-3 text-xs text-gray-500 font-light tracking-wide">
-                Made by Wahaj © 2026 &bull; Gemini-inspired AI Experience
-            </footer>
+            <footer>Made by Wahaj © 2026</footer>
         </div>
-    </main>
+    </div>
 
-    <!-- Upgrade Modal -->
-    <div id="upgrade-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 animate-fade-in">
-        <div class="bg-[#1e1f20] border border-[#333537] rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl flex flex-col gap-6 relative">
-            <button onclick="closeUpgradeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <div class="flex flex-col items-center text-center gap-2">
-                <div class="w-12 h-12 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center mb-1">
-                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4h7.6l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4-6.2-4.5h7.6z"/></svg>
-                </div>
-                <h3 class="text-xl font-bold text-gray-100">Upgrade to Vikea Advanced</h3>
-                <p class="text-sm text-gray-400">Unlock Pro 1 reasoning capabilities, priority generation speeds, and expanded multimodal memory.</p>
-            </div>
-            <div class="flex flex-col gap-3">
-                <div class="bg-[#282a2c] p-4 rounded-2xl border border-blue-500/30 flex items-center justify-between">
-                    <div>
-                        <div class="text-sm font-semibold text-gray-200">Pro Plan</div>
-                        <div class="text-xs text-gray-400">Unlimited access to Pro 1 & Flash 1.3</div>
-                    </div>
-                    <span class="text-blue-400 font-bold text-sm">Active Tier</span>
-                </div>
-                <button onclick="closeUpgradeModal()" class="w-full bg-[#1a73e8] hover:bg-[#1557b0] text-white py-3 rounded-xl font-medium text-sm transition-all shadow-lg">Continue with Vikea AI</button>
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-box">
+            <h3>Set Your Name</h3>
+            <p style="font-size: 13px; color: var(--text-secondary);">What would you like Vikea AI to call you?</p>
+            <input type="text" id="nameInputModal" placeholder="e.g. James">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+                <button class="btn-save" onclick="saveName()">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
-        let currentModel = "Flash-Lite 1.2";
-        let isSidebarOpen = false;
+        let userName = localStorage.getItem('vikea_username') || 'Wahaj';
+        updateUserDisplay();
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            isSidebarOpen = !isSidebarOpen;
-            if (isSidebarOpen) {
-                sidebar.classList.remove('-translate-x-full');
-            } else {
-                sidebar.classList.add('-translate-x-full');
+        function updateUserDisplay() {
+            document.getElementById('userNameDisplay').innerText = userName;
+            document.getElementById('avatarLetter').innerText = userName.charAt(0).toUpperCase();
+            const welcomeTitle = document.getElementById('welcomeTitle');
+            if(welcomeTitle) {
+                welcomeTitle.innerText = `Hello, ${userName}`;
             }
         }
 
-        function toggleModelDropdown() {
-            const dropdown = document.getElementById('model-dropdown');
-            dropdown.classList.toggle('hidden');
+        function openSettings() {
+            document.getElementById('nameInputModal').value = userName;
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function saveName() {
+            const inputVal = document.getElementById('nameInputModal').value.trim();
+            if(inputVal) {
+                userName = inputVal;
+                localStorage.setItem('vikea_username', userName);
+                updateUserDisplay();
+            }
+            closeSettings();
+        }
+
+        function toggleModelMenu() {
+            document.getElementById('modelMenu').classList.toggle('active');
         }
 
         function selectModel(modelName) {
-            currentModel = modelName;
-            document.getElementById('current-model-text').innerText = modelName;
-            document.getElementById('model-dropdown').classList.add('hidden');
+            document.getElementById('currentModelText').innerText = modelName;
+            toggleModelMenu();
         }
-
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(e) {
-            const btn = document.getElementById('selected-model-btn');
-            const dropdown = document.getElementById('model-dropdown');
-            if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('hidden');
-            }
-        });
 
         function autoResize(textarea) {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
         }
 
-        function handleKey(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
+        function handleKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
                 sendMessage();
             }
         }
 
-        function startNewChat() {
-            const chatFeed = document.getElementById('chat-feed');
-            chatFeed.innerHTML = `
-                <div id="welcome-banner" class="flex flex-col items-start gap-3 mt-12 animate-fade-in">
-                    <h2 class="text-4xl font-semibold bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">
-                        Hello, Wahaj.
-                    </h2>
-                    <p class="text-3xl font-normal text-gray-400">How can I help you build today?</p>
+        function clearChat() {
+            const stream = document.getElementById('chatStream');
+            stream.innerHTML = `
+                <div class="welcome-section" id="welcomeSection">
+                    <div class="welcome-title" id="welcomeTitle">Hello, ${userName}</div>
+                    <div class="welcome-subtitle">How can Vikea AI help you today?</div>
                 </div>
             `;
-        }
-
-        function triggerAttach() {
-            appendSystemMessage("File attachment simulated successfully. Ready to analyze document.");
-        }
-
-        function triggerMic() {
-            appendSystemMessage("Microphone listening simulated. Speak your prompt clearly.");
-        }
-
-        function openUpgradeModal() {
-            document.getElementById('upgrade-modal').classList.remove('hidden');
-            document.getElementById('upgrade-modal').classList.add('flex');
-        }
-
-        function closeUpgradeModal() {
-            document.getElementById('upgrade-modal').classList.add('hidden');
-            document.getElementById('upgrade-modal').classList.remove('flex');
-        }
-
-        function appendSystemMessage(text) {
-            const chatFeed = document.getElementById('chat-feed');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = "flex items-start gap-4 animate-fade-in bg-[#1e1f20] border border-[#333537] p-4 rounded-2xl max-w-xl";
-            msgDiv.innerHTML = `<div class="text-sm text-gray-300">${text}</div>`;
-            chatFeed.appendChild(msgDiv);
-            chatFeed.scrollTop = chatFeed.scrollHeight;
         }
 
         function sendMessage() {
-            const input = document.getElementById('user-input');
+            const input = document.getElementById('userInput');
             const text = input.value.trim();
             if (!text) return;
 
-            // Remove welcome banner if present
-            const banner = document.getElementById('welcome-banner');
-            if (banner) banner.remove();
+            const welcome = document.getElementById('welcomeSection');
+            if (welcome) welcome.remove();
 
-            const chatFeed = document.getElementById('chat-feed');
+            const stream = document.getElementById('chatStream');
 
             // Append User Message
-            const userMsg = document.createElement('div');
-            userMsg.className = "flex justify-end animate-fade-in";
-            userMsg.innerHTML = `
-                <div class="bg-[#282a2c] text-gray-100 px-5 py-3 rounded-3xl max-w-xl text-sm leading-relaxed shadow-sm">
-                    ${escapeHtml(text)}
-                </div>
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user';
+            userMsgDiv.innerHTML = `
+                <div class="message-avatar">${userName.charAt(0).toUpperCase()}</div>
+                <div class="message-content">${escapeHtml(text)}</div>
             `;
-            chatFeed.appendChild(userMsg);
+            stream.appendChild(userMsgDiv);
 
-            // Clear input
             input.value = '';
             input.style.height = 'auto';
+            stream.scrollTop = stream.scrollHeight;
 
-            chatFeed.scrollTop = chatFeed.scrollHeight;
-
-            // Simulate AI response with typing indicator
+            // AI Response generation delay
             setTimeout(() => {
-                const typingId = 'typing-' + Date.now();
-                const aiMsgWrapper = document.createElement('div');
-                aiMsgWrapper.className = "flex items-start gap-4 animate-fade-in";
-                aiMsgWrapper.innerHTML = `
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shadow">V</div>
-                    <div id="${typingId}" class="bg-[#1e1f20] border border-[#333537] text-gray-200 px-5 py-3.5 rounded-3xl max-w-2xl text-sm leading-relaxed flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse-slow"></div>
-                        <div class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse-slow" style="animation-delay: 0.2s"></div>
-                        <div class="w-2 h-2 rounded-full bg-purple-400 animate-pulse-slow" style="animation-delay: 0.4s"></div>
-                    </div>
-                `;
-                chatFeed.appendChild(aiMsgWrapper);
-                chatFeed.scrollTop = chatFeed.scrollHeight;
+                let response = "";
+                const cleanText = text.toLowerCase();
 
-                // Generate smart reply based on model
-                setTimeout(() => {
-                    const typingBox = document.getElementById(typingId);
-                    if (typingBox) {
-                        let responseText = `I've processed your request using <strong>${currentModel}</strong>. Vikea AI is fully operational, responsive, and ready for your next prompt!`;
-                        if (text.toLowerCase().includes('hello') || text.toLowerCase().includes('hi')) {
-                            responseText = `Hello Wahaj! Great to see Vikea AI running smoothly with ${currentModel}. What would you like to build or discuss next?`;
-                        } else if (text.toLowerCase().includes('github') || text.toLowerCase().includes('deploy')) {
-                            responseText = `Your GitHub Pages deployment is successfully active! You can continue making updates right from your repository.`;
-                        }
-                        typingBox.className = "bg-transparent text-gray-200 px-1 py-1 max-w-2xl text-sm leading-relaxed";
-                        typingBox.innerHTML = responseText;
-                        chatFeed.scrollTop = chatFeed.scrollHeight;
+                try {
+                    // Check if it's a math query
+                    let mathQuery = text.replace(/[^a-zA-Z\-\*\/\+\.\(\)\s\d]/g, '');
+                    if (mathQuery.length > 0 && /^[\d\+\-\*\/\.\(\)\s]+$/.test(mathQuery)) {
+                        let evalResult = eval(mathQuery);
+                        response = `The result is: <strong>${evalResult}</strong>`;
+                    } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
+                        response = `Hello, ${userName}! How can I help you build or code today?`;
+                    } else {
+                        response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
                     }
-                }, 1200);
+                } catch (e) {
+                    response = `I heard you say: "${escapeHtml(text)}"! Let me know if you need help with coding or math equations.`;
+                }
 
-            }, 400);
+                const aiMsgDiv = document.createElement('div');
+                aiMsgDiv.className = 'message ai';
+                aiMsgDiv.innerHTML = `
+                    <div class="message-avatar">V</div>
+                    <div class="message-content">${response}</div>
+                `;
+                stream.appendChild(aiMsgDiv);
+                stream.scrollTop = stream.scrollHeight;
+            }, 600);
         }
 
-        function escapeHtml(string) {
-            return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>
