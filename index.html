@@ -372,7 +372,7 @@
             color: white;
         }
 
-        /* Clean transparent background for AI messages (no white flash boxes) */
+        /* Clean transparent background for AI messages */
         .message.ai .message-content {
             background-color: transparent !important;
             color: var(--text-primary);
@@ -652,6 +652,10 @@
                     <span class="material-symbols-outlined" style="color: var(--admin-gold);">admin_panel_settings</span>
                     Admin Control Panel
                 </button>
+                <button class="nav-item" id="editorModeNav" style="display: none;" onclick="openEditorModal(); closeSidebar();">
+                    <span class="material-symbols-outlined" style="color: #4285f4;">edit_note</span>
+                    Live App Editor
+                </button>
                 <button class="nav-item" onclick="openActivityModal(); closeSidebar();">
                     <span class="material-symbols-outlined">history</span>
                     Activity
@@ -692,7 +696,7 @@
                 <!-- Circling Glowing Border Box -->
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code, or type admin42571..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
                         
                         <div id="imagePreviewContainer" style="display:none; position:relative; width: fit-content;">
                             <img id="previewImgElement" class="attached-preview-img" src="" alt="attachment preview">
@@ -765,14 +769,30 @@
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box">
             <h3>👑 Admin Command Panel</h3>
-            <p>Admin privileges successfully authenticated for Wahaj.</p>
+            <p>Superfast Admin Editor privileges active for Wahaj.</p>
             <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-                <button class="nav-item" onclick="adminBroadcastPrompt()" style="background:var(--surface-hover);">📢 Broadcast System Notice</button>
+                <button class="nav-item" onclick="openEditorModal(); closeModal('adminModal');" style="background:var(--surface-hover);">🛠️ Launch Live App Editor</button>
                 <button class="nav-item" onclick="adminResetLogs()" style="background:var(--surface-hover);">🗑️ Wipe All Activity Logs</button>
                 <button class="nav-item" onclick="adminRevokeAccess()" style="background:rgba(217,101,112,0.15); color:#d96570;">🔒 Revoke Admin Session</button>
             </div>
             <div class="modal-buttons">
                 <button class="btn-save" onclick="closeModal('adminModal')">Close Panel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live App Editor Modal -->
+    <div class="modal-overlay" id="editorModal">
+        <div class="modal-box">
+            <h3>🛠️ Live App Editor</h3>
+            <p>Customize header title or brand subtitle instantly:</p>
+            <label style="font-size:12px; color:var(--text-secondary);">Header Title:</label>
+            <input type="text" id="editHeaderTitle" value="Vikea AI">
+            <label style="font-size:12px; color:var(--text-secondary);">Greeting Subtitle / Vibe:</label>
+            <input type="text" id="editGreetingText" value="What's the vibe, Wahaj?">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal('editorModal')">Cancel</button>
+                <button class="btn-save" onclick="applyEditorChanges()">Apply Changes</button>
             </div>
         </div>
     </div>
@@ -793,6 +813,7 @@
     <script>
         let userName = localStorage.getItem('vikea_username') || 'Wahaj';
         let isAdmin = localStorage.getItem('vikea_admin_auth') === 'true';
+        let adminStepState = 0; // Tracks multi-step secret codes
         let activityLogs = JSON.parse(localStorage.getItem('vikea_activities') || '[]');
         let deepSearchActive = false;
         let lastMathExpression = null;
@@ -823,10 +844,13 @@
 
         function checkAdminUIState() {
             const adminBtn = document.getElementById('adminCommandNav');
+            const editorBtn = document.getElementById('editorModeNav');
             if (isAdmin) {
                 adminBtn.style.display = 'flex';
+                editorBtn.style.display = 'flex';
             } else {
                 adminBtn.style.display = 'none';
+                editorBtn.style.display = 'none';
             }
         }
 
@@ -837,6 +861,23 @@
 
         function openAdminPanel() {
             document.getElementById('adminModal').classList.add('active');
+        }
+
+        function openEditorModal() {
+            document.getElementById('editHeaderTitle').value = document.getElementById('headerTitle').innerText;
+            const vibeTitle = document.getElementById('vibeTitle');
+            if (vibeTitle) document.getElementById('editGreetingText').value = vibeTitle.innerText;
+            document.getElementById('editorModal').classList.add('active');
+        }
+
+        function applyEditorChanges() {
+            const newHead = document.getElementById('editHeaderTitle').value.trim();
+            const newGreet = document.getElementById('editGreetingText').value.trim();
+            if (newHead) document.getElementById('headerTitle').innerText = newHead;
+            const vibeTitle = document.getElementById('vibeTitle');
+            if (vibeTitle && newGreet) vibeTitle.innerText = newGreet;
+            closeModal('editorModal');
+            alert("App updated successfully via Editor Mode!");
         }
 
         function openActivityModal() {
@@ -876,11 +917,6 @@
             openActivityModal();
         }
 
-        function adminBroadcastPrompt() {
-            alert("System Broadcast: All systems running optimally under Admin control.");
-            closeModal('adminModal');
-        }
-
         function adminResetLogs() {
             clearActivityLogs();
             alert("Activity logs wiped by Admin.");
@@ -889,6 +925,7 @@
 
         function adminRevokeAccess() {
             isAdmin = false;
+            adminStepState = 0;
             localStorage.removeItem('vikea_admin_auth');
             checkAdminUIState();
             closeModal('adminModal');
@@ -965,7 +1002,7 @@
                     
                     <div class="glow-border-wrapper">
                         <div class="centered-prompt-box">
-                            <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code, or type admin42571..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
+                            <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
                             
                             <div id="imagePreviewContainer" style="display:none; position:relative; width: fit-content;">
                                 <img id="previewImgElement" class="attached-preview-img" src="" alt="attachment preview">
@@ -1047,16 +1084,30 @@
 
             stream.scrollTop = stream.scrollHeight;
 
-            // Check Secret Admin Code
+            // Step 1: User types admin42571
             if (text === 'admin42571') {
+                adminStepState = 1;
+                setTimeout(() => {
+                    const aiMsgDiv = document.createElement('div');
+                    aiMsgDiv.className = 'message ai';
+                    aiMsgDiv.innerHTML = `<div class="message-content">whats the next code after that</div>`;
+                    stream.appendChild(aiMsgDiv);
+                    stream.scrollTop = stream.scrollHeight;
+                }, 800);
+                return;
+            }
+
+            // Step 2: User types 3057 after admin42571
+            if (text === '3057' && adminStepState === 1) {
                 isAdmin = true;
+                adminStepState = 2;
                 localStorage.setItem('vikea_admin_auth', 'true');
                 checkAdminUIState();
 
                 setTimeout(() => {
                     const aiMsgDiv = document.createElement('div');
                     aiMsgDiv.className = 'message ai';
-                    aiMsgDiv.innerHTML = `<div class="message-content">👑 <strong>Admin Access Granted!</strong> Welcome back, Administrator ${userName}. Your Admin Control Panel is now unlocked in the sidebar menu.</div>`;
+                    aiMsgDiv.innerHTML = `<div class="message-content">👑 <strong>Superfast Admin & Editor Mode Activated!</strong> Welcome back, ${userName}. You can now use the <strong>Live App Editor</strong> and <strong>Admin Control Panel</strong> from the sidebar menu to change things in the app instantly!</div>`;
                     stream.appendChild(aiMsgDiv);
                     stream.scrollTop = stream.scrollHeight;
                 }, 800);
@@ -1127,7 +1178,7 @@
                     let evalResult = eval(lastMathExpression);
                     let mathExpr = lastMathExpression;
                     lastMathExpression = null;
-                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong>, requested by ${userName}${isAdmin ? ' (Admin)' : ''}:<br><br>
+                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong>, requested by ${userName}${isAdmin ? ' (Admin Editor)' : ''}:<br><br>
                     1. **Expression Identification:** We begin by examining the formula <code>${escapeHtml(mathExpr)}</code>.<br>
                     2. **Execution Process:** Applying core foundational mathematical rules and computational sequence.<br>
                     3. **Final Result:** The precise computed outcome is <strong>${evalResult}</strong>.`;
