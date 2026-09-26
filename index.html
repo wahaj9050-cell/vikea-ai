@@ -288,7 +288,7 @@
             margin: 0 auto;
         }
 
-        /* Welcome Vibe Screen with Circling Glowing Border Effect */
+        /* Welcome Vibe Screen */
         .welcome-vibe-container {
             display: flex;
             flex-direction: column;
@@ -485,12 +485,24 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+            /* FIXED: Replaced bright white line with a subtle, dark border */
             border: 1px solid var(--border-color);
             transition: border-color 0.2s;
         }
 
         .input-box-wrapper:focus-within {
             border-color: rgba(138, 180, 248, 0.5);
+        }
+
+        #activeInput {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            width: 100%;
+            max-height: 150px;
         }
 
         .input-actions {
@@ -740,7 +752,6 @@
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
                 <div class="welcome-title-vibe" id="vibeTitle">What's the vibe, Wahaj?</div>
                 
-                <!-- Circling Glowing Border Box -->
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
                         <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, weather, code..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event, 'vibe')"></textarea>
@@ -861,7 +872,7 @@
         let userName = localStorage.getItem('vikea_username') || 'Wahaj';
         let isAdmin = localStorage.getItem('vikea_admin_auth') === 'true';
         let currentModel = localStorage.getItem('vikea_model') || 'Pro';
-        let adminStepState = 0; // Tracks multi-step secret codes
+        let adminStepState = 0;
         let activityLogs = JSON.parse(localStorage.getItem('vikea_activities') || '[]');
         let deepSearchActive = false;
         let lastMathExpression = null;
@@ -1157,8 +1168,10 @@
 
             stream.scrollTop = stream.scrollHeight;
 
-            // Step 1: User types admin42571
-            if (text === 'admin42571') {
+            const cleanText = text.toLowerCase().trim();
+
+            // Admin Step 1
+            if (cleanText === 'admin42571') {
                 adminStepState = 1;
                 setTimeout(() => {
                     const aiMsgDiv = document.createElement('div');
@@ -1166,12 +1179,12 @@
                     aiMsgDiv.innerHTML = `<div class="message-content">whats the next code after that</div>`;
                     stream.appendChild(aiMsgDiv);
                     stream.scrollTop = stream.scrollHeight;
-                }, 800);
+                }, 600);
                 return;
             }
 
-            // Step 2: User types 3057 after admin42571
-            if (text === '3057' && adminStepState === 1) {
+            // Admin Step 2
+            if (cleanText === '3057' && adminStepState === 1) {
                 isAdmin = true;
                 adminStepState = 2;
                 localStorage.setItem('vikea_admin_auth', 'true');
@@ -1180,14 +1193,14 @@
                 setTimeout(() => {
                     const aiMsgDiv = document.createElement('div');
                     aiMsgDiv.className = 'message ai';
-                    aiMsgDiv.innerHTML = `<div class="message-content">👑 <strong>Superfast Admin & Editor Mode Activated!</strong> Welcome back, ${userName}. You can now use the <strong>Live App Editor</strong> and <strong>Admin Control Panel</strong> from the sidebar menu to change things in the app instantly!</div>`;
+                    aiMsgDiv.innerHTML = `<div class="message-content">👑 <strong>Superfast Admin & Editor Mode Activated!</strong> Welcome back, ${userName}. You can now use the <strong>Live App Editor</strong> and <strong>Admin Control Panel</strong> from the sidebar menu to change elements instantly!</div>`;
                     stream.appendChild(aiMsgDiv);
                     stream.scrollTop = stream.scrollHeight;
-                }, 800);
+                }, 600);
                 return;
             }
 
-            // Append 5 Circling Dots Thinking Bubble
+            // Append Thinking Bubble
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'message ai';
             thinkingDiv.id = 'thinkingBubble';
@@ -1204,8 +1217,8 @@
             stream.scrollTop = stream.scrollHeight;
 
             let delayTime = deepSearchActive 
-                ? Math.floor(Math.random() * 3000) + 3000 
-                : Math.floor(Math.random() * 1000) + 1500;
+                ? Math.floor(Math.random() * 2000) + 2000 
+                : Math.floor(Math.random() * 800) + 1000;
 
             setTimeout(() => {
                 const bubble = document.getElementById('thinkingBubble');
@@ -1233,7 +1246,7 @@
             const cleanText = text.toLowerCase().trim();
             const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
 
-            // Math evaluation
+            // Math evaluation helper
             let mathCandidate = null;
             const matches = text.match(/[\d\s\+\-\*\/\.\(\)]+/g);
             if (matches) {
@@ -1251,10 +1264,10 @@
                     let evalResult = eval(lastMathExpression);
                     let mathExpr = lastMathExpression;
                     lastMathExpression = null;
-                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong> (computed via Vikea ${currentModel}), requested by ${userName}${isAdmin ? ' (Admin Editor)' : ''}:<br><br>
-                    1. **Expression Identification:** We begin by examining the formula <code>${escapeHtml(mathExpr)}</code>.<br>
-                    2. **Execution Process:** Applying core foundational mathematical rules and computational sequence.<br>
-                    3. **Final Result:** The precise computed outcome is <strong>${evalResult}</strong>.`;
+                    return `Here is the comprehensive step-by-step breakdown for <strong>${escapeHtml(mathExpr)}</strong> (computed via Vikea ${currentModel}):<br><br>
+                    1. **Expression Identification:** We evaluate formula <code>${escapeHtml(mathExpr)}</code>.<br>
+                    2. **Execution Process:** Applying standard mathematical sequence operations.<br>
+                    3. **Final Result:** Computed outcome is <strong>${evalResult}</strong>.`;
                 } catch (e) {
                     lastMathExpression = null;
                 }
@@ -1270,36 +1283,28 @@
 
             // Weather queries
             if (cleanText.includes('weather') || cleanText.includes('forecast')) {
-                if (cleanText.includes('monday')) {
-                    return `The forecast for Monday shows mostly sunny skies with mild temperatures reaching around 21°C (70°F) and a light breeze. Perfect weather for outdoor activities!`;
-                } else if (cleanText.includes('tomorrow')) {
-                    return `Tomorrow is expected to be partly cloudy with temperatures hovering around 19°C (66°F) and a low chance of precipitation.`;
-                } else {
-                    return `Currently, it's pleasant with clear skies and comfortable temperatures around 20°C (68°F). Is there a specific day or city forecast you'd like to check?`;
-                }
+                return `The forecast shows mostly sunny skies with pleasant temperatures around 20°C (68°F) and gentle breezes.`;
             }
 
             // Image generation
             if (cleanText.includes('make a picture') || cleanText.includes('generate an image') || cleanText.includes('draw') || cleanText.includes('create an image') || cleanText.includes('picture of')) {
                 let prompt = text.replace(/(make|generate|draw|create)\s+(a|an)?\s*(picture|image|drawing)\s*(of)?/i, '').trim();
-                if (!prompt) prompt = "beautiful aesthetic scenery";
+                if (!prompt) prompt = "aesthetic scenery";
                 let imgUrl = `https://picsum.photos/seed/${encodeURIComponent(prompt)}/500/350`;
                 return `Here is the image generated based on your request for "<strong>${escapeHtml(prompt)}</strong>" using Vikea ${currentModel}:<br><img class="generated-image" src="${imgUrl}" alt="${escapeHtml(prompt)}">`;
             }
 
-            // General Knowledge
+            // General Knowledge & greetings
             if (cleanText.includes('criminology')) {
-                return `<strong>Criminology</strong> is the scientific study of crime, criminal behavior, law enforcement, and the legal system. It combines sociology, psychology, and law to analyze why crimes occur, how communities respond, and how criminal behavior can be prevented.`;
+                return `<strong>Criminology</strong> is the scientific study of crime, criminal behavior, and law enforcement practices.`;
             } else if (cleanText.includes('photosynthesis')) {
-                return `<strong>Photosynthesis</strong> is the biological process by which green plants, algae, and certain bacteria convert light energy into chemical energy stored in glucose. The formula is: <code>6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂</code>.`;
+                return `<strong>Photosynthesis</strong> is the process green plants use to convert light energy into chemical energy: <code>6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂</code>.`;
             } else if (cleanText.includes('capital of france')) {
                 return `The capital of France is <strong>Paris</strong>.`;
-            } else if (cleanText.includes('code') || cleanText.includes('python') || cleanText.includes('javascript') || cleanText.includes('html')) {
-                return `I can help you build, debug, or refine your code across languages like Python, JavaScript, HTML/CSS, C++, and Java. What script or web project are we working on today, ${userName}?`;
             } else if (cleanText.includes('hello') || cleanText.includes('hi') || cleanText.includes('hey')) {
-                return `Hello, ${userName}! I am Vikea AI (running on Vikea ${currentModel}), equipped to answer general questions, generate images, explain subjects, and solve complex math or coding tasks. What's on your mind?`;
+                return `Hello, ${userName}! I am Vikea AI (running on Vikea ${currentModel}). What can I help you with today?`;
             } else {
-                return `Vikea AI Answer (Vikea ${currentModel}): Regarding "<strong>${escapeHtml(text)}</strong>", this topic involves key principles across general research and foundational facts. Feel free to ask for specific definitions, step-by-step breakdowns, or image creations!`;
+                return `Vikea AI Answer (Vikea ${currentModel}): Regarding "<strong>${escapeHtml(text)}</strong>", I am fully ready to assist you with data, coding scripts, math equations, or creative ideas!`;
             }
         }
 
