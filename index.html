@@ -397,7 +397,6 @@
             color: white;
         }
 
-        /* Completely transparent background for AI messages to eliminate any white flash */
         .message.ai .message-content {
             background: transparent !important;
             background-color: transparent !important;
@@ -485,7 +484,6 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            /* FIXED: Replaced bright white line with a subtle, dark border */
             border: 1px solid var(--border-color);
             transition: border-color 0.2s;
         }
@@ -636,7 +634,6 @@
             font-size: 12px;
         }
 
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
             sidebar {
                 position: fixed;
@@ -645,11 +642,9 @@
                 left: 0;
                 transform: translateX(-100%);
             }
-
             sidebar.open {
                 transform: translateX(0);
             }
-
             .welcome-title-vibe {
                 font-size: 28px;
             }
@@ -810,7 +805,7 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Modals -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal-box">
             <h3>Settings & Name</h3>
@@ -823,7 +818,6 @@
         </div>
     </div>
 
-    <!-- Admin Panel Modal -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box">
             <h3>👑 Admin Command Panel</h3>
@@ -839,7 +833,6 @@
         </div>
     </div>
 
-    <!-- Live App Editor Modal -->
     <div class="modal-overlay" id="editorModal">
         <div class="modal-box">
             <h3>🛠️ Live App Editor</h3>
@@ -855,7 +848,6 @@
         </div>
     </div>
 
-    <!-- Activity Modal -->
     <div class="modal-overlay" id="activityModal">
         <div class="modal-box">
             <h3>Activity History</h3>
@@ -1170,7 +1162,7 @@
 
             const cleanText = text.toLowerCase().trim();
 
-            // Admin Step 1
+            // Admin Step 1 (Handles uppercase/lowercase properly now)
             if (cleanText === 'admin42571') {
                 adminStepState = 1;
                 setTimeout(() => {
@@ -1246,7 +1238,6 @@
             const cleanText = text.toLowerCase().trim();
             const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
 
-            // Math evaluation helper
             let mathCandidate = null;
             const matches = text.match(/[\d\s\+\-\*\/\.\(\)]+/g);
             if (matches) {
@@ -1281,12 +1272,10 @@
                 } catch (e) {}
             }
 
-            // Weather queries
             if (cleanText.includes('weather') || cleanText.includes('forecast')) {
                 return `The forecast shows mostly sunny skies with pleasant temperatures around 20°C (68°F) and gentle breezes.`;
             }
 
-            // Image generation
             if (cleanText.includes('make a picture') || cleanText.includes('generate an image') || cleanText.includes('draw') || cleanText.includes('create an image') || cleanText.includes('picture of')) {
                 let prompt = text.replace(/(make|generate|draw|create)\s+(a|an)?\s*(picture|image|drawing)\s*(of)?/i, '').trim();
                 if (!prompt) prompt = "aesthetic scenery";
@@ -1294,7 +1283,6 @@
                 return `Here is the image generated based on your request for "<strong>${escapeHtml(prompt)}</strong>" using Vikea ${currentModel}:<br><img class="generated-image" src="${imgUrl}" alt="${escapeHtml(prompt)}">`;
             }
 
-            // General Knowledge & greetings
             if (cleanText.includes('criminology')) {
                 return `<strong>Criminology</strong> is the scientific study of crime, criminal behavior, and law enforcement practices.`;
             } else if (cleanText.includes('photosynthesis')) {
