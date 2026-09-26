@@ -23,7 +23,7 @@
         aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; }
         .sidebar-top { display: flex; flex-direction: column; gap: 16px; }
         .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; color: #fff; }
-        .brand-logo-icon { width: 24px; height: 24px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+        .brand-logo-icon { width: 24px; height: 24px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; background: none; color: #fff; }
         
         .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
         .new-chat-btn:hover { background-color: #333; }
@@ -35,7 +35,7 @@
         .nav-item.active-mode { background-color: #262626; color: #fff; border: 1px solid #404040; }
 
         .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); border: 1px solid var(--border-color); }
-        .user-avatar { width: 32px; height: 32px; background-color: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .user-avatar { width: 32px; height: 32px; background: none; color: #fff; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
         .user-info { font-size: 13px; color: var(--text-primary); }
 
         /* Main Container */
@@ -47,7 +47,7 @@
         
         .welcome-vibe-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; gap: 32px; }
         
-        /* CANELEM / CANVAS STAGE FOR HIGH PRECISION 1000 FPS PARTICLE SIMULATION */
+        /* ANIMATION STAGE FOR WELCOME SCREEN */
         .animation-stage {
             position: relative;
             width: 120px;
@@ -65,6 +65,7 @@
             font-family: 'Google Sans', sans-serif;
             z-index: 2;
             user-select: none;
+            background: none;
         }
 
         #animCanvas {
@@ -94,15 +95,36 @@
         .message { display: flex; gap: 14px; max-width: 100%; }
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
         .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
-        .message-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; background-color: #fff; color: #000; flex-shrink: 0; }
+        
+        /* Transparent Avatars (No background color boxes) */
+        .message-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 15px; background: none; color: #fff; flex-shrink: 0; }
+        
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
 
-        .thinking-container { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background-color: var(--surface-color); border-radius: 20px; width: fit-content; border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 14px; }
-        .circle-dot { width: 6px; height: 6px; background-color: #fff; border-radius: 50%; animation: pulseCircle 1.2s infinite ease-in-out; }
-        .circle-dot:nth-child(2) { animation-delay: 0.2s; }
-        .circle-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes pulseCircle { 0%, 80%, 100% { transform: scale(0.4); opacity: 0.3; } 40% { transform: scale(1.2); opacity: 1; } }
+        /* THINKING ANIMATION: Matches the V orbiting dots loop! */
+        .thinking-stage {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .thinking-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 32px; height: 32px;
+            pointer-events: none;
+        }
+        .thinking-v {
+            position: absolute;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            background: none;
+        }
 
         .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 10px 14px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
 
@@ -152,10 +174,10 @@
         </header>
 
         <div class="chat-stream" id="chatStream">
-            <!-- Welcome Screen with Canvas Particle Animation -->
+            <!-- Welcome Screen with Custom Animation -->
             <div class="welcome-vibe-container" id="vibeWelcomeScreen">
-                <div class="animation-stage">
-                    <div class="center-v">V</div>
+                <div class="animation-stage" id="welcomeAnimStage">
+                    <div class="center-v" id="welcomeVText">V</div>
                     <canvas id="animCanvas" width="120" height="120"></canvas>
                 </div>
 
@@ -201,20 +223,20 @@
     </div>
 
     <script>
-        // High-Precision Canvas Animation Script (1000 FPS / Sub-pixel buttery smoothness)
+        // Main Welcome Animation Loop (Fewer Dots, Proper Collapse, Shake, Explosion, Star)
         const canvas = document.getElementById('animCanvas');
         const ctx = canvas.getContext('2d');
 
         const centerX = 60;
         const centerY = 60;
-        const orbitRadius = 46;
-        const particleCount = 28; // Fully surrounds the V
+        const orbitRadius = 45;
+        const particleCount = 6; // Less dots as requested!
         const particles = [];
 
         for (let i = 0; i < particleCount; i++) {
             particles.push({
                 angle: (i / particleCount) * Math.PI * 2,
-                speed: 0.025 + Math.random() * 0.008,
+                speed: 0.03 + Math.random() * 0.01,
                 radius: orbitRadius,
                 active: true,
                 alpha: 1
@@ -222,88 +244,186 @@
         }
 
         let cycleTimer = 0;
-        let stageState = 'orbiting'; // 'orbiting' -> 'collapsing' -> 'star' -> reset
+        let stageState = 'orbiting'; // 'orbiting' -> 'collapsing' -> 'shake' -> 'explode' -> reset
+        let shakeOffset = {x: 0, y: 0};
         let starScale = 0;
         let starAlpha = 0;
+        let explosionParticles = [];
 
-        function animate() {
+        function animateWelcome() {
             ctx.clearRect(0, 0, 120, 120);
-
             cycleTimer += 1;
 
-            // State machine for the full smooth loop
-            if (cycleTimer > 180 && stageState === 'orbiting') {
+            const vElem = document.getElementById('welcomeVText');
+
+            // Timeline of the loop
+            if (cycleTimer > 160 && stageState === 'orbiting') {
                 stageState = 'collapsing';
             }
-            if (cycleTimer > 230 && stageState === 'collapsing') {
+            if (cycleTimer > 200 && stageState === 'collapsing') {
+                stageState = 'shake';
+            }
+            if (cycleTimer > 230 && stageState === 'shake') {
+                stageState = 'explode';
+                // Initialize explosion fragments
+                explosionParticles = [];
+                for(let i=0; i<14; i++) {
+                    const ang = Math.random() * Math.PI * 2;
+                    const spd = 2 + Math.random() * 4;
+                    explosionParticles.push({
+                        x: centerX, y: centerY,
+                        vx: Math.cos(ang) * spd,
+                        vy: Math.sin(ang) * spd,
+                        alpha: 1
+                    });
+                }
+            }
+            if (cycleTimer > 280 && stageState === 'explode') {
                 stageState = 'star';
             }
-            if (cycleTimer > 300) {
+            if (cycleTimer > 360) {
+                // Reset loop
                 stageState = 'orbiting';
                 cycleTimer = 0;
-                particles.forEach((p, idx) => {
+                particles.forEach(p => {
                     p.active = true;
                     p.alpha = 1;
                     p.radius = orbitRadius;
                 });
+                shakeOffset = {x: 0, y: 0};
                 starScale = 0;
                 starAlpha = 0;
+                if(vElem) {
+                    vElem.style.transform = `translate(0px, 0px) scale(1)`;
+                    vElem.style.opacity = '1';
+                }
             }
 
-            // Update & Draw Particles
-            particles.forEach(p => {
-                p.angle += p.speed;
-
-                if (stageState === 'collapsing') {
-                    p.radius -= 1.8; // Smoothly rush inward to touch the V
-                    if (p.radius < 12) {
-                        p.active = false; // Disappear when hitting center
+            // 1. Orbiting / Collapsing Phase
+            if (stageState === 'orbiting' || stageState === 'collapsing') {
+                particles.forEach(p => {
+                    p.angle += p.speed;
+                    if (stageState === 'collapsing') {
+                        p.radius -= 2.2; // Go inside the V properly like previous version
+                        if (p.radius < 6) p.active = false;
                     }
+                    if (p.active) {
+                        const x = centerX + Math.cos(p.angle) * p.radius;
+                        const y = centerY + Math.sin(p.angle) * p.radius;
+
+                        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                        ctx.shadowColor = '#ffffff';
+                        ctx.shadowBlur = 6;
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                });
+            }
+
+            // 2. Shake Phase
+            if (stageState === 'shake') {
+                shakeOffset.x = (Math.random() - 0.5) * 6;
+                shakeOffset.y = (Math.random() - 0.5) * 6;
+                if(vElem) {
+                    vElem.style.transform = `translate(${shakeOffset.x}px, ${shakeOffset.y}px) scale(1.05)`;
                 }
+            }
 
-                if (p.active) {
-                    const x = centerX + Math.cos(p.angle) * p.radius;
-                    const y = centerY + Math.sin(p.angle) * p.radius;
+            // 3. Explosion Phase
+            if (stageState === 'explode') {
+                if(vElem) {
+                    vElem.style.opacity = '0'; // V disappears upon explosion
+                }
+                explosionParticles.forEach(ep => {
+                    ep.x += ep.vx;
+                    ep.y += ep.vy;
+                    ep.alpha -= 0.04;
+                    if(ep.alpha < 0) ep.alpha = 0;
 
-                    ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                    ctx.shadowColor = '#ffffff';
-                    ctx.shadowBlur = 6;
+                    ctx.fillStyle = `rgba(255, 255, 255, ${ep.alpha})`;
+                    ctx.shadowColor = '#fff';
+                    ctx.shadowBlur = 8;
                     ctx.beginPath();
-                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.arc(ep.x, ep.y, 2.5, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.shadowBlur = 0; // reset shadow
-                }
-            });
+                    ctx.shadowBlur = 0;
+                });
+            }
 
-            // Draw Manifesting Star in Center
+            // 4. Star Manifestation Phase
             if (stageState === 'star') {
-                if (starScale < 1) starScale += 0.08;
-                if (starAlpha < 1) starAlpha += 0.1;
+                if (starScale < 1) starScale += 0.1;
+                if (starAlpha < 1) starAlpha += 0.12;
+
+                if(vElem) {
+                    vElem.style.opacity = '0';
+                }
 
                 ctx.save();
                 ctx.translate(centerX, centerY);
                 ctx.scale(starScale, starScale);
-                ctx.rotate(cycleTimer * 0.05);
+                ctx.rotate(cycleTimer * 0.03);
                 ctx.fillStyle = `rgba(255, 255, 255, ${starAlpha})`;
                 ctx.shadowColor = '#ffffff';
-                ctx.shadowBlur = 14;
+                ctx.shadowBlur = 16;
                 
-                // Draw 4-point star shape
+                // 4-point star
                 ctx.beginPath();
-                ctx.moveTo(0, -14);
-                ctx.quadraticCurveTo(0, 0, 14, 0);
-                ctx.quadraticCurveTo(0, 0, 0, 14);
-                ctx.quadraticCurveTo(0, 0, -14, 0);
-                ctx.quadraticCurveTo(0, 0, 0, -14);
+                ctx.moveTo(0, -16);
+                ctx.quadraticCurveTo(0, 0, 16, 0);
+                ctx.quadraticCurveTo(0, 0, 0, 16);
+                ctx.quadraticCurveTo(0, 0, -16, 0);
+                ctx.quadraticCurveTo(0, 0, 0, -16);
                 ctx.fill();
                 ctx.restore();
             }
 
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateWelcome);
         }
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animateWelcome);
 
-        // App logic
+
+        // Dynamic Thinking Animation Loop for AI Responses
+        function initThinkingAnimation(canvasId) {
+            const tCanvas = document.getElementById(canvasId);
+            if (!tCanvas) return;
+            const tCtx = tCanvas.getContext('2d');
+            const tCx = 16, tCy = 16;
+            const tRadius = 12;
+            const tCount = 4;
+            const tParts = [];
+            for(let i=0; i<tCount; i++) {
+                tParts.push({
+                    angle: (i / tCount) * Math.PI * 2,
+                    speed: 0.04,
+                    radius: tRadius
+                });
+            }
+
+            function drawThinking() {
+                if(!document.body.contains(tCanvas)) return;
+                tCtx.clearRect(0, 0, 32, 32);
+                tParts.forEach(tp => {
+                    tp.angle += tp.speed;
+                    const x = tCx + Math.cos(tp.angle) * tp.radius;
+                    const y = tCy + Math.sin(tp.angle) * tp.radius;
+                    tCtx.fillStyle = '#ffffff';
+                    tCtx.shadowColor = '#fff';
+                    tCtx.shadowBlur = 4;
+                    tCtx.beginPath();
+                    tCtx.arc(x, y, 2, 0, Math.PI * 2);
+                    tCtx.fill();
+                    tCtx.shadowBlur = 0;
+                });
+                requestAnimationFrame(drawThinking);
+            }
+            requestAnimationFrame(drawThinking);
+        }
+
+
+        // App control logic
         let deepSearchEnabled = false;
 
         function toggleDeepSearch(origin) {
@@ -355,25 +475,35 @@
         function processUserQuery(query) {
             const stream = document.getElementById('chatStream');
 
+            // Append User Message (Transparent Avatar 'W')
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user';
             userMsgDiv.innerHTML = `<div class="message-avatar">W</div><div class="message-content">${escapeHtml(query)}</div>`;
             stream.appendChild(userMsgDiv);
             stream.scrollTop = stream.scrollHeight;
 
+            // Append Thinking Bubble matching the V orbiting dots style
+            const uniqueId = 'thinkCanvas_' + Date.now();
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'message ai';
             thinkingDiv.id = 'thinkingBubble';
             thinkingDiv.innerHTML = `
-                <div class="message-avatar" style="background:#fff; color:#000;">V</div>
-                <div class="thinking-container">
-                    <div class="circle-dot"></div><div class="circle-dot"></div><div class="circle-dot"></div>
-                    <span>${deepSearchEnabled ? 'Performing Deep Search & reasoning...' : 'Thinking...'}</span>
+                <div class="message-avatar">
+                    <div class="thinking-stage">
+                        <div class="thinking-v">V</div>
+                        <canvas class="thinking-canvas" id="${uniqueId}" width="32" height="32"></canvas>
+                    </div>
+                </div>
+                <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px;">
+                    ${deepSearchEnabled ? 'Performing Deep Search & reasoning...' : 'Thinking...'}
                 </div>
             `;
             stream.appendChild(thinkingDiv);
             stream.scrollTop = stream.scrollHeight;
 
+            initThinkingAnimation(uniqueId);
+
+            // Generate Response after delay
             setTimeout(() => {
                 const bubble = document.getElementById('thinkingBubble');
                 if(bubble) bubble.remove();
@@ -384,7 +514,7 @@
                 let answerHtml = generateSmartAnswer(query, deepSearchEnabled);
 
                 aiMsgDiv.innerHTML = `
-                    <div class="message-avatar" style="background:#fff; color:#000;">V</div>
+                    <div class="message-avatar">V</div>
                     <div class="message-content">${answerHtml}</div>
                 `;
                 stream.appendChild(aiMsgDiv);
