@@ -85,7 +85,7 @@
             z-index: 2;
             user-select: none;
             background: none;
-            border: none; /* Removed white circle border */
+            border: none;
         }
 
         #animCanvas {
@@ -121,7 +121,7 @@
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
 
-        /* THINKING ANIMATION (No circle border) */
+        /* THINKING ANIMATION */
         .thinking-stage {
             position: relative;
             width: 32px;
@@ -540,13 +540,16 @@
             let response = "";
             let reasoning = isDeep ? `<div class="deep-thought-box">🔍 Deep Search executed across multiple knowledge indices for: "${escapeHtml(q)}"</div>` : "";
 
-            if (lower.includes('1+1') || lower.includes('1 + 1') || lower.includes('what is 1')) {
-                response = "1 + 1 = <strong>2</strong>.";
-            } else if (lower.includes('hello') || lower.includes('hi')) {
+            if (lower.includes('yoo') || lower.includes('whats up') || lower.includes('what is up')) {
+                response = `Yoo! Everything's running smoothly here. What are we building or looking into today, ${currentUserName}?`;
+            } else if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
                 response = `Hello ${currentUserName}! How can Vikea AI assist you today?`;
+            } else if (lower.includes('creator') || lower.includes('made you') || lower.includes('build you')) {
+                response = `Yep, I know! You're Wahaj, my creator. Pretty proud of how this monochrome engine turned out, right? 😎`;
+            } else if (lower.includes('1+1') || lower.includes('1 + 1')) {
+                response = "1 + 1 = <strong>2</strong>.";
             } else if (lower.includes('code') || lower.includes('algorithm') || lower.includes('cp')) {
-                response = `Analysis for competitive programming query:<br><pre style="background:#121212; bor
-                der:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Optimal $O(N \\log N)$ Complexity Solver
+                response = `Here is your high-performance snippet setup:<br><pre style="background:#121212; border:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Optimal $O(N \\log N)$ Complexity Solver
 #include &lt;bits/stdc++.h&gt;
 using namespace std;
 
@@ -560,7 +563,7 @@ int main() {
     return 0;
 }</code></pre>`;
             } else {
-                response = `Analysis for <em>"${escapeHtml(q)}"</em>:<br><br>Processed successfully under strict performance parameters. Let me know if you need any adjustments!`;
+                response = `That's an interesting point about "${escapeHtml(q)}". Vikea AI is fully operational and ready to help you analyze, code, or solve it step by step!`;
             }
 
             return reasoning + response;
