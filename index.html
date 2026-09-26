@@ -730,17 +730,16 @@
             let extractedName = null;
             if (lowerText.includes("im ")) {
                 let parts = text.split(/im\s+/i);
-                if (parts[1]) extractedName = parts[1].trim().split(' ')[0];
+                if (parts[1]) extractedName = parts[1].trim().split(/[\s,.!?]+/)[0];
             } else if (lowerText.includes("i'm ")) {
                 let parts = text.split(/i'm\s+/i);
-                if (parts[1]) extractedName = parts[1].trim().split(' ')[0];
+                if (parts[1]) extractedName = parts[1].trim().split(/[\s,.!?]+/)[0];
             } else if (lowerText.includes("my name is ")) {
                 let parts = text.split(/my name is\s+/i);
-                if (parts[1]) extractedName = parts[1].trim().split(' ')[0];
+                if (parts[1]) extractedName = parts[1].trim().split(/[\s,.!?]+/)[0];
             }
 
             if (extractedName && extractedName.length > 1) {
-                // Clean up trailing punctuation if any
                 extractedName = extractedName.replace(/[.,!?]/g, '');
                 userName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
                 localStorage.setItem('vikea_username', userName);
@@ -768,13 +767,12 @@
                 const cleanText = text.toLowerCase();
                 const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
                 
-                // Try to locate a math expression anywhere in the text string (e.g. "whats 1+1" or "compute 5*5 please")
+                // Scan for any math formula in the prompt
                 let mathCandidate = null;
                 const matches = text.match(/[\d\s\+\-\*\/\.\(\)]+/g);
                 if (matches) {
                     for (let m of matches) {
                         let trimmed = m.trim();
-                        // Must contain at least one operator and numbers
                         if (trimmed.length >= 3 && /[\+\-\*\/]/.test(trimmed) && /\d/.test(trimmed)) {
                             mathCandidate = trimmed;
                             break;
@@ -785,13 +783,13 @@
                 if (wantsBreakdown && lastMathExpression) {
                     try {
                         let evalResult = eval(lastMathExpression);
-                        response = `Here is the breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>, ${userName}:<br><br>
-                        1. Identify expression: <code>${escapeHtml(lastMathExpression)}</code>.<br>
-                        2. Perform calculation steps.<br>
-                        3. Result: <strong>${evalResult}</strong>`;
+                        response = `Here is the breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>:<br><br>
+                        1. Expression identified: <code>${escapeHtml(lastMathExpression)}</code>.<br>
+                        2. Step-by-step computation carried out.<br>
+                        3. Final Answer: <strong>${evalResult}</strong>`;
                         lastMathExpression = null; 
                     } catch (e) {
-                        response = `Here is a breakdown of your request, ${userName}!`;
+                        response = `Here is the step-by-step breakdown for you!`;
                         lastMathExpression = null;
                     }
                 } else if (mathCandidate) {
@@ -800,21 +798,19 @@
                         lastMathExpression = mathCandidate;
                         response = `${evalResult} should i brake it down?`;
                     } catch (e) {
-                        if (extractedName) {
+                        if (extractedName && cleanText.replace(/im\s+\S+|i'm\s+\S+|my name is\s+\S+|hi|hello/gi, '').trim().length === 0) {
                             response = `Nice to meet you, ${userName}! How can I help you today?`;
-                        } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
-                            response = `Hello, ${userName}! How can I help you build or code today?`;
                         } else {
-                            response = `I'm Vikea AI running smoothly, ${userName}! You asked: "${escapeHtml(text)}". How else can I assist you?`;
+                            response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
                         }
                     }
                 } else {
-                    if (extractedName) {
+                    if (extractedName && cleanText.replace(/im\s+\S+|i'm\s+\S+|my name is\s+\S+|hi|hello/gi, '').trim().length === 0) {
                         response = `Nice to meet you, ${userName}! I've saved your name. How can I help you today?`;
                     } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
                         response = `Hello, ${userName}! How can I help you build or code today?`;
                     } else {
-                        response = `I'm Vikea AI running smoothly, ${userName}! You asked: "${escapeHtml(text)}". How else can I assist you?`;
+                        response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
                     }
                 }
 
