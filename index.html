@@ -396,14 +396,14 @@
             opacity: 0.9;
         }
 
-        /* Modal Overlay for Settings */
+        /* Modal Overlay for Settings & Onboarding */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.6);
+            background-color: rgba(0,0,0,0.75);
             display: none;
             align-items: center;
             justify-content: center;
@@ -417,41 +417,67 @@
         .modal-box {
             background-color: var(--sidebar-bg);
             border: 1px solid var(--border-color);
-            padding: 24px;
+            padding: 28px;
             border-radius: 16px;
-            width: 360px;
+            width: 400px;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
         .modal-box h3 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 500;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
 
         .modal-box input {
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
-            padding: 10px 14px;
+            padding: 12px 14px;
             border-radius: 8px;
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
+            width: 100%;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--button-blue);
+            cursor: pointer;
+            margin-top: 2px;
         }
 
         .modal-buttons {
             display: flex;
             justify-content: flex-end;
             gap: 8px;
+            margin-top: 8px;
         }
 
         .modal-buttons button {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
         }
 
         .btn-cancel {
@@ -462,6 +488,11 @@
         .btn-save {
             background-color: var(--button-blue);
             color: white;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         footer {
@@ -554,22 +585,97 @@
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Onboarding / Settings Modal -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal-box">
-            <h3>Set Your Name</h3>
-            <p style="font-size: 13px; color: var(--text-secondary);">What would you like Vikea AI to call you?</p>
-            <input type="text" id="nameInputModal" placeholder="e.g. James">
+            <h3 id="modalTitle">Welcome to Vikea AI</h3>
+            <p id="modalDesc">Please enter your name and accept our terms and privacy policy to get started.</p>
+            
+            <input type="text" id="nameInputModal" placeholder="Enter your name (e.g. James)" oninput="checkFormValid()">
+            
+            <label class="checkbox-label" id="termsContainer">
+                <input type="checkbox" id="termsCheckbox" onchange="checkFormValid()">
+                <span>I agree to the Terms of Service and Privacy Policy of Vikea AI.</span>
+            </label>
+
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
-                <button class="btn-save" onclick="saveName()">Save</button>
+                <button class="btn-cancel" id="cancelBtn" onclick="closeSettings()" style="display:none;">Cancel</button>
+                <button class="btn-save" id="saveBtn" onclick="saveOnboarding()" disabled>Get Started</button>
             </div>
         </div>
     </div>
 
     <script>
-        let userName = localStorage.getItem('vikea_username') || 'Wahaj';
-        updateUserDisplay();
+        let userName = localStorage.getItem('vikea_username');
+        const hasAcceptedTerms = localStorage.getItem('vikea_terms');
+
+        // If it's a brand new visitor, force them through the onboarding popup
+        if (!userName || !hasAcceptedTerms) {
+            window.addEventListener('DOMContentLoaded', () => {
+                showOnboardingModal(true);
+            });
+        } else {
+            updateUserDisplay();
+        }
+
+        function showOnboardingModal(isFirstTime) {
+            const modal = document.getElementById('settingsModal');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const termsContainer = document.getElementById('termsContainer');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalDesc = document.getElementById('modalDesc');
+            const saveBtn = document.getElementById('saveBtn');
+
+            if (isFirstTime) {
+                modalTitle.innerText = "Welcome to Vikea AI";
+                modalDesc.innerText = "Please enter your name and accept the terms and privacy policy to continue.";
+                cancelBtn.style.display = 'none';
+                termsContainer.style.display = 'flex';
+                saveBtn.innerText = "Get Started";
+            } else {
+                modalTitle.innerText = "Settings & Name";
+                modalDesc.innerText = "Update what Vikea AI calls you.";
+                cancelBtn.style.display = 'block';
+                termsContainer.style.display = 'none'; // Already accepted previously
+                saveBtn.innerText = "Save";
+                document.getElementById('nameInputModal').value = userName || '';
+            }
+
+            modal.classList.add('active');
+            checkFormValid();
+        }
+
+        function checkFormValid() {
+            const nameVal = document.getElementById('nameInputModal').value.trim();
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            const isFirstTime = !localStorage.getItem('vikea_terms');
+            const saveBtn = document.getElementById('saveBtn');
+
+            if (isFirstTime) {
+                saveBtn.disabled = !(nameVal.length > 0 && termsChecked);
+            } else {
+                saveBtn.disabled = !(nameVal.length > 0);
+            }
+        }
+
+        function openSettings() {
+            showOnboardingModal(false);
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        function saveOnboarding() {
+            const nameVal = document.getElementById('nameInputModal').value.trim();
+            if (nameVal) {
+                userName = nameVal;
+                localStorage.setItem('vikea_username', userName);
+                localStorage.setItem('vikea_terms', 'true');
+                updateUserDisplay();
+                closeSettings();
+            }
+        }
 
         function updateUserDisplay() {
             document.getElementById('userNameDisplay').innerText = userName;
@@ -578,25 +684,6 @@
             if(welcomeTitle) {
                 welcomeTitle.innerText = `Hello, ${userName}`;
             }
-        }
-
-        function openSettings() {
-            document.getElementById('nameInputModal').value = userName;
-            document.getElementById('settingsModal').classList.add('active');
-        }
-
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
-        }
-
-        function saveName() {
-            const inputVal = document.getElementById('nameInputModal').value.trim();
-            if(inputVal) {
-                userName = inputVal;
-                localStorage.setItem('vikea_username', userName);
-                updateUserDisplay();
-            }
-            closeSettings();
         }
 
         function toggleModelMenu() {
@@ -659,7 +746,6 @@
                 const cleanText = text.toLowerCase();
 
                 try {
-                    // Check if it's a math query
                     let mathQuery = text.replace(/[^a-zA-Z\-\*\/\+\.\(\)\s\d]/g, '');
                     if (mathQuery.length > 0 && /^[\d\+\-\*\/\.\(\)\s]+$/.test(mathQuery)) {
                         let evalResult = eval(mathQuery);
