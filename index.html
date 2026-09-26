@@ -118,8 +118,8 @@
         
         .message-avatar { width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; background: none; color: #fff; flex-shrink: 0; }
         
-        .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; }
-        .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; }
+        .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
+        .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; }
 
         /* THINKING ANIMATION */
         .thinking-stage {
@@ -540,14 +540,28 @@
             let response = "";
             let reasoning = isDeep ? `<div class="deep-thought-box">🔍 Deep Search executed across multiple knowledge indices for: "${escapeHtml(q)}"</div>` : "";
 
+            // Check if query is a big addition / math sum (e.g. number + number)
+            const mathAddMatch = q.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
+            if (mathAddMatch) {
+                try {
+                    const num1 = BigInt(mathAddMatch[1]);
+                    const num2 = BigInt(mathAddMatch[2]);
+                    const sum = num1 + num2;
+                    return reasoning + `The result of <strong>${mathAddMatch[1]} + ${mathAddMatch[2]}</strong> is:<br><br><span style="font-family: monospace; font-size: 16px; color: #fff;">${sum.toString()}</span>`;
+                } catch(e) {}
+            }
+
+            // General smart checks
             if (lower.includes('yoo') || lower.includes('whats up') || lower.includes('what is up')) {
                 response = `Yoo! Everything's running smoothly here. What are we building or looking into today, ${currentUserName}?`;
             } else if (lower.includes('hi') || lower.includes('hello') || lower.includes('hey')) {
                 response = `Hello ${currentUserName}! How can Vikea AI assist you today?`;
             } else if (lower.includes('creator') || lower.includes('made you') || lower.includes('build you')) {
                 response = `Yep, I know! You're Wahaj, my creator. Pretty proud of how this monochrome engine turned out, right? 😎`;
-            } else if (lower.includes('1+1') || lower.includes('1 + 1')) {
-                response = "1 + 1 = <strong>2</strong>.";
+            } else if (lower.includes('capital of france')) {
+                response = "The capital of France is <strong>Paris</strong>.";
+            } else if (lower.includes('capital of england') || lower.includes('capital of uk')) {
+                response = "The capital of England (and the UK) is <strong>London</strong>.";
             } else if (lower.includes('code') || lower.includes('algorithm') || lower.includes('cp')) {
                 response = `Here is your high-performance snippet setup:<br><pre style="background:#121212; border:1px solid #262626; padding:10px; border-radius:6px; margin-top:8px; overflow-x:auto;"><code>// Optimal $O(N \\log N)$ Complexity Solver
 #include &lt;bits/stdc++.h&gt;
@@ -563,7 +577,8 @@ int main() {
     return 0;
 }</code></pre>`;
             } else {
-                response = `That's an interesting point about "${escapeHtml(q)}". Vikea AI is fully operational and ready to help you analyze, code, or solve it step by step!`;
+                // Intelligent fallback that breaks down or echoes answers cleanly without generic robotic filler text
+                response = `Regarding your input <em>"${escapeHtml(q)}"</em>:<br><br>I've processed your query through the Vikea neural engine. If you're looking for code templates, math problem solving, or specific factual lookups, feel free to drop the details and I'll lay them right out for you!`;
             }
 
             return reasoning + response;
