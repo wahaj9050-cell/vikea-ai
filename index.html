@@ -607,7 +607,7 @@
     <script>
         let userName = localStorage.getItem('vikea_username');
         const hasAcceptedTerms = localStorage.getItem('vikea_terms');
-        let lastMathExpression = null; // Stores last question for breakdown
+        let lastMathExpression = null; 
 
         if (!userName || !hasAcceptedTerms) {
             window.addEventListener('DOMContentLoaded', () => {
@@ -725,6 +725,28 @@
             const welcome = document.getElementById('welcomeSection');
             if (welcome) welcome.remove();
 
+            // Smart name extraction if user says "im [name]" or "my name is [name]"
+            const lowerText = text.toLowerCase();
+            let extractedName = null;
+            if (lowerText.includes("im ")) {
+                let parts = text.split(/im\s+/i);
+                if (parts[1]) extractedName = parts[1].trim().split(' ')[0];
+            } else if (lowerText.includes("i'm ")) {
+                let parts = text.split(/i'm\s+/i);
+                if (parts[1]) extractedName = parts[1].trim().split(' ')[0];
+            } else if (lowerText.includes("my name is ")) {
+                let parts = text.split(/my name is\s+/i);
+                if (parts[1]) extractedName = parts[1].trim().split(' ')[0];
+            }
+
+            if (extractedName && extractedName.length > 1) {
+                // Clean up trailing punctuation if any
+                extractedName = extractedName.replace(/[.,!?]/g, '');
+                userName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
+                localStorage.setItem('vikea_username', userName);
+                updateUserDisplay();
+            }
+
             const stream = document.getElementById('chatStream');
 
             // Append User Message
@@ -744,36 +766,55 @@
             setTimeout(() => {
                 let response = "";
                 const cleanText = text.toLowerCase();
-
-                // Check if user is asking to breakdown the previous question
                 const wantsBreakdown = cleanText.includes('break') || cleanText.includes('yes') || cleanText.includes('sure') || cleanText.includes('how');
                 
+                // Try to locate a math expression anywhere in the text string (e.g. "whats 1+1" or "compute 5*5 please")
+                let mathCandidate = null;
+                const matches = text.match(/[\d\s\+\-\*\/\.\(\)]+/g);
+                if (matches) {
+                    for (let m of matches) {
+                        let trimmed = m.trim();
+                        // Must contain at least one operator and numbers
+                        if (trimmed.length >= 3 && /[\+\-\*\/]/.test(trimmed) && /\d/.test(trimmed)) {
+                            mathCandidate = trimmed;
+                            break;
+                        }
+                    }
+                }
+
                 if (wantsBreakdown && lastMathExpression) {
                     try {
                         let evalResult = eval(lastMathExpression);
-                        response = `Here is the breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>:<br>
-                        1. Identify the numbers and operation: <code>${escapeHtml(lastMathExpression)}</code>.<br>
-                        2. Compute the result step-by-step.<br>
-                        3. Final Answer: <strong>${evalResult}</strong>`;
-                        lastMathExpression = null; // reset after breakdown
+                        response = `Here is the breakdown for <strong>${escapeHtml(lastMathExpression)}</strong>, ${userName}:<br><br>
+                        1. Identify expression: <code>${escapeHtml(lastMathExpression)}</code>.<br>
+                        2. Perform calculation steps.<br>
+                        3. Result: <strong>${evalResult}</strong>`;
+                        lastMathExpression = null; 
                     } catch (e) {
-                        response = `Here is a breakdown: We looked at your previous request and analyzed the core components to find the solution clearly for you!`;
+                        response = `Here is a breakdown of your request, ${userName}!`;
                         lastMathExpression = null;
                     }
-                } else {
+                } else if (mathCandidate) {
                     try {
-                        let mathQuery = text.replace(/[^a-zA-Z\-\*\/\+\.\(\)\s\d]/g, '');
-                        if (mathQuery.length > 0 && /^[\d\+\-\*\/\.\(\)\s]+$/.test(mathQuery)) {
-                            let evalResult = eval(mathQuery);
-                            lastMathExpression = mathQuery; // Save for potential breakdown
-                            response = `${evalResult} should i brake it down?`;
+                        let evalResult = eval(mathCandidate);
+                        lastMathExpression = mathCandidate;
+                        response = `${evalResult} should i brake it down?`;
+                    } catch (e) {
+                        if (extractedName) {
+                            response = `Nice to meet you, ${userName}! How can I help you today?`;
                         } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
                             response = `Hello, ${userName}! How can I help you build or code today?`;
                         } else {
-                            response = `I'm Vikea AI running smoothly! You asked: "${escapeHtml(text)}". How else can I assist you?`;
+                            response = `I'm Vikea AI running smoothly, ${userName}! You asked: "${escapeHtml(text)}". How else can I assist you?`;
                         }
-                    } catch (e) {
-                        response = `I heard you say: "${escapeHtml(text)}"! Let me know if you need help with coding or math equations.`;
+                    }
+                } else {
+                    if (extractedName) {
+                        response = `Nice to meet you, ${userName}! I've saved your name. How can I help you today?`;
+                    } else if (cleanText.includes('hello') || cleanText.includes('hi')) {
+                        response = `Hello, ${userName}! How can I help you build or code today?`;
+                    } else {
+                        response = `I'm Vikea AI running smoothly, ${userName}! You asked: "${escapeHtml(text)}". How else can I assist you?`;
                     }
                 }
 
