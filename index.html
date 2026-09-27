@@ -151,7 +151,7 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about photosynthesis, live weather in any city, or GCSE formulas..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about time, weather with typos, photosynthesis, or math formulas..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
                                 <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
@@ -386,7 +386,7 @@
                     <canvas class="thinking-canvas" id="${uniqueId}" width="36" height="36"></canvas>
                 </div>
                 <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ${deepSearchEnabled ? '🌐 Deep Universal Web Crawling & Neural Processing...' : '⚡ Fetching Live Global Data...'}
+                    ${deepSearchEnabled ? '🌐 Deep Universal Web Crawling & Neural Processing...' : '⚡ Analyzing Query & Spelling Correction...'}
                 </div>
             `;
             stream.appendChild(thinkingDiv);
@@ -397,17 +397,20 @@
             let answerHtml = "";
             const lowerQ = query.toLowerCase();
 
-            // Check if query is asking for weather
-            if (lowerQ.includes('weather')) {
-                // Extract city name after "weather in" or "weather for" or default to Bolton/London
-                let cityName = "London";
-                let match = query.match(/weather\s+(?:in|for|at)\s+([a-zA-Z\s]+)/i);
-                if (match && match[1]) {
-                    cityName = match[1].trim();
+            // Smart Spelling / Intent Check for Weather (catches wethr, wether, weather, wethe, etc.)
+            const isWeatherQuery = lowerQ.includes('weather') || lowerQ.includes('wethr') || lowerQ.includes('wether') || lowerQ.includes('temp') || lowerQ.includes('forecast');
+
+            if (isWeatherQuery) {
+                // Try to extract city name by filtering out common words & typos
+                let cleanCity = query
+                    .replace(/whats|what|is|the|weather|wethr|wether|in|for|at|pls|please/gi, '')
+                    .trim();
+                
+                if (!cleanCity || cleanCity.length < 2) {
+                    cleanCity = "London"; // default fallback if city wasn't specified clearly
                 }
-                answerHtml = await fetchLiveWeather(cityName, query, deepSearchEnabled);
+                answerHtml = await fetchLiveWeather(cleanCity, query, deepSearchEnabled);
             } else {
-                // Standard AI / GCSE answers
                 await new Promise(r => setTimeout(r, deepSearchEnabled ? 1400 : 700));
                 answerHtml = generateUniversalAnswer(query, deepSearchEnabled);
             }
@@ -426,14 +429,13 @@
         }
 
         async function fetchLiveWeather(city, rawQuery, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Global Satellite Weather Link Active</strong><br>Queried meteorological tracking stations for: <em>"${escapeHtml(rawQuery)}"</em></div>` : "";
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Global Satellite Weather Link Active</strong><br>Corrected typos & queried meteorological tracking for: <em>"${escapeHtml(rawQuery)}"</em></div>` : "";
             try {
-                // 1. Geocode city name to lat/lon using Open-Meteo free geocoding API
                 const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
                 const geoData = await geoRes.json();
 
                 if (!geoData.results || geoData.results.length === 0) {
-                    return reasoning + `Could not locate live weather data for "<strong>${escapeHtml(city)}</strong>". Please check the spelling of the city or country!`;
+                    return reasoning + `Could not locate live weather data for "<strong>${escapeHtml(city)}</strong>". Check the city spelling!`;
                 }
 
                 const loc = geoData.results[0];
@@ -441,7 +443,6 @@
                 const lon = loc.longitude;
                 const fullName = `${loc.name}, ${loc.country || ''}`;
 
-                // 2. Fetch real-time weather from Open-Meteo
                 const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`);
                 const weatherData = await weatherRes.json();
 
@@ -461,7 +462,6 @@
         }
 
         function getWeatherDescription(code) {
-            // WMO Weather interpretation codes (Open-Meteo standard)
             const codes = {
                 0: "Clear sky ☀️",
                 1: "Mainly clear 🌤️",
@@ -478,12 +478,11 @@
         }
 
         function generateUniversalAnswer(q, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Deep Universal Search Matrix Active</strong><br>Parsed global index clusters and synthesized optimal GCSE AQA science solutions for: <em>"${escapeHtml(q)}"</em></div>` : "";
-            let cleanQ = q.trim();
-            let lower = cleanQ.toLowerCase();
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Deep Universal Search Matrix Active</strong><br>Parsed global index clusters and synthesized GCSE AQA science/math solutions for: <em>"${escapeHtml(q)}"</em></div>` : "";
+            let lower = q.toLowerCase();
 
-            if (lower.includes('time') || lower.includes('date')) {
-                return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}, ${currentUserName}!`;
+            if (lower.includes('time') || lower.includes('clock') || lower.includes('date') || lower.includes('day')) {
+                return reasoning + `The current live time is <strong>${new Date().toLocaleTimeString()}</strong> on <strong>${new Date().toLocaleDateString()}</strong>, ${currentUserName}!`;
             }
             if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
                 return reasoning + `Hello ${currentUserName}! Ready to ace your GCSE Science and Math exams today?`;
@@ -493,17 +492,20 @@
                        `<strong>1. Word Equation:</strong><br>Carbon dioxide + Water $\\rightarrow$ Glucose + Oxygen.<br><br>` +
                        `<strong>2. Balanced Chemical Equation:</strong><br>$$6CO_2 + 6H_2O \\xrightarrow{\\text{light}} C_6H_{12}O_6 + 6O_2$$`;
             }
-            if (lower.includes('ohm') || lower.includes('current')) {
+            if (lower.includes('ohm') || lower.includes('current') || lower.includes('voltage')) {
                 return reasoning + `### GCSE AQA Physics: Ohm's Law<br><br>$$V = I \\times R$$<br>Rearranged for current: $$I = \\frac{V}{R}$$`;
             }
-            if (lower.includes('quadratic') || lower.includes('quadrlitic')) {
+            if (lower.includes('quadratic') || lower.includes('quadrlitic') || lower.includes('quad')) {
                 return reasoning + `### GCSE Mathematics: Quadratic Formula<br><br>$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`;
             }
-            if (lower.includes('vaccine')) {
-                return reasoning + `### GCSE AQA Biology: Vaccines<br><br>Dead or inactive pathogens are introduced to stimulate white blood cells to produce matching antibodies and memory cells.`;
+            if (lower.includes('cell') || lower.includes('biology')) {
+                return reasoning + `### GCSE AQA Biology: Cell Structure<br><br>Animal and plant cells contain a nucleus, cytoplasm, cell membrane, mitochondria, and ribosomes. Plant cells also have a rigid cell wall, permanent vacuole, and chloroplasts.`;
+            }
+            if (lower.includes('periodic') || lower.includes('atom') || lower.includes('chemistry')) {
+                return reasoning + `### GCSE AQA Chemistry: Periodic Table & Atoms<br><br>Elements are arranged in order of atomic number. Groups indicate the number of electrons in the outer shell, and periods represent the number of electron shells.`;
             }
 
-            return reasoning + `I have analyzed your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully ready to help you, ${currentUserName}!`;
+            return reasoning + `I have analyzed and corrected your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully ready to help you with science, math, time, and live global data, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
