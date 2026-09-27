@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI - Ultra-Detailed Galaxy</title>
+    <title>Vikea AI - Perfect Dense Galaxy</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -48,14 +48,14 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* Ultra Galaxy Welcome Screen */
+        /* Galaxy Welcome Screen with Fixed Frame */
         .galaxy-welcome-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #05050f 0%, #000000 100%); z-index: 5; user-select: none; }
         
-        .galaxy-stage { position: relative; width: 100%; max-width: 1300px; height: 620px; display: flex; align-items: center; justify-content: center; }
-        .galaxy-label-left { position: absolute; left: 10%; font-size: 64px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
-        .galaxy-label-right { position: absolute; right: 10%; font-size: 64px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
+        .galaxy-stage { position: relative; width: 100%; max-width: 1400px; height: 620px; display: flex; align-items: center; justify-content: center; }
+        .galaxy-label-left { position: absolute; left: 12%; font-size: 64px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
+        .galaxy-label-right { position: absolute; right: 12%; font-size: 64px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
         
-        #galaxyCanvas { width: 700px; height: 600px; cursor: grab; }
+        #galaxyCanvas { width: 600px; height: 600px; cursor: grab; }
         #galaxyCanvas:active { cursor: grabbing; }
 
         .launch-chat-btn { margin-top: 10px; background-color: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); padding: 12px 32px; border-radius: 30px; font-size: 15px; font-weight: 500; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); z-index: 10; display: flex; align-items: center; gap: 8px; }
@@ -130,11 +130,11 @@
             <div class="model-badge-header" id="modelBadgeHeader">Universal Engine Active</div>
         </header>
 
-        <!-- Ultra Galaxy Welcome Screen -->
+        <!-- Galaxy Welcome Screen -->
         <div class="galaxy-welcome-container" id="galaxyWelcomeScreen">
             <div class="galaxy-stage">
                 <div class="galaxy-label-left">Vikea</div>
-                <canvas id="galaxyCanvas" width="700" height="600"></canvas>
+                <canvas id="galaxyCanvas" width="600" height="600"></canvas>
                 <div class="galaxy-label-right">AI</div>
             </div>
             <button class="launch-chat-btn" onclick="openChatInterface()">
@@ -193,32 +193,31 @@
             }
         }
 
-        // Ultra-Detailed Multi-Arm Spiral Galaxy Engine (3000+ Stars, Multiple Arms & Draggable Stretch)
+        // Fully Packed, Continuous Dense Star Arms Matching the Reference Images
         const gCanvas = document.getElementById('galaxyCanvas');
         const gCtx = gCanvas ? gCanvas.getContext('2d') : null;
-        const starCount = 3200;
+        const starCount = 4500; // Massive star density to eliminate all gaps
         const stars = [];
 
         for (let i = 0; i < starCount; i++) {
-            // Create 4 distinct spiral arms for maximum detail
-            const armIndex = i % 4;
-            const armOffset = (armIndex * Math.PI / 2);
-            const r = Math.pow(Math.random(), 1.4) * 260;
-            const theta = r * 0.015 + armOffset + (Math.random() - 0.5) * 0.4;
+            // 2 main primary sweeping arms + secondary fill strands for continuous coverage
+            const armIndex = i % 2;
+            const armOffset = armIndex * Math.PI + (Math.random() * 0.3);
+            const r = Math.pow(Math.random(), 1.1) * 230; // Keeps everything neatly packed toward the center and arms
+            const theta = r * 0.018 + armOffset + (Math.random() - 0.5) * 0.25;
             
             stars.push({
                 baseR: r,
                 baseTheta: theta,
-                size: Math.random() * 2.0 + 0.2,
-                brightness: Math.random(),
+                size: Math.random() * 1.8 + 0.3,
                 colorType: Math.random()
             });
         }
 
         let galaxyAngle = 0;
         let isDragging = false;
-        let stretchX = 1.1;
-        let stretchY = 0.85; // Slight cosmic tilt like photo 2/3
+        let stretchX = 1.0;
+        let stretchY = 1.25; // Locked tall vertical stretch matching your reference image ratio
         let lastMouseX = 0, lastMouseY = 0;
 
         if (gCanvas) {
@@ -232,8 +231,8 @@
                 if (!isDragging) return;
                 const dx = e.clientX - lastMouseX;
                 const dy = e.clientY - lastMouseY;
-                stretchX = Math.max(0.4, Math.min(3.0, stretchX + dx * 0.005));
-                stretchY = Math.max(0.4, Math.min(3.0, stretchY - dy * 0.005));
+                stretchX = Math.max(0.5, Math.min(2.5, stretchX + dx * 0.005));
+                stretchY = Math.max(0.5, Math.min(2.5, stretchY - dy * 0.005));
                 lastMouseX = e.clientX;
                 lastMouseY = e.clientY;
             });
@@ -243,50 +242,50 @@
 
         function renderGalaxy() {
             if (!gCtx) return;
-            gCtx.clearRect(0, 0, 700, 600);
-            galaxyAngle += 0.0015;
+            gCtx.clearRect(0, 0, 600, 600);
+            galaxyAngle += 0.0012; // Smooth steady rotation
 
-            const cx = 350, cy = 300;
+            const cx = 300, cy = 300;
 
             stars.forEach(s => {
                 const currentTheta = s.baseTheta + galaxyAngle;
                 const x = cx + Math.cos(currentTheta) * s.baseR * stretchX;
                 const y = cy + Math.sin(currentTheta) * s.baseR * stretchY;
 
-                // Color tint resembling real dense spiral galaxies (dust lanes & bright stellar clusters)
-                if (s.colorType > 0.85) {
-                    gCtx.fillStyle = '#aaddff'; // Blue young stars
-                } else if (s.colorType > 0.4) {
-                    gCtx.fillStyle = '#ffffff'; // Core white stars
+                // Packed bright star coloring
+                if (s.colorType > 0.8) {
+                    gCtx.fillStyle = '#bce0ff';
+                } else if (s.colorType > 0.3) {
+                    gCtx.fillStyle = '#ffffff';
                 } else {
-                    gCtx.fillStyle = '#ffeedd'; // Warm amber gas/stars
+                    gCtx.fillStyle = '#ffdcb8';
                 }
 
                 gCtx.shadowColor = gCtx.fillStyle;
-                gCtx.shadowBlur = s.size * 2.5;
+                gCtx.shadowBlur = s.size * 2;
                 gCtx.beginPath();
                 gCtx.arc(x, y, s.size, 0, Math.PI * 2);
                 gCtx.fill();
                 gCtx.shadowBlur = 0;
             });
 
-            // Ultra-Bright Multi-Layer Galactic Core & Dust Glow
-            const coreGradient = gCtx.createRadialGradient(cx, cy, 2, cx, cy, 45);
-            coreGradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            coreGradient.addColorStop(0.3, 'rgba(255, 240, 210, 0.7)');
-            coreGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            // Dense Core Glow matching your image
+            const coreGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, 35);
+            coreGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+            coreGlow.addColorStop(0.4, 'rgba(255, 240, 220, 0.8)');
+            coreGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
             
-            gCtx.fillStyle = coreGradient;
+            gCtx.fillStyle = coreGlow;
             gCtx.beginPath();
-            gCtx.arc(cx, cy, 45, 0, Math.PI * 2);
+            gCtx.arc(cx, cy, 35, 0, Math.PI * 2);
             gCtx.fill();
 
-            // Center White Hot Point
+            // Center White Hot Spark
             gCtx.fillStyle = '#ffffff';
             gCtx.shadowColor = '#ffffff';
-            gCtx.shadowBlur = 40;
+            gCtx.shadowBlur = 30;
             gCtx.beginPath();
-            gCtx.arc(cx, cy, 5.5, 0, Math.PI * 2);
+            gCtx.arc(cx, cy, 4.5, 0, Math.PI * 2);
             gCtx.fill();
             gCtx.shadowBlur = 0;
 
