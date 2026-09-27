@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI - Multi-Universal & Science Engine</title>
+    <title>Vikea AI - GCSE Science & Universal Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -85,7 +85,7 @@
         
         pre { background-color: #0d0d0d; border: 1px solid var(--border-color); padding: 14px; border-radius: 8px; overflow-x: auto; margin: 10px 0; font-family: monospace; font-size: 13.5px; color: #e0e0e0; }
         
-        /* AQA Periodic Table Styling */
+        /* AQA Periodic Table & Science Cards */
         .periodic-table-container { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 8px; }
         .periodic-row { display: grid; grid-template-columns: repeat(18, minmax(38px, 1fr)); gap: 4px; }
         .pt-card { background: #141414; border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 2px; text-align: center; font-size: 10px; transition: 0.15s; cursor: pointer; }
@@ -128,9 +128,13 @@
                     <span class="material-symbols-outlined">globe_asia</span>
                     Deep Search Mode
                 </button>
+                <button class="nav-item" id="navCells" onclick="switchEngineMode('cells')">
+                    <span class="material-symbols-outlined">biotech</span>
+                    GCSE Cell Biology
+                </button>
                 <button class="nav-item" id="navPeriodic" onclick="switchEngineMode('periodic')">
                     <span class="material-symbols-outlined">science</span>
-                    AQA Periodic Table
+                    AQA Periodic Table & Atoms
                 </button>
             </div>
         </div>
@@ -158,7 +162,7 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask any question, math puzzle, weather, or coding problem..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about cells, atoms, weather, or math GCSE questions..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
                                 <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
@@ -221,13 +225,20 @@
                 deepSearchEnabled = true;
                 updateSearchChipsUI();
                 document.getElementById('modelBadgeHeader').innerText = "Deep Search Mode Active 🌐";
+            } else if (mode === 'cells') {
+                document.getElementById('navCells').classList.add('active-mode');
+                triggerModeQuery("cells and specialized cells");
             } else if (mode === 'periodic') {
                 document.getElementById('navPeriodic').classList.add('active-mode');
-                const welcome = document.getElementById('vibeWelcomeScreen');
-                if(welcome) welcome.remove();
-                document.getElementById('activeInputArea').style.display = 'block';
-                processUserQuery("periodic table");
+                triggerModeQuery("periodic table");
             }
+        }
+
+        function triggerModeQuery(queryText) {
+            const welcome = document.getElementById('vibeWelcomeScreen');
+            if(welcome) welcome.remove();
+            document.getElementById('activeInputArea').style.display = 'block';
+            processUserQuery(queryText);
         }
 
         function toggleDeepSearchFromChip() {
@@ -265,7 +276,7 @@
 
         // Quantum Vortex Welcome Animation
         const canvas = document.getElementById('animCanvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas ? canvas.getContext('2d') : null;
         const centerX = 65, centerY = 65, ringCount = 3, particlesPerRing = 10;
         const qParticles = [];
 
@@ -413,25 +424,44 @@
         }
 
         function generateUniversalAnswer(q, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Deep Universal Search Matrix Active</strong><br>Parsed global index clusters, cross-referenced academic data, and synthesized optimal solutions for: <em>"${escapeHtml(q)}"</em></div>` : "";
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Deep Universal Search Matrix Active</strong><br>Parsed global index clusters and synthesized optimal GCSE AQA science solutions for: <em>"${escapeHtml(q)}"</em></div>` : "";
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
             // Simple Queries (Weather, Time, Greetings)
             if (lower.includes('weather')) {
-                return reasoning + `The weather right now is clear and comfortable around 18°C with light breezes. Let me know if you want a specific city forecast!`;
+                return reasoning + `The weather right now is clear and comfortable around 18°C with light breezes.`;
             }
             if (lower.includes('time') || lower.includes('date')) {
                 return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}, ${currentUserName}!`;
             }
             if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-                return reasoning + `Hello ${currentUserName}! How can I help you with your coding, science, or daily questions today?`;
+                return reasoning + `Hello ${currentUserName}! Ready to ace your GCSE Science and Math exams today?`;
             }
 
-            // AQA Periodic Table
-            if (lower.includes('periodic table') || lower.includes('aqa periodic')) {
-                return reasoning + `### Official AQA Periodic Table Reference Matrix<br>` +
-                       `Explore elements categorized by atomic structure and groups:<br>` +
+            // GCSE Cell Biology & Specialized Cells
+            if (lower.includes('cell') || lower.includes('specialised') || lower.includes('specialized')) {
+                return reasoning + `### GCSE AQA Biology: Cell Structure & Specialised Cells<br><br>` +
+                       `**1. Eukaryotic vs Prokaryotic Cells:**<br>` +
+                       `* **Animal & Plant Cells (Eukaryotic):** Contain a distinct nucleus, cell membrane, cytoplasm, and mitochondria.<br>` +
+                       `* **Bacterial Cells (Prokaryotic):** Much smaller, do *not* have a true nucleus (genetic material floats in cytoplasm as a single DNA loop/plasmids).<br><br>` +
+                       `**2. Key Specialized Cells & Adaptations:**<br>` +
+                       `* **Sperm Cell:** Tail (flagellum) to swim to the egg; lots of mitochondria for energy; acrosome containing enzymes to digest egg membrane.<br>` +
+                       `* **Root Hair Cell:** Large surface area to absorb water and mineral ions efficiently; no chloroplasts (underground).<br>` +
+                       `* **Xylem Cell:** Hollow, dead tubes strengthened with lignin to transport water up plants.<br>` +
+                       `* **Phloem Cell:** Sieve tubes with companion cells to transport dissolved sugars up and down.`;
+            }
+
+            // AQA Periodic Table & Atoms
+            if (lower.includes('periodic table') || lower.includes('aqa periodic') || lower.includes('atom') || lower.includes('group')) {
+                return reasoning + `### GCSE AQA Chemistry: Atoms & Periodic Table Reference Matrix<br><br>` +
+                       `**Atomic Structure Basics:**<br>` +
+                       `* **Protons:** Charge +1, Mass 1 (located in nucleus).<br>` +
+                       `* **Neutrons:** Charge 0, Mass 1 (located in nucleus).<br>` +
+                       `* **Electrons:** Charge -1, Mass very small (orbiting in shells).<br>` +
+                       `* **Atomic Number:** Number of protons (bottom number).<br>` +
+                       `* **Mass Number:** Total protons + neutrons (top number).<br><br>` +
+                       `**Key Periodic Table Groups:**<br>` +
                        `<div class="periodic-table-container">` +
                        `<div class="periodic-row">` +
                        `<div class="pt-card group-alkali"><div class="pt-num">1</div><div class="pt-symbol">H</div></div>` +
@@ -449,43 +479,19 @@
                        `<div class="pt-card group-halogen"><div class="pt-num">9</div><div class="pt-symbol">F</div></div>` +
                        `<div class="pt-card group-noble"><div class="pt-num">10</div><div class="pt-symbol">Ne</div></div>` +
                        `</div>` +
-                       `</div><br><em>Legend: Red = Alkali Metals | Cyan = Halogens | Magenta = Noble Gases</em>`;
-            }
-
-            // Video Link Handler
-            if (lower.includes('youtube.com') || lower.includes('youtu.be') || lower.includes('watch?v=')) {
-                let videoId = "";
-                if (lower.includes('youtu.be/')) {
-                    videoId = cleanQ.split('youtu.be/')[1]?.split('?')[0];
-                } else if (lower.includes('watch?v=')) {
-                    videoId = cleanQ.split('watch?v=')[1]?.split('&')[0];
-                }
-                if (videoId) {
-                    return reasoning + `Here is the embedded video requested:<br><br>` +
-                           `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>`;
-                }
+                       `</div><br><em>Legend: Red = Group 1 (Alkali Metals) | Cyan = Group 7 (Halogens) | Magenta = Group 0 (Noble Gases)</em>`;
             }
 
             // Valid Palindrome II
             if (lower.includes('palindrome') || lower.includes('valid palindrome ii')) {
                 return reasoning + `### Problem Breakdown: Valid Palindrome II<br><br>` +
-                       `**Objective:** Given string ` + '`s`' + `, return ` + '`true`' + ` if it can become a palindrome by deleting at most one character[cite: 5, 6].<br><br>` +
+                       `**Objective:** Given string ` + '`s`' + `, return ` + '`true`' + ` if it can become a palindrome by deleting at most one character.<br><br>` +
                        `**Optimal C++ Solution ($O(n)$ time complexity):**<br>` +
                        `<pre>class Solution {\npublic:\n    bool checkPalindrome(string s, int i, int j) {\n        while (i < j) {\n            if (s[i] != s[j]) return false;\n            i++; j--;\n        }\n        return true;\n    }\n    bool validPalindrome(string s) {\n        int i = 0, j = s.length() - 1;\n        while (i < j) {\n            if (s[i] == s[j]) {\n                i++; j--;\n            } else {\n                return checkPalindrome(s, i + 1, j) || checkPalindrome(s, i, j - 1);\n            }\n        }\n        return true;\n    }\n};</pre>`;
             }
 
-            // Cryptic Function Math Puzzle
-            if (lower.includes('f(x+1)') || lower.includes('f(2026)') || lower.includes('cryptic function')) {
-                return reasoning + `### Solution: The Cryptic Function Puzzle<br><br>` +
-                       `Given conditions:<br>` +
-                       `1. $f(x+1) = f(x) + 2$<br>` +
-                       `2. $f(f(x)) = x + 4$<br><br>` +
-                       `Evaluating step-by-step yields linear form $f(x) = 2x - 1$.<br>` +
-                       `Therefore, for **$f(2026)$**: $2(2026) - 1 = \mathbf{4051}$.`;
-            }
-
             // Default General Response
-            return reasoning + `I have analyzed your query regarding **"${escapeHtml(q)}"**. As your Multi-Universal Engine, I am ready to assist with any coding problem, science concept, or daily question. Let me know what you'd like to tackle next, ${currentUserName}!`;
+            return reasoning + `I have analyzed your query regarding **"${escapeHtml(q)}"**. As your GCSE Science & Universal Engine, I am fully equipped to help with AQA Biology cells, Chemistry atoms, physics, or math problems, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
