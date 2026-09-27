@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI v6.3 - Deep Universe Galaxy & Black Hole Transition</title>
+    <title>Vikea AI v1.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -19,7 +19,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
         ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #404040; }
 
@@ -48,41 +48,104 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* Full-Screen Galaxy & Black Hole Stage */
-        .galaxy-welcome-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #030308 0%, #000000 100%); z-index: 5; user-select: none; }
-        
-        .galaxy-stage { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-        .galaxy-label-left { position: absolute; left: 15%; font-size: 72px; font-weight: 400; color: #ffffff; letter-spacing: 1px; z-index: 6; pointer-events: none; }
-        .galaxy-label-right { position: absolute; right: 15%; font-size: 72px; font-weight: 400; color: #ffffff; letter-spacing: 1px; z-index: 6; pointer-events: none; }
-        
-        #galaxyCanvas { position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: grab; }
-        #galaxyCanvas:active { cursor: grabbing; }
+        /* Welcome Screen with Starry Background & Zoom Animation */
+        .welcome-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1), opacity 1.2s ease;
+        }
+        .welcome-screen.zoom-fade {
+            transform: scale(2.5);
+            opacity: 0;
+            pointer-events: none;
+        }
 
-        .launch-chat-container { position: absolute; bottom: 35px; display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 10; }
-        .launch-chat-btn { background-color: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); padding: 12px 36px; border-radius: 30px; font-size: 15px; font-weight: 500; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); display: flex; align-items: center; gap: 8px; }
-        .launch-chat-btn:hover { background-color: #fff; color: #000; border-color: #fff; transform: scale(1.05); }
-        .version-tag { font-size: 11px; color: var(--text-secondary); letter-spacing: 0.5px; }
+        .welcome-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+            animation: fadeInSmooth 1.5s ease-out;
+        }
 
-        /* Chat Stream Area */
-        .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 950px; width: 100%; margin: 0 auto; scroll-behavior: smooth; display: none; z-index: 5; }
+        @keyframes fadeInSmooth {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-title {
+            font-size: 56px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+
+        .start-chat-btn {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+            backdrop-filter: blur(8px);
+        }
+        .start-chat-btn:hover {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .version-label {
+            position: absolute;
+            bottom: 25px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+        }
+
+        /* Chat Stream Area with Earth Horizon Backdrop */
+        .chat-container-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+            background-size: cover;
+            display: none;
+            flex-direction: column;
+            z-index: 5;
+        }
+        .chat-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 950px; width: 100%; margin: 0 auto; scroll-behavior: smooth; z-index: 3; }
         
         .message { display: flex; gap: 14px; max-width: 100%; }
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
         .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
         
         .message-avatar { width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; background: none; color: #fff; flex-shrink: 0; }
-        
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; }
 
-        .thinking-stage { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; }
-        .thinking-canvas { position: absolute; top: 0; left: 0; width: 36px; height: 36px; pointer-events: none; }
-        .thinking-v { position: absolute; font-size: 12px; font-weight: 700; color: #fff; background: none; }
-        
-        pre { background-color: #0d0d0d; border: 1px solid var(--border-color); padding: 14px; border-radius: 8px; overflow-x: auto; margin: 10px 0; font-family: monospace; font-size: 13.5px; color: #e0e0e0; }
-
-        .input-area { padding: 12px 24px 16px 24px; max-width: 950px; width: 100%; margin: 0 auto; background-color: var(--bg-color); display: none; z-index: 5; }
-        .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
+        .input-area { padding: 12px 24px 16px 24px; max-width: 950px; width: 100%; margin: 0 auto; z-index: 3; }
+        .input-box-wrapper { background-color: rgba(18, 18, 18, 0.85); backdrop-filter: blur(10px); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
         #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; min-height: 24px; }
         
         .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; }
@@ -132,35 +195,31 @@
             <div class="model-badge-header" id="modelBadgeHeader">Universal Engine Active</div>
         </header>
 
-        <!-- Full-Screen Galaxy & Black Hole Stage -->
-        <div class="galaxy-welcome-container" id="galaxyWelcomeScreen">
-            <div class="galaxy-stage">
-                <div class="galaxy-label-left">Vikea</div>
-                <canvas id="galaxyCanvas"></canvas>
-                <div class="galaxy-label-right">AI</div>
+        <!-- Welcome Screen with Smooth Entry -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-content">
+                <h1 class="welcome-title">Vikea AI</h1>
+                <button class="start-chat-btn" onclick="startChatTransition()">Start Chatting</button>
             </div>
-            <div class="launch-chat-container">
-                <button class="launch-chat-btn" onclick="launchChatWithBlackHole()">
-                    <span class="material-symbols-outlined" style="font-size: 18px;">chat</span>
-                    Start Chatting
-                </button>
-                <div class="version-tag">Vikea AI Engine v6.3.0 • GPT-6 Quantum Core</div>
-            </div>
+            <div class="version-label">Version 1.3</div>
         </div>
 
-        <!-- Chat Stream Area -->
-        <div class="chat-stream" id="chatStream"></div>
-
-        <div class="input-area" id="activeInputArea">
-            <div class="input-box-wrapper">
-                <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event)"></textarea>
-                <div class="prompt-toolbar" style="display:flex; justify-content:flex-end; border:none; padding-top:0;">
-                    <button class="send-btn" onclick="sendFromActiveArea()">
-                        <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
-                    </button>
+        <!-- Chat Container with Earth Horizon Background Backdrop -->
+        <div class="chat-container-bg" id="chatContainerBg">
+            <div class="chat-overlay">
+                <div class="chat-stream" id="chatStream"></div>
+                <div class="input-area" id="activeInputArea">
+                    <div class="input-box-wrapper">
+                        <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event)"></textarea>
+                        <div class="prompt-toolbar" style="display:flex; justify-content:flex-end; border:none; padding-top:0;">
+                            <button class="send-btn" onclick="sendFromActiveArea()">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
+                            </button>
+                        </div>
+                    </div>
+                    <footer>Made with Vikea Multi-Universal Engine © 2026</footer>
                 </div>
             </div>
-            <footer>Made with Vikea Multi-Universal Engine © 2026</footer>
         </div>
     </div>
 
@@ -176,216 +235,47 @@
             }
         }
 
-        function launchChatWithBlackHole() {
-            // Trigger the transition, then open chat
-            triggerTransitionBlackHole();
+        function startChatTransition() {
+            const welcome = document.getElementById('welcomeScreen');
+            welcome.classList.add('zoom-fade'); // Zooms in and fades out smoothly
+
             setTimeout(() => {
-                openChatInterface();
-            }, 1800);
+                welcome.style.display = 'none';
+                const chatBg = document.getElementById('chatContainerBg');
+                chatBg.style.display = 'flex';
+                
+                // Automatically start conversation with AI greeting user by name
+                triggerInitialGreeting();
+            }, 1000);
         }
 
-        function openChatInterface() {
-            document.getElementById('galaxyWelcomeScreen').style.display = 'none';
-            document.getElementById('chatStream').style.display = 'flex';
-            document.getElementById('activeInputArea').style.display = 'block';
+        function triggerInitialGreeting() {
+            const stream = document.getElementById('chatStream');
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+            aiMsgDiv.innerHTML = `
+                <div class="message-avatar">V</div>
+                <div class="message-content">Hi, ${currentUserName} how can I help you?</div>
+            `;
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
             document.getElementById('activeInput').focus();
         }
 
         function switchEngineMode(mode) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-mode'));
-            openChatInterface();
+            if (document.getElementById('welcomeScreen').style.display !== 'none') {
+                startChatTransition();
+            }
             if (mode === 'universal') {
                 document.getElementById('navUniversal').classList.add('active-mode');
                 document.getElementById('modelBadgeHeader').innerText = "Universal Engine Active";
             } else if (mode === 'cells') {
                 document.getElementById('navCells').classList.add('active-mode');
-                processUserQuery("cells and specialized cells");
             } else if (mode === 'periodic') {
                 document.getElementById('navPeriodic').classList.add('active-mode');
-                processUserQuery("periodic table");
             }
         }
-
-        // Full Screen Galaxy & Deep Universe Background Star Field Engine
-        const gCanvas = document.getElementById('galaxyCanvas');
-        const gCtx = gCanvas ? gCanvas.getContext('2d') : null;
-
-        function resizeCanvas() {
-            if (!gCanvas) return;
-            gCanvas.width = window.innerWidth - 280;
-            gCanvas.height = window.innerHeight - 50;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        // 1. Galaxy Spiral Stars
-        const starCount = 10000;
-        const stars = [];
-        for (let i = 0; i < starCount; i++) {
-            const armIndex = i % 3;
-            const armOffset = armIndex * ((Math.PI * 2) / 3);
-            const targetR = Math.pow(Math.random(), 0.8) * 450;
-            const targetTheta = targetR * 0.012 + armOffset + (Math.random() - 0.5) * 0.8;
-            
-            stars.push({
-                targetR: targetR,
-                targetTheta: targetTheta,
-                currentR: targetR,
-                currentTheta: targetTheta,
-                size: Math.random() * 1.8 + 0.3,
-                colorType: Math.random()
-            });
-        }
-
-        // 2. Background Universe Star Dust Dots (filling the whole screen area)
-        const bgStarCount = 400;
-        const bgStars = [];
-        for(let i=0; i<bgStarCount; i++) {
-            bgStars.push({
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
-                size: Math.random() * 1.2 + 0.2,
-                alpha: Math.random() * 0.7 + 0.2
-            });
-        }
-
-        let galaxyAngle = 0;
-        let stretchX = 1.0;
-        let stretchY = 1.0;
-        let isDragging = false;
-        let lastMouseX = 0, lastMouseY = 0;
-
-        // Interactive dragging to stretch galaxy
-        if (gCanvas) {
-            gCanvas.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                lastMouseX = e.clientX;
-                lastMouseY = e.clientY;
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const dx = e.clientX - lastMouseX;
-                const dy = e.clientY - lastMouseY;
-                stretchX = Math.max(0.4, Math.min(2.5, stretchX + dx * 0.005));
-                stretchY = Math.max(0.4, Math.min(2.5, stretchY - dy * 0.005));
-                lastMouseX = e.clientX;
-                lastMouseY = e.clientY;
-            });
-
-            window.addEventListener('mouseup', () => { isDragging = false; });
-        }
-
-        let blackHolePulse = 0;
-        let isTransitioning = false;
-
-        function triggerTransitionBlackHole() {
-            isTransitioning = true;
-            blackHolePulse = 2.5; // Huge swell
-        }
-
-        function triggerBlackHolePulse() {
-            blackHolePulse = 1.2; // Question prompt swell
-        }
-
-        function renderGalaxy() {
-            if (!gCtx || !gCanvas) return;
-            gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-
-            const cx = gCanvas.width / 2;
-            const cy = gCanvas.height / 2;
-
-            // Draw Background Universe Star Dust Dots across the whole space
-            bgStars.forEach(bs => {
-                gCtx.fillStyle = `rgba(255, 255, 255, ${bs.alpha})`;
-                gCtx.beginPath();
-                gCtx.arc(bs.x, bs.y, bs.size, 0, Math.PI * 2);
-                gCtx.fill();
-            });
-
-            if (blackHolePulse > 0) {
-                blackHolePulse -= 0.015;
-            }
-            if (isTransitioning && blackHolePulse <= 0.1) {
-                isTransitioning = false;
-            }
-
-            galaxyAngle += 0.001;
-
-            // Render organic spiral stars (NO harsh center ring outline, completely organic core)
-            stars.forEach(s => {
-                const activeTheta = s.targetTheta + galaxyAngle;
-                
-                // If transitioning, collapse stars into center briefly
-                let currentRadius = s.targetR;
-                if(isTransitioning) {
-                    currentRadius *= (2.5 - blackHolePulse);
-                }
-
-                const x = cx + Math.cos(activeTheta) * currentRadius * stretchX;
-                const y = cy + Math.sin(activeTheta) * currentRadius * stretchY;
-
-                if (s.colorType > 0.75) {
-                    gCtx.fillStyle = '#bce0ff';
-                } else if (s.colorType > 0.25) {
-                    gCtx.fillStyle = '#ffffff';
-                } else {
-                    gCtx.fillStyle = '#ffdcb8';
-                }
-
-                gCtx.shadowColor = gCtx.fillStyle;
-                gCtx.shadowBlur = s.size * 2;
-                gCtx.beginPath();
-                gCtx.arc(x, y, s.size, 0, Math.PI * 2);
-                gCtx.fill();
-                gCtx.shadowBlur = 0;
-            });
-
-            // Soft natural galactic core glow (no rigid circle outline)
-            const coreGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, 65);
-            coreGlow.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-            coreGlow.addColorStop(0.35, 'rgba(255, 230, 200, 0.6)');
-            coreGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            
-            gCtx.fillStyle = coreGlow;
-            gCtx.beginPath();
-            gCtx.arc(cx, cy, 65, 0, Math.PI * 2);
-            gCtx.fill();
-
-            // Active Black Hole with rotating 'V' inside (appears on question send / chat launch)
-            if (blackHolePulse > 0.05) {
-                const bhRadius = 35 + (blackHolePulse * 50);
-                const bhGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, bhRadius * 2);
-                bhGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
-                bhGlow.addColorStop(0.4, 'rgba(255, 120, 30, 0.8)');
-                bhGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                
-                gCtx.fillStyle = bhGlow;
-                gCtx.beginPath();
-                gCtx.arc(cx, cy, bhRadius * 2, 0, Math.PI * 2);
-                gCtx.fill();
-
-                // Rotating ring & 'V'
-                gCtx.save();
-                gCtx.translate(cx, cy);
-                gCtx.rotate(galaxyAngle * 3);
-                gCtx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
-                gCtx.lineWidth = 2.5;
-                gCtx.beginPath();
-                gCtx.arc(0, 0, bhRadius * 0.7, 0, Math.PI * 2);
-                gCtx.stroke();
-                gCtx.restore();
-
-                gCtx.fillStyle = '#ffffff';
-                gCtx.font = `bold ${Math.floor(18 + blackHolePulse * 10)}px 'Google Sans', sans-serif`;
-                gCtx.textAlign = 'center';
-                gCtx.textBaseline = 'middle';
-                gCtx.fillText("V", cx, cy);
-            }
-
-            requestAnimationFrame(renderGalaxy);
-        }
-        requestAnimationFrame(renderGalaxy);
 
         function handleKey(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
@@ -399,12 +289,10 @@
             const text = input.value.trim();
             if (!text) return;
             input.value = '';
-            triggerBlackHolePulse(); // Swells the black hole when sending a message!
             processUserQuery(text);
         }
 
         async function processUserQuery(query) {
-            openChatInterface();
             const stream = document.getElementById('chatStream');
             const userInitial = currentUserName.charAt(0).toUpperCase();
 
@@ -414,132 +302,16 @@
             stream.appendChild(userMsgDiv);
             stream.scrollTop = stream.scrollHeight;
 
-            const uniqueId = 'quantumCanvas_' + Date.now();
-            const thinkingDiv = document.createElement('div');
-            thinkingDiv.className = 'message ai';
-            thinkingDiv.id = 'thinkingBubble';
-            thinkingDiv.innerHTML = `
-                <div class="thinking-stage">
-                    <div class="thinking-v">V</div>
-                    <canvas class="thinking-canvas" id="${uniqueId}" width="36" height="36"></canvas>
-                </div>
-                <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ⚡ Computing live data & math...
-                </div>
-            `;
-            stream.appendChild(thinkingDiv);
-            stream.scrollTop = stream.scrollHeight;
-
-            initQuantumThinkingAnimation(uniqueId);
-
-            let answerHtml = "";
-            const lowerQ = query.toLowerCase();
-            const isWeather = lowerQ.includes('weather') || lowerQ.includes('wethr') || lowerQ.includes('wether') || lowerQ.includes('wetheer') || lowerQ.includes('temp');
-
-            if (isWeather) {
-                let cleanCity = query.replace(/whats|what|is|the|weather|wethr|wether|wetheer|in|for|at|pls|please/gi, '').trim();
-                if (!cleanCity || cleanCity.length < 2) cleanCity = "London";
-                answerHtml = await fetchLiveWeather(cleanCity);
-            } else {
-                await new Promise(r => setTimeout(r, 600));
-                answerHtml = generateUniversalAnswer(query);
-            }
-
-            const bubble = document.getElementById('thinkingBubble');
-            if(bubble) bubble.remove();
+            await new Promise(r => setTimeout(r, 600));
 
             const aiMsgDiv = document.createElement('div');
             aiMsgDiv.className = 'message ai';
             aiMsgDiv.innerHTML = `
                 <div class="message-avatar">V</div>
-                <div class="message-content">${answerHtml}</div>
+                <div class="message-content">I have received your message: <strong>"${escapeHtml(query)}"</strong>. How else can I assist you today, ${currentUserName}?</div>
             `;
             stream.appendChild(aiMsgDiv);
             stream.scrollTop = stream.scrollHeight;
-        }
-
-        async function fetchLiveWeather(city) {
-            try {
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
-                const geoData = await geoRes.json();
-
-                if (!geoData.results || geoData.results.length === 0) {
-                    return `Could not find live weather for "<strong>${escapeHtml(city)}</strong>". Check your spelling!`;
-                }
-
-                const loc = geoData.results[0];
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`);
-                const weatherData = await weatherRes.json();
-
-                const current = weatherData.current;
-                return `* **Location**: ${escapeHtml(loc.name)}, ${escapeHtml(loc.country || '')}<br>` +
-                       `* **Condition**: Clear sky ☀️<br>` +
-                       `* **Temperature**: ${current.temperature_2m}°C<br>` +
-                       `* **Wind Speed**: ${current.wind_speed_10m} km/h`;
-            } catch (err) {
-                return `⚠️ Error fetching live weather network data.`;
-            }
-        }
-
-        function generateUniversalAnswer(q) {
-            let lower = q.toLowerCase();
-
-            if (lower.includes('time') || lower.includes('clock') || lower.includes('date') || lower.includes('day')) {
-                return `The current live time is <strong>${new Date().toLocaleTimeString()}</strong> on <strong>${new Date().toLocaleDateString()}</strong>, ${currentUserName}!`;
-            }
-
-            let mathExpr = q.replace(/[what's|is|\?]/gi, '').trim();
-            mathExpr = mathExpr.replace(/(\d)\s*[xX]\s*(\d)/g, '$1*$2');
-            
-            if (/^[\d\s\+\-\*\/\(\)\.\^]+$/.test(mathExpr) && /\d/.test(mathExpr)) {
-                try {
-                    let result = Function('"use strict";return (' + mathExpr + ')')();
-                    return `### Mathematical Calculation Result<br><br>${escapeHtml(q.replace(/what's|is|\?/gi, '').trim().toUpperCase())} = **${result}**`;
-                } catch(e) {}
-            }
-
-            if (lower.includes('enstine') || lower.includes('einstein') || lower.includes('mass-energy')) {
-                return `### Physics: Einstein's Mass-Energy Equivalence<br><br>E = mc²<br>Where **E** is energy, **m** is mass, and **c** is the speed of light in a vacuum.`;
-            }
-            if (lower.includes('photosynthesis')) {
-                return `### GCSE AQA Biology: Photosynthesis<br><br>6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂`;
-            }
-
-            return `I have analyzed your query: <strong>"${escapeHtml(q)}"</strong>. As your Universal Engine, I am fully ready to help you with science, math, time, and live global data, ${currentUserName}!`;
-        }
-
-        function initQuantumThinkingAnimation(canvasId) {
-            const tCanvas = document.getElementById(canvasId);
-            if (!tCanvas) return;
-            const tCtx = tCanvas.getContext('2d');
-            let tTimer = 0;
-            const tParts = [];
-            for(let i=0; i<8; i++) {
-                tParts.push({ angle: (i/8) * Math.PI * 2, dist: 10, speed: 0.05 + i*0.005 });
-            }
-
-            function drawQuantumThinking() {
-                if(!document.body.contains(tCanvas)) return;
-                tCtx.clearRect(0, 0, 36, 36);
-                tTimer += 0.05;
-
-                tParts.forEach(tp => {
-                    tp.angle += tp.speed;
-                    const d = 8 + Math.sin(tTimer * 3 + tp.angle) * 3;
-                    const x = 18 + Math.cos(tp.angle) * d;
-                    const y = 18 + Math.sin(tp.angle) * d;
-
-                    tCtx.fillStyle = '#ffffff';
-                    tCtx.shadowColor = '#fff';
-                    tCtx.shadowBlur = 6;
-                    tCtx.beginPath();
-                    tCtx.arc(x, y, 2, 0, Math.PI * 2);
-                    tCtx.fill();
-                    tCtx.shadowBlur = 0;
-                });
-                requestAnimationFrame(drawQuantumThinking);
-            }
-            requestAnimationFrame(drawQuantumThinking);
         }
 
         function escapeHtml(str) {
