@@ -62,12 +62,7 @@
         
         .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; min-height: 24px; max-height: 120px; line-height: 1.5; }
         
-        .prompt-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
-        .toolbar-left { display: flex; gap: 8px; align-items: center; }
-        
-        .deep-search-chip { display: flex; align-items: center; gap: 6px; background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 16px; font-size: 13px; color: var(--text-secondary); cursor: pointer; user-select: none; transition: 0.2s; }
-        .deep-search-chip:hover { border-color: #fff; color: var(--text-primary); }
-        .deep-search-chip.active { background-color: #fff; border-color: #fff; color: #000; font-weight: 500; }
+        .prompt-toolbar { display: flex; justify-content: flex-end; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
 
         .message { display: flex; gap: 14px; max-width: 100%; }
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
@@ -81,8 +76,6 @@
         .thinking-stage { position: relative; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: none; }
         .thinking-canvas { position: absolute; top: 0; left: 0; width: 36px; height: 36px; pointer-events: none; }
         .thinking-v { position: absolute; font-size: 12px; font-weight: 700; color: #fff; background: none; }
-        
-        .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 12px 16px; border-radius: 6px; font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; font-family: monospace; border: 1px solid var(--border-color); line-height: 1.5; }
         
         pre { background-color: #0d0d0d; border: 1px solid var(--border-color); padding: 14px; border-radius: 8px; overflow-x: auto; margin: 10px 0; font-family: monospace; font-size: 13.5px; color: #e0e0e0; }
 
@@ -112,10 +105,6 @@
                 <button class="nav-item active-mode" id="navUniversal" onclick="switchEngineMode('universal')">
                     <span class="material-symbols-outlined">auto_awesome</span>
                     Multi-Universal Core
-                </button>
-                <button class="nav-item" id="navDeepSearch" onclick="switchEngineMode('deepsearch')">
-                    <span class="material-symbols-outlined">globe_asia</span>
-                    Deep Search Mode
                 </button>
                 <button class="nav-item" id="navCells" onclick="switchEngineMode('cells')">
                     <span class="material-symbols-outlined">biotech</span>
@@ -151,14 +140,8 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about time, weather with typos, photosynthesis, or math formulas..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about math calculations, live weather, time, or GCSE science..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
-                            <div class="toolbar-left">
-                                <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
-                                    <span class="material-symbols-outlined" style="font-size: 16px;">globe_asia</span>
-                                    <span id="vibeDeepSearchText">Universal Search: Off</span>
-                                </div>
-                            </div>
                             <button class="send-btn" onclick="sendFromVibeScreen()">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
                             </button>
@@ -172,12 +155,6 @@
             <div class="input-box-wrapper">
                 <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event, 'active')"></textarea>
                 <div class="prompt-toolbar" style="border:none; padding-top:0;">
-                    <div class="toolbar-left">
-                        <div class="deep-search-chip" id="activeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
-                            <span class="material-symbols-outlined" style="font-size: 16px;">globe_asia</span>
-                            <span id="activeDeepSearchText">Universal Search: Off</span>
-                        </div>
-                    </div>
                     <button class="send-btn" onclick="sendFromActiveArea()">
                         <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
                     </button>
@@ -189,7 +166,6 @@
 
     <script>
         let currentUserName = "Wahaj";
-        let deepSearchEnabled = false;
 
         function changeUserName() {
             const newName = prompt("Enter your new name:", currentUserName);
@@ -206,14 +182,7 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-mode'));
             if (mode === 'universal') {
                 document.getElementById('navUniversal').classList.add('active-mode');
-                deepSearchEnabled = false;
-                updateSearchChipsUI();
                 document.getElementById('modelBadgeHeader').innerText = "Universal Engine Active";
-            } else if (mode === 'deepsearch') {
-                document.getElementById('navDeepSearch').classList.add('active-mode');
-                deepSearchEnabled = true;
-                updateSearchChipsUI();
-                document.getElementById('modelBadgeHeader').innerText = "Deep Search Mode Active 🌐";
             } else if (mode === 'cells') {
                 document.getElementById('navCells').classList.add('active-mode');
                 triggerModeQuery("cells and specialized cells");
@@ -228,39 +197,6 @@
             if(welcome) welcome.remove();
             document.getElementById('activeInputArea').style.display = 'block';
             processUserQuery(queryText);
-        }
-
-        function toggleDeepSearchFromChip() {
-            deepSearchEnabled = !deepSearchEnabled;
-            updateSearchChipsUI();
-            if (deepSearchEnabled) {
-                document.getElementById('navDeepSearch').classList.add('active-mode');
-                document.getElementById('navUniversal').classList.remove('active-mode');
-                document.getElementById('modelBadgeHeader').innerText = "Deep Search Mode Active 🌐";
-            } else {
-                document.getElementById('navUniversal').classList.add('active-mode');
-                document.getElementById('navDeepSearch').classList.remove('active-mode');
-                document.getElementById('modelBadgeHeader').innerText = "Universal Engine Active";
-            }
-        }
-
-        function updateSearchChipsUI() {
-            const vibeChip = document.getElementById('vibeDeepSearchChip');
-            const activeChip = document.getElementById('activeDeepSearchChip');
-            const vibeText = document.getElementById('vibeDeepSearchText');
-            const activeText = document.getElementById('activeDeepSearchText');
-
-            if (deepSearchEnabled) {
-                if(vibeChip) vibeChip.classList.add('active');
-                if(activeChip) activeChip.classList.add('active');
-                if(vibeText) vibeText.innerText = "Universal Search: On";
-                if(activeText) activeText.innerText = "Universal Search: On";
-            } else {
-                if(vibeChip) vibeChip.classList.remove('active');
-                if(activeChip) activeChip.classList.remove('active');
-                if(vibeText) vibeText.innerText = "Universal Search: Off";
-                if(activeText) activeText.innerText = "Universal Search: Off";
-            }
         }
 
         // Quantum Vortex Welcome Animation
@@ -386,7 +322,7 @@
                     <canvas class="thinking-canvas" id="${uniqueId}" width="36" height="36"></canvas>
                 </div>
                 <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ${deepSearchEnabled ? '🌐 Deep Universal Web Crawling & Neural Processing...' : '⚡ Analyzing Query & Spelling Correction...'}
+                    ⚡ Computing live data & math...
                 </div>
             `;
             stream.appendChild(thinkingDiv);
@@ -397,22 +333,18 @@
             let answerHtml = "";
             const lowerQ = query.toLowerCase();
 
-            // Smart Spelling / Intent Check for Weather (catches wethr, wether, weather, wethe, etc.)
-            const isWeatherQuery = lowerQ.includes('weather') || lowerQ.includes('wethr') || lowerQ.includes('wether') || lowerQ.includes('temp') || lowerQ.includes('forecast');
+            // Check if weather query (with loose typo catching)
+            const isWeather = lowerQ.includes('weather') || lowerQ.includes('wethr') || lowerQ.includes('wether') || lowerQ.includes('wetheer') || lowerQ.includes('temp');
 
-            if (isWeatherQuery) {
-                // Try to extract city name by filtering out common words & typos
+            if (isWeather) {
                 let cleanCity = query
-                    .replace(/whats|what|is|the|weather|wethr|wether|in|for|at|pls|please/gi, '')
+                    .replace(/whats|what|is|the|weather|wethr|wether|wetheer|in|for|at|pls|please/gi, '')
                     .trim();
-                
-                if (!cleanCity || cleanCity.length < 2) {
-                    cleanCity = "London"; // default fallback if city wasn't specified clearly
-                }
-                answerHtml = await fetchLiveWeather(cleanCity, query, deepSearchEnabled);
+                if (!cleanCity || cleanCity.length < 2) cleanCity = "London";
+                answerHtml = await fetchLiveWeather(cleanCity);
             } else {
-                await new Promise(r => setTimeout(r, deepSearchEnabled ? 1400 : 700));
-                answerHtml = generateUniversalAnswer(query, deepSearchEnabled);
+                await new Promise(r => setTimeout(r, 500));
+                answerHtml = generateUniversalAnswer(query);
             }
 
             const bubble = document.getElementById('thinkingBubble');
@@ -428,36 +360,26 @@
             stream.scrollTop = stream.scrollHeight;
         }
 
-        async function fetchLiveWeather(city, rawQuery, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Global Satellite Weather Link Active</strong><br>Corrected typos & queried meteorological tracking for: <em>"${escapeHtml(rawQuery)}"</em></div>` : "";
+        async function fetchLiveWeather(city) {
             try {
                 const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
                 const geoData = await geoRes.json();
 
                 if (!geoData.results || geoData.results.length === 0) {
-                    return reasoning + `Could not locate live weather data for "<strong>${escapeHtml(city)}</strong>". Check the city spelling!`;
+                    return `Could not find live weather for "<strong>${escapeHtml(city)}</strong>". Check your spelling!`;
                 }
 
                 const loc = geoData.results[0];
-                const lat = loc.latitude;
-                const lon = loc.longitude;
-                const fullName = `${loc.name}, ${loc.country || ''}`;
-
-                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`);
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`);
                 const weatherData = await weatherRes.json();
 
                 const current = weatherData.current;
-                const temp = current.temperature_2m;
-                const windSpeed = current.wind_speed_10m;
-                const conditionText = getWeatherDescription(current.weather_code);
-
-                return reasoning + `* **Location**: ${escapeHtml(fullName)}<br>` +
-                                   `* **Condition**: ${conditionText}<br>` +
-                                   `* **Temperature**: ${temp}°C<br>` +
-                                   `* **Wind Speed**: ${windSpeed} km/h`;
-
+                return `* **Location**: ${escapeHtml(loc.name)}, ${escapeHtml(loc.country || '')}<br>` +
+                       `* **Condition**: ${getWeatherDescription(current.weather_code)}<br>` +
+                       `* **Temperature**: ${current.temperature_2m}°C<br>` +
+                       `* **Wind Speed**: ${current.wind_speed_10m} km/h`;
             } catch (err) {
-                return reasoning + `⚠️ Error fetching live weather network data. Please try again!`;
+                return `⚠️ Error fetching live weather network data.`;
             }
         }
 
@@ -467,45 +389,50 @@
                 1: "Mainly clear 🌤️",
                 2: "Partly cloudy ⛅",
                 3: "Overcast / Cloudy ☁️",
-                45: "Foggy 🌫️",
                 51: "Light drizzle 🌦️",
                 61: "Slight rain 🌧️",
-                63: "Moderate rain 🌧️",
-                71: "Slight snow 🌨️",
                 95: "Thunderstorm ⚡"
             };
             return codes[code] || "Clear and comfortable 🌤️";
         }
 
-        function generateUniversalAnswer(q, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Deep Universal Search Matrix Active</strong><br>Parsed global index clusters and synthesized GCSE AQA science/math solutions for: <em>"${escapeHtml(q)}"</em></div>` : "";
+        function generateUniversalAnswer(q) {
             let lower = q.toLowerCase();
 
+            // 1. Time / Date detection
             if (lower.includes('time') || lower.includes('clock') || lower.includes('date') || lower.includes('day')) {
-                return reasoning + `The current live time is <strong>${new Date().toLocaleTimeString()}</strong> on <strong>${new Date().toLocaleDateString()}</strong>, ${currentUserName}!`;
-            }
-            if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-                return reasoning + `Hello ${currentUserName}! Ready to ace your GCSE Science and Math exams today?`;
-            }
-            if (lower.includes('photosynthesis')) {
-                return reasoning + `### GCSE AQA Biology: Photosynthesis<br><br>` +
-                       `<strong>1. Word Equation:</strong><br>Carbon dioxide + Water $\\rightarrow$ Glucose + Oxygen.<br><br>` +
-                       `<strong>2. Balanced Chemical Equation:</strong><br>$$6CO_2 + 6H_2O \\xrightarrow{\\text{light}} C_6H_{12}O_6 + 6O_2$$`;
-            }
-            if (lower.includes('ohm') || lower.includes('current') || lower.includes('voltage')) {
-                return reasoning + `### GCSE AQA Physics: Ohm's Law<br><br>$$V = I \\times R$$<br>Rearranged for current: $$I = \\frac{V}{R}$$`;
-            }
-            if (lower.includes('quadratic') || lower.includes('quadrlitic') || lower.includes('quad')) {
-                return reasoning + `### GCSE Mathematics: Quadratic Formula<br><br>$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`;
-            }
-            if (lower.includes('cell') || lower.includes('biology')) {
-                return reasoning + `### GCSE AQA Biology: Cell Structure<br><br>Animal and plant cells contain a nucleus, cytoplasm, cell membrane, mitochondria, and ribosomes. Plant cells also have a rigid cell wall, permanent vacuole, and chloroplasts.`;
-            }
-            if (lower.includes('periodic') || lower.includes('atom') || lower.includes('chemistry')) {
-                return reasoning + `### GCSE AQA Chemistry: Periodic Table & Atoms<br><br>Elements are arranged in order of atomic number. Groups indicate the number of electrons in the outer shell, and periods represent the number of electron shells.`;
+                return `The current live time is <strong>${new Date().toLocaleTimeString()}</strong> on <strong>${new Date().toLocaleDateString()}</strong>, ${currentUserName}!`;
             }
 
-            return reasoning + `I have analyzed and corrected your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully ready to help you with science, math, time, and live global data, ${currentUserName}!`;
+            // 2. Math Calculation Solver (e.g. 57849x5674 or 50*20)
+            let mathExpr = q.replace(/[what's|is|\?]/gi, '').trim();
+            // Replace 'x' or 'X' with '*' for multiplication if used as math operator between numbers
+            mathExpr = mathExpr.replace(/(\d)\s*[xX]\s*(\d)/g, '$1*$2');
+            
+            // Check if it looks like a valid mathematical expression with numbers and operators
+            if (/^[\d\s\+\-\*\/\(\)\.\^]+$/.test(mathExpr) && /\d/.test(mathExpr)) {
+                try {
+                    // Safe calculation evaluation
+                    let result = Function('"use strict";return (' + mathExpr + ')')();
+                    return `### Mathematical Calculation Result<br><br>$$${escapeHtml(q.replace(/what's|is|\?/gi, '').trim().toUpperCase())} = ${result}$$`;
+                } catch(e) {}
+            }
+
+            // 3. GCSE Science & Physics Typos / Formulas
+            if (lower.includes('enstine') || lower.includes('einstein') || lower.includes('mass-energy')) {
+                return `### Physics: Einstein's Mass-Energy Equivalence<br><br>$$E = mc^2$$<br>Where **E** is energy, **m** is mass, and **c** is the speed of light in a vacuum.`;
+            }
+            if (lower.includes('photosynthesis')) {
+                return `### GCSE AQA Biology: Photosynthesis<br><br>$$6CO_2 + 6H_2O \\xrightarrow{\\text{light}} C_6H_{12}O_6 + 6O_2$$`;
+            }
+            if (lower.includes('ohm') || lower.includes('current')) {
+                return `### GCSE AQA Physics: Ohm's Law<br><br>$$V = I \\times R$$`;
+            }
+            if (lower.includes('quadratic') || lower.includes('quadrlitic')) {
+                return `### GCSE Mathematics: Quadratic Formula<br><br>$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`;
+            }
+
+            return `I have analyzed your query: <strong>"${escapeHtml(q)}"</strong>. As your Universal Engine, I am fully ready to help you with science, math, time, and live global data, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
