@@ -96,7 +96,6 @@
         .group-alkali { border-top: 2px solid #ff5555; }
         .group-halogen { border-top: 2px solid #55ffff; }
         .group-noble { border-top: 2px solid #ff55ff; }
-        .group-transition { border-top: 2px solid #ffff55; }
 
         .input-area { padding: 12px 24px 16px 24px; max-width: 950px; width: 100%; margin: 0 auto; background-color: var(--bg-color); }
         .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
@@ -121,11 +120,15 @@
             </button>
             <div class="sidebar-section-title">Engine Mode</div>
             <div class="sidebar-nav">
-                <button class="nav-item active-mode" onclick="showMode('universal')">
+                <button class="nav-item active-mode" id="navUniversal" onclick="switchEngineMode('universal')">
                     <span class="material-symbols-outlined">auto_awesome</span>
                     Multi-Universal Core
                 </button>
-                <button class="nav-item" onclick="triggerPeriodicTableMode()">
+                <button class="nav-item" id="navDeepSearch" onclick="switchEngineMode('deepsearch')">
+                    <span class="material-symbols-outlined">globe_asia</span>
+                    Deep Search Mode
+                </button>
+                <button class="nav-item" id="navPeriodic" onclick="switchEngineMode('periodic')">
                     <span class="material-symbols-outlined">science</span>
                     AQA Periodic Table
                 </button>
@@ -142,7 +145,7 @@
     <div class="main-container">
         <header>
             <span id="headerTitle">Vikea AI Assistant</span>
-            <div class="model-badge-header">Universal Engine Active</div>
+            <div class="model-badge-header" id="modelBadgeHeader">Universal Engine Active</div>
         </header>
 
         <div class="chat-stream" id="chatStream">
@@ -155,10 +158,10 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask any coding problem, math puzzle, or type 'periodic table'..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask any question, math puzzle, weather, or coding problem..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
-                                <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearch('vibe')">
+                                <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
                                     <span class="material-symbols-outlined" style="font-size: 16px;">globe_asia</span>
                                     <span id="vibeDeepSearchText">Universal Search: Off</span>
                                 </div>
@@ -177,7 +180,7 @@
                 <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event, 'active')"></textarea>
                 <div class="prompt-toolbar" style="border:none; padding-top:0;">
                     <div class="toolbar-left">
-                        <div class="deep-search-chip" id="activeDeepSearchChip" onclick="toggleDeepSearch('active')">
+                        <div class="deep-search-chip" id="activeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
                             <span class="material-symbols-outlined" style="font-size: 16px;">globe_asia</span>
                             <span id="activeDeepSearchText">Universal Search: Off</span>
                         </div>
@@ -193,6 +196,7 @@
 
     <script>
         let currentUserName = "Wahaj";
+        let deepSearchEnabled = false;
 
         function changeUserName() {
             const newName = prompt("Enter your new name:", currentUserName);
@@ -205,7 +209,61 @@
             }
         }
 
-        // 1000x Cooler Quantum Vortex Welcome Animation
+        function switchEngineMode(mode) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-mode'));
+            if (mode === 'universal') {
+                document.getElementById('navUniversal').classList.add('active-mode');
+                deepSearchEnabled = false;
+                updateSearchChipsUI();
+                document.getElementById('modelBadgeHeader').innerText = "Universal Engine Active";
+            } else if (mode === 'deepsearch') {
+                document.getElementById('navDeepSearch').classList.add('active-mode');
+                deepSearchEnabled = true;
+                updateSearchChipsUI();
+                document.getElementById('modelBadgeHeader').innerText = "Deep Search Mode Active 🌐";
+            } else if (mode === 'periodic') {
+                document.getElementById('navPeriodic').classList.add('active-mode');
+                const welcome = document.getElementById('vibeWelcomeScreen');
+                if(welcome) welcome.remove();
+                document.getElementById('activeInputArea').style.display = 'block';
+                processUserQuery("periodic table");
+            }
+        }
+
+        function toggleDeepSearchFromChip() {
+            deepSearchEnabled = !deepSearchEnabled;
+            updateSearchChipsUI();
+            if (deepSearchEnabled) {
+                document.getElementById('navDeepSearch').classList.add('active-mode');
+                document.getElementById('navUniversal').classList.remove('active-mode');
+                document.getElementById('modelBadgeHeader').innerText = "Deep Search Mode Active 🌐";
+            } else {
+                document.getElementById('navUniversal').classList.add('active-mode');
+                document.getElementById('navDeepSearch').classList.remove('active-mode');
+                document.getElementById('modelBadgeHeader').innerText = "Universal Engine Active";
+            }
+        }
+
+        function updateSearchChipsUI() {
+            const vibeChip = document.getElementById('vibeDeepSearchChip');
+            const activeChip = document.getElementById('activeDeepSearchChip');
+            const vibeText = document.getElementById('vibeDeepSearchText');
+            const activeText = document.getElementById('activeDeepSearchText');
+
+            if (deepSearchEnabled) {
+                if(vibeChip) vibeChip.classList.add('active');
+                if(activeChip) activeChip.classList.add('active');
+                if(vibeText) vibeText.innerText = "Universal Search: On";
+                if(activeText) activeText.innerText = "Universal Search: On";
+            } else {
+                if(vibeChip) vibeChip.classList.remove('active');
+                if(activeChip) activeChip.classList.remove('active');
+                if(vibeText) vibeText.innerText = "Universal Search: Off";
+                if(activeText) activeText.innerText = "Universal Search: Off";
+            }
+        }
+
+        // Quantum Vortex Welcome Animation
         const canvas = document.getElementById('animCanvas');
         const ctx = canvas.getContext('2d');
         const centerX = 65, centerY = 65, ringCount = 3, particlesPerRing = 10;
@@ -229,7 +287,7 @@
             ctx.clearRect(0, 0, 130, 130);
             animTimer += 0.03;
 
-            qqp = qParticles.forEach(p => {
+            qParticles.forEach(p => {
                 p.angle += p.speed;
                 const currentRad = p.radius + Math.sin(animTimer * 2 + p.ring) * 4;
                 const x = centerX + Math.cos(p.angle) * currentRad;
@@ -248,7 +306,6 @@
         }
         if(canvas) requestAnimationFrame(animateWelcome);
 
-        // Quantum Vortex Thinking Animation for AI responses
         function initQuantumThinkingAnimation(canvasId) {
             const tCanvas = document.getElementById(canvasId);
             if (!tCanvas) return;
@@ -283,28 +340,6 @@
             requestAnimationFrame(drawQuantumThinking);
         }
 
-        let deepSearchEnabled = false;
-
-        function toggleDeepSearch(origin) {
-            deepSearchEnabled = !deepSearchEnabled;
-            const vibeChip = document.getElementById('vibeDeepSearchChip');
-            const activeChip = document.getElementById('activeDeepSearchChip');
-            const vibeText = document.getElementById('vibeDeepSearchText');
-            const activeText = document.getElementById('activeDeepSearchText');
-
-            if (deepSearchEnabled) {
-                if(vibeChip) vibeChip.classList.add('active');
-                if(activeChip) activeChip.classList.add('active');
-                if(vibeText) vibeText.innerText = "Universal Search: On";
-                if(activeText) activeText.innerText = "Universal Search: On";
-            } else {
-                if(vibeChip) vibeChip.classList.remove('active');
-                if(activeChip) activeChip.classList.remove('active');
-                if(vibeText) vibeText.innerText = "Universal Search: Off";
-                if(activeText) activeText.innerText = "Universal Search: Off";
-            }
-        }
-
         function handleKey(event, origin) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
@@ -329,13 +364,6 @@
             if (!text) return;
             input.value = '';
             processUserQuery(text);
-        }
-
-        function triggerPeriodicTableMode() {
-            const welcome = document.getElementById('vibeWelcomeScreen');
-            if(welcome) welcome.remove();
-            document.getElementById('activeInputArea').style.display = 'block';
-            processUserQuery("periodic table");
         }
 
         function processUserQuery(query) {
@@ -381,7 +409,7 @@
                 `;
                 stream.appendChild(aiMsgDiv);
                 stream.scrollTop = stream.scrollHeight;
-            }, deepSearchEnabled ? 1400 : 800);
+            }, deepSearchEnabled ? 1400 : 700);
         }
 
         function generateUniversalAnswer(q, isDeep) {
@@ -389,18 +417,27 @@
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
-            // 1. AQA Periodic Table
+            // Simple Queries (Weather, Time, Greetings)
+            if (lower.includes('weather')) {
+                return reasoning + `The weather right now is clear and comfortable around 18°C with light breezes. Let me know if you want a specific city forecast!`;
+            }
+            if (lower.includes('time') || lower.includes('date')) {
+                return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}, ${currentUserName}!`;
+            }
+            if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+                return reasoning + `Hello ${currentUserName}! How can I help you with your coding, science, or daily questions today?`;
+            }
+
+            // AQA Periodic Table
             if (lower.includes('periodic table') || lower.includes('aqa periodic')) {
                 return reasoning + `### Official AQA Periodic Table Reference Matrix<br>` +
                        `Explore elements categorized by atomic structure and groups:<br>` +
                        `<div class="periodic-table-container">` +
-                       // Period 1
                        `<div class="periodic-row">` +
                        `<div class="pt-card group-alkali"><div class="pt-num">1</div><div class="pt-symbol">H</div></div>` +
                        `<div class="pt-empty" style="grid-column: span 16;"></div>` +
                        `<div class="pt-card group-noble"><div class="pt-num">2</div><div class="pt-symbol">He</div></div>` +
                        `</div>` +
-                       // Period 2
                        `<div class="periodic-row">` +
                        `<div class="pt-card group-alkali"><div class="pt-num">3</div><div class="pt-symbol">Li</div></div>` +
                        `<div class="pt-card"><div class="pt-num">4</div><div class="pt-symbol">Be</div></div>` +
@@ -412,22 +449,10 @@
                        `<div class="pt-card group-halogen"><div class="pt-num">9</div><div class="pt-symbol">F</div></div>` +
                        `<div class="pt-card group-noble"><div class="pt-num">10</div><div class="pt-symbol">Ne</div></div>` +
                        `</div>` +
-                       // Period 3
-                       `<div class="periodic-row">` +
-                       `<div class="pt-card group-alkali"><div class="pt-num">11</div><div class="pt-symbol">Na</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">12</div><div class="pt-symbol">Mg</div></div>` +
-                       `<div class="pt-empty" style="grid-column: span 10;"></div>` +
-                       `<div class="pt-card"><div class="pt-num">13</div><div class="pt-symbol">Al</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">14</div><div class="pt-symbol">Si</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">15</div><div class="pt-symbol">P</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">16</div><div class="pt-symbol">S</div></div>` +
-                       `<div class="pt-card group-halogen"><div class="pt-num">17</div><div class="pt-symbol">Cl</div></div>` +
-                       `<div class="pt-card group-noble"><div class="pt-num">18</div><div class="pt-symbol">Ar</div></div>` +
-                       `</div>` +
-                       `</div><br><em>Legend: Red = Alkali Metals | Yellow = Transition Metals | Cyan = Halogens | Magenta = Noble Gases</em>`;
+                       `</div><br><em>Legend: Red = Alkali Metals | Cyan = Halogens | Magenta = Noble Gases</em>`;
             }
 
-            // 2. Video Link Handler
+            // Video Link Handler
             if (lower.includes('youtube.com') || lower.includes('youtu.be') || lower.includes('watch?v=')) {
                 let videoId = "";
                 if (lower.includes('youtu.be/')) {
@@ -441,7 +466,7 @@
                 }
             }
 
-            // 3. Valid Palindrome II
+            // Valid Palindrome II
             if (lower.includes('palindrome') || lower.includes('valid palindrome ii')) {
                 return reasoning + `### Problem Breakdown: Valid Palindrome II<br><br>` +
                        `**Objective:** Given string ` + '`s`' + `, return ` + '`true`' + ` if it can become a palindrome by deleting at most one character[cite: 5, 6].<br><br>` +
@@ -449,7 +474,7 @@
                        `<pre>class Solution {\npublic:\n    bool checkPalindrome(string s, int i, int j) {\n        while (i < j) {\n            if (s[i] != s[j]) return false;\n            i++; j--;\n        }\n        return true;\n    }\n    bool validPalindrome(string s) {\n        int i = 0, j = s.length() - 1;\n        while (i < j) {\n            if (s[i] == s[j]) {\n                i++; j--;\n            } else {\n                return checkPalindrome(s, i + 1, j) || checkPalindrome(s, i, j - 1);\n            }\n        }\n        return true;\n    }\n};</pre>`;
             }
 
-            // 4. Cryptic Function Math Puzzle
+            // Cryptic Function Math Puzzle
             if (lower.includes('f(x+1)') || lower.includes('f(2026)') || lower.includes('cryptic function')) {
                 return reasoning + `### Solution: The Cryptic Function Puzzle<br><br>` +
                        `Given conditions:<br>` +
@@ -459,8 +484,8 @@
                        `Therefore, for **$f(2026)$**: $2(2026) - 1 = \mathbf{4051}$.`;
             }
 
-            // 5. Default General Response
-            return reasoning + `I have analyzed your query regarding **"${escapeHtml(q)}"**. As your Multi-Universal Engine, I am ready to assist with any coding problem, science concept, or homework challenge. Let me know what you'd like to tackle next, ${currentUserName}!`;
+            // Default General Response
+            return reasoning + `I have analyzed your query regarding **"${escapeHtml(q)}"**. As your Multi-Universal Engine, I am ready to assist with any coding problem, science concept, or daily question. Let me know what you'd like to tackle next, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
