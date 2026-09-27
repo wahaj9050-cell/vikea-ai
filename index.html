@@ -60,7 +60,6 @@
         .glow-border-wrapper { position: relative; width: 100%; max-width: 720px; border-radius: 28px; padding: 1px; background: #333; border: 1px solid var(--border-color); }
         .centered-prompt-box { background-color: var(--surface-color); border-radius: 27px; padding: 14px 18px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
         
-        /* Fixed textarea styling */
         .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; min-height: 24px; max-height: 120px; line-height: 1.5; }
         
         .prompt-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
@@ -152,7 +151,7 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about photosynthesis, Ohm's law, quadratic formula, or vaccines..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about photosynthesis, live weather in any city, or GCSE formulas..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
                                 <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
@@ -367,7 +366,7 @@
             processUserQuery(text);
         }
 
-        function processUserQuery(query) {
+        async function processUserQuery(query) {
             const stream = document.getElementById('chatStream');
             const userInitial = currentUserName.charAt(0).toUpperCase();
 
@@ -387,7 +386,7 @@
                     <canvas class="thinking-canvas" id="${uniqueId}" width="36" height="36"></canvas>
                 </div>
                 <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ${deepSearchEnabled ? '🌐 Deep Universal Web Crawling & Neural Processing...' : '⚡ Initializing Quantum Vortex Engine...'}
+                    ${deepSearchEnabled ? '🌐 Deep Universal Web Crawling & Neural Processing...' : '⚡ Fetching Live Global Data...'}
                 </div>
             `;
             stream.appendChild(thinkingDiv);
@@ -395,22 +394,87 @@
 
             initQuantumThinkingAnimation(uniqueId);
 
-            setTimeout(() => {
-                const bubble = document.getElementById('thinkingBubble');
-                if(bubble) bubble.remove();
+            let answerHtml = "";
+            const lowerQ = query.toLowerCase();
 
-                const aiMsgDiv = document.createElement('div');
-                aiMsgDiv.className = 'message ai';
-                
-                let answerHtml = generateUniversalAnswer(query, deepSearchEnabled);
+            // Check if query is asking for weather
+            if (lowerQ.includes('weather')) {
+                // Extract city name after "weather in" or "weather for" or default to Bolton/London
+                let cityName = "London";
+                let match = query.match(/weather\s+(?:in|for|at)\s+([a-zA-Z\s]+)/i);
+                if (match && match[1]) {
+                    cityName = match[1].trim();
+                }
+                answerHtml = await fetchLiveWeather(cityName, query, deepSearchEnabled);
+            } else {
+                // Standard AI / GCSE answers
+                await new Promise(r => setTimeout(r, deepSearchEnabled ? 1400 : 700));
+                answerHtml = generateUniversalAnswer(query, deepSearchEnabled);
+            }
 
-                aiMsgDiv.innerHTML = `
-                    <div class="message-avatar">V</div>
-                    <div class="message-content">${answerHtml}</div>
-                `;
-                stream.appendChild(aiMsgDiv);
-                stream.scrollTop = stream.scrollHeight;
-            }, deepSearchEnabled ? 1400 : 700);
+            const bubble = document.getElementById('thinkingBubble');
+            if(bubble) bubble.remove();
+
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+            aiMsgDiv.innerHTML = `
+                <div class="message-avatar">V</div>
+                <div class="message-content">${answerHtml}</div>
+            `;
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        async function fetchLiveWeather(city, rawQuery, isDeep) {
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 <strong>Global Satellite Weather Link Active</strong><br>Queried meteorological tracking stations for: <em>"${escapeHtml(rawQuery)}"</em></div>` : "";
+            try {
+                // 1. Geocode city name to lat/lon using Open-Meteo free geocoding API
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+                const geoData = await geoRes.json();
+
+                if (!geoData.results || geoData.results.length === 0) {
+                    return reasoning + `Could not locate live weather data for "<strong>${escapeHtml(city)}</strong>". Please check the spelling of the city or country!`;
+                }
+
+                const loc = geoData.results[0];
+                const lat = loc.latitude;
+                const lon = loc.longitude;
+                const fullName = `${loc.name}, ${loc.country || ''}`;
+
+                // 2. Fetch real-time weather from Open-Meteo
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`);
+                const weatherData = await weatherRes.json();
+
+                const current = weatherData.current;
+                const temp = current.temperature_2m;
+                const windSpeed = current.wind_speed_10m;
+                const conditionText = getWeatherDescription(current.weather_code);
+
+                return reasoning + `* **Location**: ${escapeHtml(fullName)}<br>` +
+                                   `* **Condition**: ${conditionText}<br>` +
+                                   `* **Temperature**: ${temp}°C<br>` +
+                                   `* **Wind Speed**: ${windSpeed} km/h`;
+
+            } catch (err) {
+                return reasoning + `⚠️ Error fetching live weather network data. Please try again!`;
+            }
+        }
+
+        function getWeatherDescription(code) {
+            // WMO Weather interpretation codes (Open-Meteo standard)
+            const codes = {
+                0: "Clear sky ☀️",
+                1: "Mainly clear 🌤️",
+                2: "Partly cloudy ⛅",
+                3: "Overcast / Cloudy ☁️",
+                45: "Foggy 🌫️",
+                51: "Light drizzle 🌦️",
+                61: "Slight rain 🌧️",
+                63: "Moderate rain 🌧️",
+                71: "Slight snow 🌨️",
+                95: "Thunderstorm ⚡"
+            };
+            return codes[code] || "Clear and comfortable 🌤️";
         }
 
         function generateUniversalAnswer(q, isDeep) {
@@ -418,9 +482,6 @@
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
-            if (lower.includes('weather')) {
-                return reasoning + `The weather right now is clear and comfortable around 18°C with light breezes.`;
-            }
             if (lower.includes('time') || lower.includes('date')) {
                 return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}, ${currentUserName}!`;
             }
@@ -435,7 +496,7 @@
             if (lower.includes('ohm') || lower.includes('current')) {
                 return reasoning + `### GCSE AQA Physics: Ohm's Law<br><br>$$V = I \\times R$$<br>Rearranged for current: $$I = \\frac{V}{R}$$`;
             }
-            if (lower.includes('quadratic')) {
+            if (lower.includes('quadratic') || lower.includes('quadrlitic')) {
                 return reasoning + `### GCSE Mathematics: Quadratic Formula<br><br>$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`;
             }
             if (lower.includes('vaccine')) {
