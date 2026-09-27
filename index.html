@@ -59,7 +59,9 @@
         .welcome-title-vibe { font-size: 38px; font-weight: 500; color: #fff; text-align: center; letter-spacing: -0.5px; }
         .glow-border-wrapper { position: relative; width: 100%; max-width: 720px; border-radius: 28px; padding: 1px; background: #333; border: 1px solid var(--border-color); }
         .centered-prompt-box { background-color: var(--surface-color); border-radius: 27px; padding: 14px 18px; width: 100%; display: flex; flex-direction: column; gap: 12px; }
-        .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; }
+        
+        /* Fixed textarea styling */
+        .centered-textarea { background: none; border: none; color: var(--text-primary); font-size: 16px; resize: none; outline: none; width: 100%; min-height: 24px; max-height: 120px; line-height: 1.5; }
         
         .prompt-toolbar { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
         .toolbar-left { display: flex; gap: 8px; align-items: center; }
@@ -84,22 +86,10 @@
         .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 12px 16px; border-radius: 6px; font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; font-family: monospace; border: 1px solid var(--border-color); line-height: 1.5; }
         
         pre { background-color: #0d0d0d; border: 1px solid var(--border-color); padding: 14px; border-radius: 8px; overflow-x: auto; margin: 10px 0; font-family: monospace; font-size: 13.5px; color: #e0e0e0; }
-        
-        /* AQA Periodic Table & Science Cards */
-        .periodic-table-container { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 8px; }
-        .periodic-row { display: grid; grid-template-columns: repeat(18, minmax(38px, 1fr)); gap: 4px; }
-        .pt-card { background: #141414; border: 1px solid var(--border-color); border-radius: 4px; padding: 4px 2px; text-align: center; font-size: 10px; transition: 0.15s; cursor: pointer; }
-        .pt-card:hover { border-color: #fff; background: #222; transform: scale(1.08); z-index: 10; }
-        .pt-symbol { font-size: 13px; font-weight: bold; color: #fff; }
-        .pt-num { font-size: 8px; color: var(--text-secondary); }
-        .pt-empty { background: transparent; border: none; pointer-events: none; }
-        .group-alkali { border-top: 2px solid #ff5555; }
-        .group-halogen { border-top: 2px solid #55ffff; }
-        .group-noble { border-top: 2px solid #ff55ff; }
 
         .input-area { padding: 12px 24px 16px 24px; max-width: 950px; width: 100%; margin: 0 auto; background-color: var(--bg-color); }
         .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
-        #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; }
+        #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; min-height: 24px; }
         
         .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; }
         .send-btn:hover { opacity: 0.85; transform: scale(1.05); }
@@ -162,7 +152,7 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about photosynthesis, Ohm's law, quadratic formula, or vaccines..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about photosynthesis, Ohm's law, quadratic formula, or vaccines..." rows="2" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
                                 <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
@@ -428,125 +418,31 @@
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
-            // Simple Queries (Weather, Time, Greetings)
             if (lower.includes('weather')) {
                 return reasoning + `The weather right now is clear and comfortable around 18°C with light breezes.`;
             }
             if (lower.includes('time') || lower.includes('date')) {
-                return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()},${currentUserName}!`;
+                return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}, ${currentUserName}!`;
             }
             if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
                 return reasoning + `Hello ${currentUserName}! Ready to ace your GCSE Science and Math exams today?`;
             }
-
-            // 1. Photosynthesis
             if (lower.includes('photosynthesis')) {
                 return reasoning + `### GCSE AQA Biology: Photosynthesis<br><br>` +
-                       `<strong>1. Word Equation:</strong><br>` +
-                       `Carbon dioxide + Water $\\rightarrow$ Glucose + Oxygen (in the presence of light and chlorophyll).<br><br>` +
-                       `<strong>2. Balanced Chemical Equation:</strong><br>` +
-                       `$$6CO_2 + 6H_2O \\xrightarrow{\\text{light}} C_6H_{12}O_6 + 6O_2$$
-<br>` +
-                       `<strong>3. Key Details:</strong><br>` +
-                       `* It is an **endothermic reaction** because it absorbs energy from the environment (sunlight).<br>` +
-                       `* Takes place inside chloroplasts within plant leaf cells.`;
+                       `<strong>1. Word Equation:</strong><br>Carbon dioxide + Water $\\rightarrow$ Glucose + Oxygen.<br><br>` +
+                       `<strong>2. Balanced Chemical Equation:</strong><br>$$6CO_2 + 6H_2O \\xrightarrow{\\text{light}} C_6H_{12}O_6 + 6O_2$$`;
             }
-
-            // 2. Ohm's Law & Physics
-            if (lower.includes('ohm') || lower.includes('current') || lower.includes('resistance')) {
-                return reasoning + `### GCSE AQA Physics: Ohm's Law & Electrical Circuits<br><br>` +
-                       `<strong>1. The Formula:</strong><br>` +
-                       `$$V = I \\times R$$
-<br>` +
-                       `* **V** = Potential Difference (Voltage) in Volts (V)<br>` +
-                       `* **I** = Current in Amperes (A)<br>` +
-                       `* **R** = Resistance in Ohms ($\\Omega$)<br><br>` +
-                       `<strong>2. Calculating Current ($I$):</strong><br>` +
-                       `If you need to find current, rearrange the formula to: $$I = \\frac{V}{R}$$<br>` +
-                       `<em>Example:</em> If a 12V battery is connected to a 4$\\Omega$ resistor, the current is $12 / 4 = 3\\text{A}$.`;
+            if (lower.includes('ohm') || lower.includes('current')) {
+                return reasoning + `### GCSE AQA Physics: Ohm's Law<br><br>$$V = I \\times R$$<br>Rearranged for current: $$I = \\frac{V}{R}$$`;
             }
-
-            // 3. Quadratic Formula (Math)
             if (lower.includes('quadratic')) {
-                return reasoning + `### GCSE Mathematics: The Quadratic Formula<br><br>` +
-                       `<strong>1. The Formula:</strong><br>` +
-                       `Used to find the roots (solutions) of any quadratic equation in the standard form $ax^2 + bx + c = 0$:<br>` +
-                       $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$<br>` +
-                       `<strong>2. Step-by-Step Breakdown:</strong><br>` +
-                       `* Identify coefficients $a$, $b$, and $c$ from your equation.<br>` +
-                       `* Substitute them into the formula.<br>` +
-                       `* Calculate the discriminant ($\\Delta = b^2 - 4ac$) to find how many solutions exist (positive = 2 solutions, zero = 1 solution, negative = no real solutions).`;
+                return reasoning + `### GCSE Mathematics: Quadratic Formula<br><br>$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$`;
+            }
+            if (lower.includes('vaccine')) {
+                return reasoning + `### GCSE AQA Biology: Vaccines<br><br>Dead or inactive pathogens are introduced to stimulate white blood cells to produce matching antibodies and memory cells.`;
             }
 
-            // 4. Vaccines (Biology)
-            if (lower.includes('vaccine') || lower.includes('vaccines')) {
-                return reasoning + `### GCSE AQA Biology: How Vaccines Work<br><br>` +
-                       `<strong>1. The Process:</strong><br>` +
-                       `* A small amount of **dead, weakened, or inactive pathogen** is injected into the body.<br>` +
-                       `* White blood cells (**lymphocytes**) detect the foreign antigens on the pathogen.<br>` +
-                       `* Lymphocytes produce specific complementary **antibodies** to destroy the pathogen.<br><br>` +
-                       `<strong>2. Long-term Immunity:</strong><br>` +
-                       `* **Memory cells** remain in the blood. If the live pathogen enters later, antibodies are produced *much faster* and in *larger quantities*, preventing infection before symptoms show.`;
-            }
-
-            // GCSE Diseases (Communicable & Non-Communicable)
-            if (lower.includes('disease') || lower.includes('comunible') || lower.includes('communicable') || lower.includes('health')) {
-                return reasoning + `### GCSE AQA Biology: Communicable vs Non-Communicable Diseases<br><br>` +
-                       `<strong>1. Communicable (Infectious) Diseases:</strong><br>` +
-                       `* **Definition:** Diseases that **can** be spread from person to person or between animals and people.<br>` +
-                       `* **Cause:** Caused by pathogens such as **bacteria, viruses, fungi, and protists**.<br>` +
-                       `* **Examples:** Measles, Malaria, Salmonella, and HIV/AIDS.<br><br>` +
-                       `<strong>2. Non-Communicable Diseases:</strong><br>` +
-                       `* **Definition:** Diseases that **cannot** be spread between organisms; they are not caused by pathogens.<br>` +
-                       `* **Cause:** Caused by genetics, lifestyle factors (like diet, smoking, lack of exercise), or environmental exposures.<br>` +
-                       `* **Examples:** Cardiovascular disease (heart disease), most types of cancer, type 2 diabetes, and chronic lung diseases.`;
-            }
-
-            // GCSE Cell Biology & Specialized Cells
-            if (lower.includes('cell') || lower.includes('specialised') || lower.includes('specialized')) {
-                return reasoning + `### GCSE AQA Biology: Cell Structure & Specialised Cells<br><br>` +
-                       `<strong>1. Eukaryotic vs Prokaryotic Cells:</strong><br>` +
-                       `* <strong>Animal & Plant Cells (Eukaryotic):</strong> Contain a distinct nucleus, cell membrane, cytoplasm, and mitochondria.<br>` +
-                       `* <strong>Bacterial Cells (Prokaryotic):</strong> Much smaller, do not have a true nucleus (genetic material floats in cytoplasm as a single DNA loop/plasmids).<br><br>` +
-                       `<strong>2. Key Specialized Cells & Adaptations:</strong><br>` +
-                       `* <strong>Sperm Cell:</strong> Tail (flagellum) to swim to the egg; lots of mitochondria for energy; acrosome containing enzymes to digest egg membrane.<br>` +
-                       `* <strong>Root Hair Cell:</strong> Large surface area to absorb water and mineral ions efficiently; no chloroplasts (underground).<br>` +
-                       `* <strong>Xylem Cell:</strong> Hollow, dead tubes strengthened with lignin to transport water up plants.<br>` +
-                       `* <strong>Phloem Cell:</strong> Sieve tubes with companion cells to transport dissolved sugars up and down.`;
-            }
-
-            // AQA Periodic Table & Atoms
-            if (lower.includes('periodic table') || lower.includes('aqa periodic') || lower.includes('atom') || lower.includes('group')) {
-                return reasoning + `### GCSE AQA Chemistry: Atoms & Periodic Table Reference Matrix<br><br>` +
-                       `<strong>Atomic Structure Basics:</strong><br>` +
-                       `* <strong>Protons:</strong> Charge +1, Mass 1 (located in nucleus).<br>` +
-                       `* <strong>Neutrons:</strong> Charge 0, Mass 1 (located in nucleus).<br>` +
-                       `* <strong>Electrons:</strong> Charge -1, Mass very small (orbiting in shells).<br>` +
-                       `* <strong>Atomic Number:</strong> Number of protons (bottom number).<br>` +
-                       `* <strong>Mass Number:</strong> Total protons + neutrons (top number).<br><br>` +
-                       `<strong>Key Periodic Table Groups:</strong><br>` +
-                       `<div class="periodic-table-container">` +
-                       `<div class="periodic-row">` +
-                       `<div class="pt-card group-alkali"><div class="pt-num">1</div><div class="pt-symbol">H</div></div>` +
-                       `<div class="pt-empty" style="grid-column: span 16;"></div>` +
-                       `<div class="pt-card group-noble"><div class="pt-num">2</div><div class="pt-symbol">He</div></div>` +
-                       `</div>` +
-                       `<div class="periodic-row">` +
-                       `<div class="pt-card group-alkali"><div class="pt-num">3</div><div class="pt-symbol">Li</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">4</div><div class="pt-symbol">Be</div></div>` +
-                       `<div class="pt-empty" style="grid-column: span 10;"></div>` +
-                       `<div class="pt-card"><div class="pt-num">5</div><div class="pt-symbol">B</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">6</div><div class="pt-symbol">C</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">7</div><div class="pt-symbol">N</div></div>` +
-                       `<div class="pt-card"><div class="pt-num">8</div><div class="pt-symbol">O</div></div>` +
-                       `<div class="pt-card group-halogen"><div class="pt-num">9</div><div class="pt-symbol">F</div></div>` +
-                       `<div class="pt-card group-noble"><div class="pt-num">10</div><div class="pt-symbol">Ne</div></div>` +
-                       `</div>` +
-                       `</div><br><em>Legend: Red = Group 1 (Alkali Metals) | Cyan = Group 7 (Halogens) | Magenta = Group 0 (Noble Gases)</em>`;
-            }
-
-            // Default General Response
-            return reasoning + `I have analyzed your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully equipped to help with AQA Biology, Chemistry, Physics, and Math, ${currentUserName}!`;
+            return reasoning + `I have analyzed your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully ready to help you, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
