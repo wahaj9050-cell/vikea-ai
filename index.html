@@ -3,68 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI v1.6</title>
+    <title>Vikea AI v1.7</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         :root {
-            --bg-color: #000000;
-            --sidebar-bg: #0a0a0a;
-            --surface-color: #121212;
-            --surface-hover: #1f1f1f;
+            --bg-color: #050508;
+            --sidebar-bg: #09090e;
+            --surface-color: #12121a;
+            --surface-hover: #1c1c28;
             --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --border-color: #262626;
+            --text-secondary: #94a3b8;
+            --border-color: #1e1e2f;
+            --accent-color: #6366f1;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
-        ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #050508; }
+        ::-webkit-scrollbar-thumb { background: #27273a; border-radius: 4px; }
 
         body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
         
         aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; z-index: 10; }
-        .sidebar-top { display: flex; flex-direction: column; gap: 16px; }
+        .sidebar-top { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 80px); padding-right: 4px; }
         .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; color: #fff; }
-        .brand-logo-icon { width: 28px; height: 28px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: #fff; }
+        .brand-logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: #fff; }
         
         .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
-        .new-chat-btn:hover { background-color: #333; }
+        .new-chat-btn:hover { background-color: #2a2a3b; }
 
-        .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); margin: 12px 0 4px 8px; font-weight: 600; }
+        .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); margin: 8px 0 4px 8px; font-weight: 600; }
         .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
-        .nav-item { background: none; border: none; color: var(--text-secondary); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; text-align: left; width: 100%; transition: 0.2s; }
+        .nav-item { background: none; border: none; color: var(--text-secondary); padding: 9px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13.5px; text-align: left; width: 100%; transition: 0.2s; }
         .nav-item:hover { background-color: var(--surface-hover); color: var(--text-primary); }
-        .nav-item.active-mode { background-color: #262626; color: #fff; border: 1px solid #404040; }
+        .nav-item.active-mode { background-color: #1e1e30; color: #fff; border: 1px solid #4338ca; }
+
+        /* Deep Search Toggle Box in Sidebar */
+        .deep-search-box { background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .deep-search-info { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; font-weight: 500; }
+        .toggle-switch { position: relative; width: 36px; height: 20px; background-color: #27273a; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background-color: white; top: 2px; left: 2px; transition: 0.3s; }
+        input.deep-checkbox { display: none; }
+        input.deep-checkbox:checked + .toggle-switch { background-color: #6366f1; }
+        input.deep-checkbox:checked + .toggle-switch::after { transform: translateX(16px); }
 
         .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); border: 1px solid var(--border-color); cursor: pointer; }
-        .user-avatar { width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; }
+        .user-avatar { width: 32px; height: 32px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; }
         .user-info { font-size: 13px; color: var(--text-primary); }
 
         .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
-        .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
 
-        /* Entrance / Welcome Screen using image_5c5778.png */
+        /* Beautiful Entrance Screen Background Art */
         .welcome-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('image_5c5778.png') no-repeat center center;
-            background-size: cover;
-            background-color: #0f0f13;
+            background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #09090f 70%), 
+                        linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.15));
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 20;
-            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), background-color 0.9s ease, opacity 0.9s ease;
+            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.9s ease;
         }
         
         .welcome-screen.zoom-to-black {
             transform: scale(3.5);
-            background-color: #000000;
-            background-image: none;
             opacity: 0;
             pointer-events: none;
         }
@@ -77,47 +84,61 @@
             text-align: center;
         }
 
+        .welcome-orb {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.5);
+            display: flex; align-items: center; justify-content: center;
+            animation: pulseGlow 3s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 0 30px rgba(99, 102, 241, 0.4); }
+            100% { transform: scale(1.08); box-shadow: 0 0 60px rgba(168, 85, 247, 0.7); }
+        }
+
         .welcome-title {
             font-size: 56px;
             font-weight: 600;
             color: #ffffff;
             letter-spacing: 1px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.9);
+            background: linear-gradient(to right, #ffffff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .start-chat-btn {
-            background-color: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 10px 30px;
+            border: none;
+            padding: 12px 32px;
             border-radius: 30px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
             transition: 0.3s;
-            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
         }
         .start-chat-btn:hover {
-            background-color: #fff;
-            color: #000;
             transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.7);
         }
 
         .version-label {
             position: absolute;
             bottom: 25px;
             font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.4);
             letter-spacing: 0.5px;
         }
 
-        /* Chat Screen Background using image_5c4bfd.png */
+        /* Rich Chat Screen Background Art */
         .chat-container-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('image_5c4bfd.png') no-repeat center center;
-            background-size: cover;
-            background-color: #09090d;
+            background: radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%),
+                        #050508;
             display: none;
             flex-direction: column;
             z-index: 5;
@@ -125,7 +146,6 @@
         .chat-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.65);
             display: flex;
             flex-direction: column;
             z-index: 2;
@@ -137,12 +157,14 @@
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
         .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
         
-        .message-avatar { width: 32px; height: 32px; border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; flex-shrink: 0; }
+        .message-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; flex-shrink: 0; }
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; }
 
+        .deep-search-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4); padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; font-weight: 600; }
+
         .input-area { padding: 12px 24px 16px 24px; max-width: 950px; width: 100%; margin: 0 auto; z-index: 3; }
-        .input-box-wrapper { background-color: rgba(18, 18, 18, 0.85); backdrop-filter: blur(10px); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
+        .input-box-wrapper { background-color: rgba(18, 18, 26, 0.9); backdrop-filter: blur(10px); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; min-height: 24px; }
         
         .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; }
@@ -162,7 +184,21 @@
                 <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
                 New chat
             </button>
-            <div class="sidebar-section-title">Engine Mode</div>
+
+            <!-- Deep Search Mode Toggle -->
+            <div class="sidebar-section-title">Advanced Settings</div>
+            <div class="deep-search-box">
+                <div class="deep-search-info">
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: #818cf8;">travel_explore</span>
+                    <span>Deep Search Mode</span>
+                </div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="deepSearchCheckbox" class="deep-checkbox">
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="sidebar-section-title">Engine & Moods</div>
             <div class="sidebar-nav">
                 <button class="nav-item active-mode" id="navUniversal" onclick="switchEngineMode('universal')">
                     <span class="material-symbols-outlined">auto_awesome</span>
@@ -175,6 +211,18 @@
                 <button class="nav-item" id="navPeriodic" onclick="switchEngineMode('periodic')">
                     <span class="material-symbols-outlined">science</span>
                     AQA Periodic Table & Atoms
+                </button>
+                <button class="nav-item" id="navCoder" onclick="switchEngineMode('coder')">
+                    <span class="material-symbols-outlined">terminal</span>
+                    Elite Coder Mode
+                </button>
+                <button class="nav-item" id="navRoast" onclick="switchEngineMode('roast')">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    Savage Roast Mode 🔥
+                </button>
+                <button class="nav-item" id="navPhilosopher" onclick="switchEngineMode('philosopher')">
+                    <span class="material-symbols-outlined">psychology</span>
+                    Deep Philosopher
                 </button>
             </div>
         </div>
@@ -189,19 +237,25 @@
     <div class="main-container">
         <header>
             <span id="headerTitle">Vikea AI Assistant</span>
-            <div class="model-badge-header" id="modelBadgeHeader">Universal Engine Active</div>
+            <div class="model-badge-header" id="modelBadgeHeader">
+                <span class="material-symbols-outlined" style="font-size: 14px; color: #818cf8;">bolt</span>
+                Universal Engine Active
+            </div>
         </header>
 
-        <!-- Welcome Screen (Uses image_5c5778.png) -->
+        <!-- Built-in Stunning Entrance Screen -->
         <div class="welcome-screen" id="welcomeScreen">
             <div class="welcome-content">
+                <div class="welcome-orb">
+                    <span class="material-symbols-outlined" style="font-size: 38px; color: #fff;">auto_awesome</span>
+                </div>
                 <h1 class="welcome-title">Vikea AI</h1>
                 <button class="start-chat-btn" onclick="startChatTransition()">Start Chatting</button>
             </div>
-            <div class="version-label">Version 1.6</div>
+            <div class="version-label">Version 1.7 • Built-in Dynamic Canvas</div>
         </div>
 
-        <!-- Chat Screen Background (Uses image_5c4bfd.png) -->
+        <!-- Chat Screen Background -->
         <div class="chat-container-bg" id="chatContainerBg">
             <div class="chat-overlay">
                 <div class="chat-stream" id="chatStream"></div>
@@ -237,7 +291,6 @@
             const welcome = document.getElementById('welcomeScreen');
             if (welcome.style.display !== 'none') {
                 welcome.classList.add('zoom-to-black');
-
                 setTimeout(() => {
                     welcome.style.display = 'none';
                     const chatBg = document.getElementById('chatContainerBg');
@@ -255,7 +308,7 @@
             aiMsgDiv.className = 'message ai';
             aiMsgDiv.innerHTML = `
                 <div class="message-avatar">V</div>
-                <div class="message-content">Hi, ${currentUserName} how can I help you?</div>
+                <div class="message-content">What's up, ${currentUserName}! Vikea AI v1.7 is locked in. Deep Search mode and new moods are ready. What are we doing?</div>
             `;
             stream.appendChild(aiMsgDiv);
             stream.scrollTop = stream.scrollHeight;
@@ -265,9 +318,7 @@
         function switchEngineMode(mode) {
             currentMode = mode;
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-mode'));
-            if (document.getElementById('welcomeScreen').style.display !== 'none') {
-                startChatTransition();
-            }
+            startChatTransition();
             
             const badge = document.getElementById('modelBadgeHeader');
             const stream = document.getElementById('chatStream');
@@ -276,16 +327,28 @@
 
             if (mode === 'universal') {
                 document.getElementById('navUniversal').classList.add('active-mode');
-                badge.innerText = "Universal Engine Active";
-                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Universal Engine is active. How can I assist you, ${currentUserName}?</div>`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #818cf8;">bolt</span> Universal Engine Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>Multi-Universal Core</strong>. Ready for anything!</div>`;
             } else if (mode === 'cells') {
                 document.getElementById('navCells').classList.add('active-mode');
-                badge.innerText = "GCSE Cell Biology Active";
-                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">GCSE Cell Biology engine active. Ask me about cell structures, transport, or division!</div>`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #38bdf8;">biotech</span> GCSE Cell Biology Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>GCSE Cell Biology</strong> mode. Hit me with organelle questions!</div>`;
             } else if (mode === 'periodic') {
                 document.getElementById('navPeriodic').classList.add('active-mode');
-                badge.innerText = "AQA Periodic Table Active";
-                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">AQA Periodic Table & Atoms engine active. What element or atomic structure would you like to explore?</div>`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #4ade80;">science</span> AQA Periodic Table Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>AQA Periodic Table & Atoms</strong> mode. Let's study chemistry!</div>`;
+            } else if (mode === 'coder') {
+                document.getElementById('navCoder').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #f43f5e;">terminal</span> Elite Coder Mode Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Elite Coder mode online. Let's write some clean code and squash bugs.</div>`;
+            } else if (mode === 'roast') {
+                document.getElementById('navRoast').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fbbf24;">local_fire_department</span> Savage Roast Mode Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Oh you picked roast mode? Don't cry when I cook you, ${currentUserName}. What's your question?</div>`;
+            } else if (mode === 'philosopher') {
+                document.getElementById('navPhilosopher').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #c084fc;">psychology</span> Deep Philosopher Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Welcome to Deep Philosopher mode. Let us contemplate the universe together.</div>`;
             }
             stream.appendChild(aiMsgDiv);
             stream.scrollTop = stream.scrollHeight;
@@ -309,6 +372,7 @@
         async function processUserQuery(query) {
             const stream = document.getElementById('chatStream');
             const userInitial = currentUserName.charAt(0).toUpperCase();
+            const isDeepSearchOn = document.getElementById('deepSearchCheckbox').checked;
 
             const userMsgDiv = document.createElement('div');
             userMsgDiv.className = 'message user';
@@ -316,16 +380,36 @@
             stream.appendChild(userMsgDiv);
             stream.scrollTop = stream.scrollHeight;
 
-            await new Promise(r => setTimeout(r, 600));
+            // Simulated Deep Search delay
+            if (isDeepSearchOn) {
+                const searchingDiv = document.createElement('div');
+                searchingDiv.className = 'message ai';
+                searchingDiv.id = 'searchIndicator';
+                searchingDiv.innerHTML = `
+                    <div class="message-avatar">V</div>
+                    <div class="message-content" style="color: var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                        <span class="material-symbols-outlined" style="animation: spin 1.5s linear infinite; font-size: 18px;">progress_activity</span>
+                        Performing Deep Search across multi-universal database...
+                    </div>
+                `;
+                stream.appendChild(searchingDiv);
+                stream.scrollTop = stream.scrollHeight;
+                await new Promise(r => setTimeout(r, 1400));
+                document.getElementById('searchIndicator').remove();
+            } else {
+                await new Promise(r => setTimeout(r, 500));
+            }
 
             const aiMsgDiv = document.createElement('div');
             aiMsgDiv.className = 'message ai';
             
             let responseText = generateSmartResponse(currentMode, query);
 
+            let deepSearchHTML = isDeepSearchOn ? `<div class="deep-search-tag"><span class="material-symbols-outlined" style="font-size: 13px;">travel_explore</span> Deep Search Verified</div><br>` : '';
+
             aiMsgDiv.innerHTML = `
                 <div class="message-avatar">V</div>
-                <div class="message-content">${responseText}</div>
+                <div class="message-content">${deepSearchHTML}${responseText}</div>
             `;
             stream.appendChild(aiMsgDiv);
             stream.scrollTop = stream.scrollHeight;
@@ -335,18 +419,24 @@
             const q = query.toLowerCase();
             
             if (mode === 'cells') {
-                if (q.includes('nucleus')) return "The **nucleus** contains genetic material (DNA) that controls the activities of the cell.";
-                if (q.includes('mitochondria')) return "Mitochondria are the site of **aerobic respiration**, releasing energy for the cell.";
-                if (q.includes('osmosis')) return "**Osmosis** is the movement of water molecules across a partially permeable membrane from a region of higher water concentration to lower water concentration.";
-                return `Regarding "${escapeHtml(query)}" in GCSE Cell Biology: Cellular structures work together to maintain metabolic functions. What specific cell process would you like to explore?`;
+                if (q.includes('ribosome')) return "Ribosomes are tiny structures responsible for **protein synthesis**.";
+                return `Regarding **"${escapeHtml(query)}"** in GCSE Cell Biology: Cells use organelles to maintain specialized life processes.`;
             } 
             else if (mode === 'periodic') {
-                if (q.includes('group 1')) return "Group 1 elements are the **alkali metals**. They are reactive metals that react with water to form alkaline solutions and hydrogen gas.";
-                if (q.includes('isotope')) return "**Isotopes** are atoms of the same element with the same number of protons but a different number of neutrons.";
-                return `Under AQA Periodic Table guidelines regarding "${escapeHtml(query)}", elements are arranged in order of atomic number. Any specific atom or bond you want to break down?`;
+                if (q.includes('halogen')) return "Group 7 elements (halogens) show a decrease in reactivity down the group.";
+                return `Under AQA Chemistry rules regarding **"${escapeHtml(query)}"**, atoms bond to achieve full outer electron shells.`;
+            }
+            else if (mode === 'coder') {
+                return `Here is the coding breakdown for <strong>"${escapeHtml(query)}"</strong>: Make sure your logic handles edge cases and uses clean modular structures. Want me to draft a function for this?`;
+            }
+            else if (mode === 'roast') {
+                return `Bro really asked <strong>"${escapeHtml(query)}"</strong> expecting me to do all the heavy lifting while you sit there looking at a screen. Classic ${currentUserName} behavior. 🔥`;
+            }
+            else if (mode === 'philosopher') {
+                return `To ponder <strong>"${escapeHtml(query)}"</strong> is to gaze into the very nature of existence. What is knowledge if not an endless pursuit of truth?`;
             }
             else {
-                return `I have processed your query: <strong>"${escapeHtml(query)}"</strong>. What else can I help you with today, ${currentUserName}?`;
+                return `Processed your request regarding <strong>"${escapeHtml(query)}"</strong> with Vikea v1.7. What would you like to explore next?`;
             }
         }
 
