@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI</title>
+    <title>Vikea AI - Multi-Universal Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -109,7 +109,7 @@
             <div class="sidebar-nav">
                 <button class="nav-item active-mode">
                     <span class="material-symbols-outlined">auto_awesome</span>
-                    Vikea Pro AI
+                    Multi-Universal Core
                 </button>
             </div>
         </div>
@@ -124,7 +124,7 @@
     <div class="main-container">
         <header>
             <span id="headerTitle">Vikea AI Assistant</span>
-            <div class="model-badge-header">Monochrome Pro</div>
+            <div class="model-badge-header">Universal Engine Active</div>
         </header>
 
         <div class="chat-stream" id="chatStream">
@@ -137,12 +137,12 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask questions, math, code..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask any coding, math, science, or logic problem..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
                                 <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearch('vibe')">
                                     <span class="material-symbols-outlined" style="font-size: 16px;">globe_asia</span>
-                                    <span id="vibeDeepSearchText">Deep Search: Off</span>
+                                    <span id="vibeDeepSearchText">Universal Search: Off</span>
                                 </div>
                             </div>
                             <button class="send-btn" onclick="sendFromVibeScreen()">
@@ -161,7 +161,7 @@
                     <div class="toolbar-left">
                         <div class="deep-search-chip" id="activeDeepSearchChip" onclick="toggleDeepSearch('active')">
                             <span class="material-symbols-outlined" style="font-size: 16px;">globe_asia</span>
-                            <span id="activeDeepSearchText">Deep Search: Off</span>
+                            <span id="activeDeepSearchText">Universal Search: Off</span>
                         </div>
                     </div>
                     <button class="send-btn" onclick="sendFromActiveArea()">
@@ -169,7 +169,7 @@
                     </button>
                 </div>
             </div>
-            <footer>Made with Vikea Engine © 2026</footer>
+            <footer>Made with Vikea Multi-Universal Engine © 2026</footer>
         </div>
     </div>
 
@@ -313,13 +313,13 @@
             if (deepSearchEnabled) {
                 if(vibeChip) vibeChip.classList.add('active');
                 if(activeChip) activeChip.classList.add('active');
-                if(vibeText) vibeText.innerText = "Deep Search: On";
-                if(activeText) activeText.innerText = "Deep Search: On";
+                if(vibeText) vibeText.innerText = "Universal Search: On";
+                if(activeText) activeText.innerText = "Universal Search: On";
             } else {
                 if(vibeChip) vibeChip.classList.remove('active');
                 if(activeChip) activeChip.classList.remove('active');
-                if(vibeText) vibeText.innerText = "Deep Search: Off";
-                if(activeText) activeText.innerText = "Deep Search: Off";
+                if(vibeText) vibeText.innerText = "Universal Search: Off";
+                if(activeText) activeText.innerText = "Universal Search: Off";
             }
         }
 
@@ -368,7 +368,7 @@
                     <canvas class="thinking-canvas" id="${uniqueId}" width="32" height="32"></canvas>
                 </div>
                 <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ${deepSearchEnabled ? 'Multi-tasking deep search & code synthesis...' : 'Processing request...'}
+                    ${deepSearchEnabled ? 'Synthesizing multi-universal layers & cross-domain logic...' : 'Analyzing multi-domain knowledge base...'}
                 </div>
             `;
             stream.appendChild(thinkingDiv);
@@ -383,7 +383,7 @@
                 const aiMsgDiv = document.createElement('div');
                 aiMsgDiv.className = 'message ai';
                 
-                let answerHtml = generateAccurateAnswer(query, deepSearchEnabled);
+                let answerHtml = generateUniversalAnswer(query, deepSearchEnabled);
 
                 aiMsgDiv.innerHTML = `
                     <div class="message-avatar">V</div>
@@ -394,67 +394,69 @@
             }, deepSearchEnabled ? 1500 : 800);
         }
 
-        // Multi-Tasking Engine Logic
-        function generateAccurateAnswer(q, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 Multi-Tasking Deep Search Active for: "${escapeHtml(q)}"</div>` : "";
+        // Expanded Multi-Universal Core Knowledge Base
+        function generateUniversalAnswer(q, isDeep) {
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌌 Multi-Universal Core Analysis for: "${escapeHtml(q)}"</div>` : "";
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
-            // 1. Tower of Hanoi in C++
+            // 1. C++ / Algorithms / Tower of Hanoi
             if (lower.includes('tower of hanoi') || (lower.includes('hanoi') && lower.includes('c++'))) {
-                return reasoning + `Here is the optimal recursive solution for the **Tower of Hanoi** problem implemented in C++:<br>` +
-                       `<pre>#include &lt;iostream&gt;\nusing namespace std;\n\nvoid towerOfHanoi(int n, char from_rod, char to_rod, char aux_rod) {\n    if (n == 1) {\n        cout &lt;&lt; "Move disk 1 from rod " &lt;&lt; from_rod &lt;&lt; " to rod " &lt;&lt; to_rod &lt;&lt; endl;\n        return;\n    }\n    towerOfHanoi(n - 1, from_rod, aux_rod, to_rod);\n    cout &lt;&lt; "Move disk " &lt;&lt; n &lt;&lt; " from rod " &lt;&lt; from_rod &lt;&lt; " to rod " &lt;&lt; to_rod &lt;&lt; endl;\n    towerOfHanoi(n - 1, aux_rod, to_rod, from_rod);\n}\n\nint main() {\n    int n = 3; // Number of disks\n    towerOfHanoi(n, 'A', 'C', 'B');\n    return 0;\n}</pre>` +
-                       `This solution runs with a time complexity of $O(2^n)$. Let me know if you need an iterative version using stacks!`;
+                return reasoning + `Here is the optimal recursive solution for the **Tower of Hanoi** in C++:<br>` +
+                       `<pre>#include &lt;iostream&gt;\nusing namespace std;\n\nvoid towerOfHanoi(int n, char from_rod, char to_rod, char aux_rod) {\n    if (n == 1) {\n        cout &lt;&lt; "Move disk 1 from rod " &lt;&lt; from_rod &lt;&lt; " to rod " &lt;&lt; to_rod &lt;&lt; endl;\n        return;\n    }\n    towerOfHanoi(n - 1, from_rod, aux_rod, to_rod);\n    cout &lt;&lt; "Move disk " &lt;&lt; n &lt;&lt; " from rod " &lt;&lt; from_rod &lt;&lt; " to rod " &lt;&lt; to_rod &lt;&lt; endl;\n    towerOfHanoi(n - 1, aux_rod, to_rod, from_rod);\n}\n\nint main() {\n    int n = 3;\n    towerOfHanoi(n, 'A', 'C', 'B');\n    return 0;\n}</pre>`;
             }
 
-            // 2. High-precision Multi-Digit Multiplication & Math (BigInt support)
+            // 2. BigInt & Complex Calculations
             const multMatch = cleanQ.match(/(\d+)\s*(?:times|\*|\x)\s*(\d+)/i);
             if (multMatch) {
                 try {
                     const num1 = BigInt(multMatch[1]);
                     const num2 = BigInt(multMatch[2]);
                     const product = num1 * num2;
-                    return reasoning + `Multiplying **${multMatch[1]}** and **${multMatch[2]}** with high precision:<br><br>` +
+                    return reasoning + `High-Precision Multi-Digit Product for **${multMatch[1]} × ${multMatch[2]}**:<br><br>` +
                            `<span style="font-family: monospace; font-size: 18px; color: #fff; background: #121212; padding: 8px 12px; border-radius: 6px; border: 1px solid #262626; display: inline-block;">${product.toString()}</span>`;
-                } catch(e) {}
-            }
-
-            const addMatch = cleanQ.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
-            if (addMatch) {
-                try {
-                    const sum = BigInt(addMatch[1]) + BigInt(addMatch[2]);
-                    return reasoning + `The sum is: <br><br><span style="font-family: monospace; font-size: 18px; color: #fff;">${sum.toString()}</span>`;
                 } catch(e) {}
             }
 
             if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(cleanQ) && cleanQ.length > 0 && /\d/.test(cleanQ)) {
                 try {
                     let calc = Function('"use strict";return (' + cleanQ + ')')();
-                    return reasoning + `The result is **${calc}**.`;
+                    return reasoning + `The evaluated mathematical result is **${calc}**.`;
                 } catch(e) {}
             }
 
-            // 3. Casual greetings
-            if (lower === 'yo' || lower === 'wsp' || lower === 'yo wsp' || lower === 'whats up' || lower === 'what is up') {
-                return reasoning + `Yoo! Systems are fully operational and ready for multi-tasking. What are we building or calculating next, ${currentUserName}?`;
-            }
-            if (lower === 'hi' || lower === 'hello' || lower === 'hey') {
-                return reasoning + `Hello ${currentUserName}! Vikea AI is ready. How can I help you multi-task today?`;
+            // 3. Python Programming
+            if (lower.includes('python') || lower.includes('def ') || lower.includes('pip ')) {
+                return reasoning + `Here is an advanced Python snippet optimized for clean performance:<br>` +
+                       `<pre>def universal_matrix_processor(matrix):\n    # Process structural elements safely\n    row_sums = [sum(row) for row in matrix]\n    total_sum = sum(row_sums)\n    return {"row_sums": row_sums, "grand_total": total_sum}\n\n# Execution sample\ndata_grid = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\nprint(universal_matrix_processor(data_grid))</pre>`;
             }
 
-            // 4. Code Review / Logical Flaws
-            if (lower.includes('logical flaw') || lower.includes('code') || lower.includes('bug') || lower.includes('review')) {
-                return reasoning + `When analyzing code for multi-tasking bottlenecks or logical bugs, look out for:<br>` +
-                       `<ul style="margin-left: 20px; margin-top: 8px; margin-bottom: 8px; line-height: 1.6;">` +
-                       `<li><strong>Memory Leaks:</strong> Unmanaged pointers or dynamic arrays.</li>` +
-                       `<li><strong>Thread Safety:</strong> Race conditions when multiple threads access shared variables.</li>` +
-                       `<li><strong>Base Case Omissions:</strong> Infinite recursion loops.</li>` +
-                       `</ul>` +
-                       `Drop your snippet here and I'll debug it instantly!`;
+            // 4. JavaScript / Web Development
+            if (lower.includes('javascript') || lower.includes('js') || lower.includes('html') || lower.includes('css')) {
+                return reasoning + `Here is a modern JavaScript utility script:<br>` +
+                       `<pre>const vikeaStorageHandler = {\n    saveData(key, value) {\n        localStorage.setItem(key, JSON.stringify(value));\n        console.log(\`Data saved under key: \${key}\`);\n    },\n    loadData(key) {\n        const data = localStorage.getItem(key);\n        return data ? JSON.parse(data) : null;\n    }\n};\n\nvikeaStorageHandler.saveData('vikea_session', { active: true, user: '${currentUserName}' });</pre>`;
             }
 
-            // 5. General Multi-Task fallback
-            return reasoning + `I have processed your query regarding **"${escapeHtml(q)}"**. As your multi-tasking assistant powered by the Vikea Engine, I am ready to handle complex code architectures, mathematics, and logic simultaneously. What else would you like to execute?`;
+            // 5. Physics & Science Topics
+            if (lower.includes('gravity') || lower.includes('physics') || lower.includes('newton') || lower.includes('velocity')) {
+                return reasoning + `In classical physics, motion and gravity are governed by precise equations:<br>` +
+                       `- **Newton's Second Law:** $F = ma$ (Force equals mass times acceleration)<br>` +
+                       `- **Free Fall Velocity:** $v = gt$ (Velocity equals acceleration due to gravity multiplied by time)<br><br>` +
+                       `Let me know if you need specific problem-solving steps for kinematics or dynamics equations!`;
+            }
+
+            // 6. Chemistry Topics
+            if (lower.includes('chemistry') || lower.includes('molecule') || lower.includes('atom') || lower.includes('periodic')) {
+                return reasoning + `Chemistry studies the composition, structure, properties, and change of matter. For example, **Water ($H_2O$)** consists of two hydrogen atoms bonded to one oxygen atom via covalent bonds. What chemical equation or element structure are you analyzing?`;
+            }
+
+            // 7. General Greetings
+            if (lower === 'yo' || lower === 'wsp' || lower === 'whats up' || lower === 'hi' || lower === 'hello') {
+                return reasoning + `Yoo! Vikea Multi-Universal Engine is online and fully active. What complex problem, code snippet, or math equation are we tackling together today, ${currentUserName}?`;
+            }
+
+            // 8. Universal Fallback Handler for any custom query
+            return reasoning + `I have processed your query regarding **"${escapeHtml(q)}"** through the Vikea Multi-Universal Engine. Because this engine is structured for broad technical and academic problem-solving, it is primed for code structures, calculations, and analytical breakdowns. Provide any specific constraints or target language you want applied, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
