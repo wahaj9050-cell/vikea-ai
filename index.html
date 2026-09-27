@@ -3,72 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI v1.8</title>
+    <title>Vikea AI v1.9</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         :root {
-            --bg-color: #050508;
-            --sidebar-bg: #09090e;
-            --surface-color: #12121a;
-            --surface-hover: #1c1c28;
+            --bg-color: #000000;
+            --sidebar-bg: #050505;
+            --surface-color: #111111;
+            --surface-hover: #1c1c1c;
             --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --border-color: #1e1e2f;
-            --accent-color: #6366f1;
+            --text-secondary: #888888;
+            --border-color: #222222;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #050508; }
-        ::-webkit-scrollbar-thumb { background: #27273a; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
         body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
         
         aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; z-index: 10; }
         .sidebar-top { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 80px); padding-right: 4px; }
         .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; color: #fff; }
-        .brand-logo-icon { width: 28px; height: 28px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; color: #fff; }
+        .brand-logo-icon { width: 28px; height: 28px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
         
         .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
-        .new-chat-btn:hover { background-color: #2a2a3b; }
+        .new-chat-btn:hover { background-color: #2a2a2a; }
 
         .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); margin: 8px 0 4px 8px; font-weight: 600; }
         .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
         .nav-item { background: none; border: none; color: var(--text-secondary); padding: 9px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13.5px; text-align: left; width: 100%; transition: 0.2s; }
         .nav-item:hover { background-color: var(--surface-hover); color: var(--text-primary); }
-        .nav-item.active-mode { background-color: #1e1e30; color: #fff; border: 1px solid #4338ca; }
+        .nav-item.active-mode { background-color: #222; color: #fff; border: 1px solid #444; }
 
-        .deep-search-box { background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .deep-search-box { background: rgba(255, 255, 255, 0.04); border: 1px solid #333; border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
         .deep-search-info { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; font-weight: 500; }
-        .toggle-switch { position: relative; width: 36px; height: 20px; background-color: #27273a; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .toggle-switch { position: relative; width: 36px; height: 20px; background-color: #333; border-radius: 20px; cursor: pointer; transition: 0.3s; }
         .toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background-color: white; top: 2px; left: 2px; transition: 0.3s; }
         input.deep-checkbox { display: none; }
-        input.deep-checkbox:checked + .toggle-switch { background-color: #6366f1; }
-        input.deep-checkbox:checked + .toggle-switch::after { transform: translateX(16px); }
+        input.deep-checkbox:checked + .toggle-switch { background-color: #fff; }
+        input.deep-checkbox:checked + .toggle-switch::after { transform: translateX(16px); background-color: #000; }
 
         .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); border: 1px solid var(--border-color); cursor: pointer; }
-        .user-avatar { width: 32px; height: 32px; background-color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; }
+        .user-avatar { width: 32px; height: 32px; background-color: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
         .user-info { font-size: 13px; color: var(--text-primary); }
 
         .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
 
-        /* Entrance Screen with your image_5ccbd8.png */
+        /* Welcome Screen Background (Plain Black) */
         .welcome-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('image_5ccbd8.png') no-repeat center center;
-            background-size: cover;
-            background-color: #050508;
+            background-color: #000000;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
             padding: 50px 20px;
             z-index: 20;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.5s ease;
         }
 
         .welcome-content {
@@ -85,39 +82,37 @@
         .title-container {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }
 
         .title-side-text {
-            font-size: 52px;
+            font-size: 56px;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: #ffffff;
-            text-shadow: 0 4px 25px rgba(0,0,0,0.8);
         }
 
-        /* V with Dots Circling It (Orbiting animation) */
+        /* Classic V with Dots Circling It */
         .orbit-container {
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .orbit-center-v {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
+            width: 52px;
+            height: 52px;
+            background: #ffffff;
+            color: #000000;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
             z-index: 2;
         }
 
@@ -125,7 +120,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border: 1px dashed rgba(255, 255, 255, 0.4);
             border-radius: 50%;
             animation: spinOrbit 4s linear infinite;
         }
@@ -133,12 +128,12 @@
         .orbit-dot {
             position: absolute;
             top: -4px;
-            left: 36px;
+            left: 41px;
             width: 8px;
             height: 8px;
-            background-color: #38bdf8;
+            background-color: #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 10px #38bdf8;
+            box-shadow: 0 0 10px #ffffff;
         }
 
         @keyframes spinOrbit {
@@ -148,8 +143,8 @@
 
         /* Get Started Button at the Bottom */
         .start-chat-btn {
-            background: linear-gradient(135deg, #6366f1, #4f46e5);
-            color: #fff;
+            background: #ffffff;
+            color: #000000;
             border: none;
             padding: 14px 40px;
             border-radius: 30px;
@@ -157,12 +152,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 4px 25px rgba(99, 102, 241, 0.5);
             margin-bottom: 20px;
         }
         .start-chat-btn:hover {
-            transform: scale(1.06);
-            box-shadow: 0 6px 30px rgba(99, 102, 241, 0.8);
+            background: #e0e0e0;
+            transform: scale(1.04);
         }
 
         .version-label {
@@ -171,33 +165,20 @@
             letter-spacing: 0.5px;
         }
 
-        /* Loading Screen (Black screen in middle with V & Orbiting Dots for 5 seconds) */
-        .loading-screen {
+        /* White Flash Transition Screen */
+        .white-flash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #050508;
+            background-color: #ffffff;
             display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             z-index: 30;
-            gap: 20px;
-        }
-
-        .loading-text {
-            font-size: 15px;
-            color: var(--text-secondary);
-            letter-spacing: 1px;
-            font-weight: 500;
         }
 
         /* Chat Screen Background */
         .chat-container-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 80% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 40%),
-                        radial-gradient(circle at 20% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 40%),
-                        #050508;
+            background-color: #000000;
             display: none;
             flex-direction: column;
             z-index: 5;
@@ -212,19 +193,39 @@
 
         .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 950px; width: 100%; margin: 0 auto; scroll-behavior: smooth; z-index: 3; }
         
+        /* Centered "How can I help u" screen */
+        .center-greeting-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+            gap: 12px;
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 500;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .message { display: flex; gap: 14px; max-width: 100%; }
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
         .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
         
-        .message-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #6366f1, #a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #fff; flex-shrink: 0; }
+        .message-avatar { width: 32px; height: 32px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
         .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; }
 
-        .deep-search-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: rgba(99, 102, 241, 0.2); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.4); padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; font-weight: 600; }
+        .deep-search-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid #444; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; font-weight: 600; }
 
         /* Fixed Chat Input Bar Alignment */
         .input-area { padding: 16px 24px 20px 24px; max-width: 950px; width: 100%; margin: 0 auto; z-index: 3; }
-        .input-box-wrapper { background-color: rgba(18, 18, 26, 0.95); backdrop-filter: blur(10px); border-radius: 28px; padding: 12px 18px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .input-box-wrapper { background-color: #111111; border-radius: 28px; padding: 12px 18px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; min-height: 24px; max-height: 120px; }
         
         .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; flex-shrink: 0; }
@@ -248,7 +249,7 @@
             <div class="sidebar-section-title">Advanced Settings</div>
             <div class="deep-search-box">
                 <div class="deep-search-info">
-                    <span class="material-symbols-outlined" style="font-size: 18px; color: #818cf8;">travel_explore</span>
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: #fff;">travel_explore</span>
                     <span>Deep Search Mode</span>
                 </div>
                 <label style="display:flex; align-items:center; cursor:pointer;">
@@ -297,19 +298,19 @@
         <header>
             <span id="headerTitle">Vikea AI Assistant</span>
             <div class="model-badge-header" id="modelBadgeHeader">
-                <span class="material-symbols-outlined" style="font-size: 14px; color: #818cf8;">bolt</span>
+                <span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">bolt</span>
                 Universal Engine Active
             </div>
         </header>
 
-        <!-- Welcome Entrance Screen with image_5ccbd8.png background -->
+        <!-- Welcome Entrance Screen (Classic Black & White) -->
         <div class="welcome-screen" id="welcomeScreen">
-            <div></div> <!-- Spacer -->
+            <div></div>
             <div class="welcome-content">
                 <div class="title-container">
                     <span class="title-side-text">VIKEA</span>
-                    <div class="orbit-container">
-                        <div class="orbit-ring">
+                    <div class="orbit-container" id="welcomeOrbit">
+                        <div class="orbit-ring" id="welcomeRing">
                             <div class="orbit-dot"></div>
                         </div>
                         <div class="orbit-center-v">V</div>
@@ -319,25 +320,22 @@
             </div>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
                 <button class="start-chat-btn" onclick="startChatTransition()">Get Started / Chat</button>
-                <div class="version-label">Version 1.8 • Vikea Engine</div>
+                <div class="version-label">Version 1.9 • Vikea Engine</div>
             </div>
         </div>
 
-        <!-- 5-Second Black Loading Screen with V & Orbiting Dots -->
-        <div class="loading-screen" id="loadingScreen">
-            <div class="orbit-container" style="width: 100px; height: 100px;">
-                <div class="orbit-ring">
-                    <div class="orbit-dot"></div>
-                </div>
-                <div class="orbit-center-v" style="width: 60px; height: 60px; font-size: 28px;">V</div>
-            </div>
-            <div class="loading-text">Initializing Vikea AI v1.8...</div>
-        </div>
+        <!-- White Flash Transition Screen -->
+        <div class="white-flash-screen" id="whiteFlashScreen"></div>
 
         <!-- Chat Screen Background -->
         <div class="chat-container-bg" id="chatContainerBg">
             <div class="chat-overlay">
-                <div class="chat-stream" id="chatStream"></div>
+                <div class="chat-stream" id="chatStream">
+                    <!-- Middle Greeting Box -->
+                    <div class="center-greeting-box" id="centerGreetingBox">
+                        <h1>How can I help u</h1>
+                    </div>
+                </div>
                 <div class="input-area" id="activeInputArea">
                     <div class="input-box-wrapper">
                         <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event)"></textarea>
@@ -356,6 +354,7 @@
     <script>
         let currentUserName = "Wahaj";
         let currentMode = "universal";
+        let chatInitialized = false;
 
         function changeUserName() {
             const newName = prompt("Enter your new name:", currentUserName);
@@ -368,35 +367,24 @@
 
         function startChatTransition() {
             const welcome = document.getElementById('welcomeScreen');
-            const loader = document.getElementById('loadingScreen');
+            const ring = document.getElementById('welcomeRing');
+            const flash = document.getElementById('whiteFlashScreen');
             
             if (welcome.style.display !== 'none') {
-                welcome.style.display = 'none';
-                loader.style.display = 'flex';
+                // Make the dots circle the V faster and faster
+                ring.style.animation = 'spinOrbit 0.4s linear infinite';
 
-                // Exact 5 seconds timer before entering chat
+                // After 5 seconds, flash white and enter chat
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    const chatBg = document.getElementById('chatContainerBg');
-                    chatBg.style.display = 'flex';
-                    if(document.getElementById('chatStream').children.length === 0) {
-                        triggerInitialGreeting();
-                    }
+                    flash.style.display = 'block';
+                    setTimeout(() => {
+                        welcome.style.display = 'none';
+                        flash.style.display = 'none';
+                        document.getElementById('chatContainerBg').style.display = 'flex';
+                        document.getElementById('activeInput').focus();
+                    }, 400); // quick flash fade duration
                 }, 5000);
             }
-        }
-
-        function triggerInitialGreeting() {
-            const stream = document.getElementById('chatStream');
-            const aiMsgDiv = document.createElement('div');
-            aiMsgDiv.className = 'message ai';
-            aiMsgDiv.innerHTML = `
-                <div class="message-avatar">V</div>
-                <div class="message-content">Welcome in, ${currentUserName}! Vikea AI v1.8 is fully active. What are we working on today?</div>
-            `;
-            stream.appendChild(aiMsgDiv);
-            stream.scrollTop = stream.scrollHeight;
-            document.getElementById('activeInput').focus();
         }
 
         function switchEngineMode(mode) {
@@ -408,33 +396,36 @@
             }
             
             const badge = document.getElementById('modelBadgeHeader');
+            const greetingBox = document.getElementById('centerGreetingBox');
+            if (greetingBox) greetingBox.remove(); // clear center greeting if switching modes early
+
             const stream = document.getElementById('chatStream');
             const aiMsgDiv = document.createElement('div');
             aiMsgDiv.className = 'message ai';
 
             if (mode === 'universal') {
                 document.getElementById('navUniversal').classList.add('active-mode');
-                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #818cf8;">bolt</span> Universal Engine Active`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">bolt</span> Universal Engine Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>Multi-Universal Core</strong>. Ready for anything!</div>`;
             } else if (mode === 'cells') {
                 document.getElementById('navCells').classList.add('active-mode');
-                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #38bdf8;">biotech</span> GCSE Cell Biology Active`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">biotech</span> GCSE Cell Biology Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>GCSE Cell Biology</strong> mode. Hit me with organelle questions!</div>`;
             } else if (mode === 'periodic') {
                 document.getElementById('navPeriodic').classList.add('active-mode');
-                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #4ade80;">science</span> AQA Periodic Table Active`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">science</span> AQA Periodic Table Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>AQA Periodic Table & Atoms</strong> mode. Let's study chemistry!</div>`;
             } else if (mode === 'coder') {
                 document.getElementById('navCoder').classList.add('active-mode');
-                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #f43f5e;">terminal</span> Elite Coder Mode Active`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">terminal</span> Elite Coder Mode Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Elite Coder mode online. Let's write clean code.</div>`;
             } else if (mode === 'roast') {
                 document.getElementById('navRoast').classList.add('active-mode');
-                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fbbf24;">local_fire_department</span> Savage Roast Mode Active`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">local_fire_department</span> Savage Roast Mode Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Roast mode active. Don't cry when I cook you, ${currentUserName}. What's up?</div>`;
             } else if (mode === 'philosopher') {
                 document.getElementById('navPhilosopher').classList.add('active-mode');
-                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #c084fc;">psychology</span> Deep Philosopher Active`;
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">psychology</span> Deep Philosopher Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Welcome to Deep Philosopher mode. Let us contemplate the universe.</div>`;
             }
             stream.appendChild(aiMsgDiv);
@@ -452,6 +443,11 @@
             const input = document.getElementById('activeInput');
             const text = input.value.trim();
             if (!text) return;
+            
+            // Remove the center greeting box once user starts chatting
+            const greetingBox = document.getElementById('centerGreetingBox');
+            if (greetingBox) greetingBox.remove();
+
             input.value = '';
             processUserQuery(text);
         }
@@ -475,7 +471,7 @@
                     <div class="message-avatar">V</div>
                     <div class="message-content" style="color: var(--text-secondary); display:flex; align-items:center; gap:8px;">
                         <span class="material-symbols-outlined" style="animation: spin 1.5s linear infinite; font-size: 18px;">progress_activity</span>
-                        Performing Deep Search across multi-universal database...
+                        Performing Deep Search across database...
                     </div>
                 `;
                 stream.appendChild(searchingDiv);
@@ -521,7 +517,7 @@
                 return `To ponder <strong>"${escapeHtml(query)}"</strong> is to gaze into the very nature of existence. What is knowledge if not an endless pursuit of truth?`;
             }
             else {
-                return `Processed your request regarding <strong>"${escapeHtml(query)}"</strong> with Vikea v1.8. What would you like to explore next?`;
+                return `Processed your request regarding <strong>"${escapeHtml(query)}"</strong> with Vikea v1.9. What would you like to explore next?`;
             }
         }
 
