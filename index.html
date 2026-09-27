@@ -81,6 +81,8 @@
         .thinking-canvas { position: absolute; top: 0; left: 0; width: 32px; height: 32px; pointer-events: none; }
         .thinking-v { position: absolute; font-size: 13px; font-weight: 700; color: #fff; background: none; }
         .deep-thought-box { background: #0a0a0a; border-left: 3px solid #fff; padding: 10px 14px; border-radius: 4px; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-family: monospace; border: 1px solid var(--border-color); }
+        
+        pre { background-color: #0d0d0d; border: 1px solid var(--border-color); padding: 14px; border-radius: 8px; overflow-x: auto; margin: 10px 0; font-family: monospace; font-size: 13.5px; color: #e0e0e0; }
 
         .input-area { padding: 12px 24px 16px 24px; max-width: 900px; width: 100%; margin: 0 auto; background-color: var(--bg-color); }
         .input-box-wrapper { background-color: var(--surface-color); border-radius: 28px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); }
@@ -366,7 +368,7 @@
                     <canvas class="thinking-canvas" id="${uniqueId}" width="32" height="32"></canvas>
                 </div>
                 <div class="message-content" style="display:flex; align-items:center; color: var(--text-secondary); font-size: 14px; margin-left: 8px;">
-                    ${deepSearchEnabled ? 'Analyzing context & synthesizing response...' : 'Thinking...'}
+                    ${deepSearchEnabled ? 'Multi-tasking deep search & code synthesis...' : 'Processing request...'}
                 </div>
             `;
             stream.appendChild(thinkingDiv);
@@ -389,24 +391,42 @@
                 `;
                 stream.appendChild(aiMsgDiv);
                 stream.scrollTop = stream.scrollHeight;
-            }, deepSearchEnabled ? 1600 : 900);
+            }, deepSearchEnabled ? 1500 : 800);
         }
 
+        // Multi-Tasking Engine Logic
         function generateAccurateAnswer(q, isDeep) {
-            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 Deep Search & Reasoning Active for: "${escapeHtml(q)}"</div>` : "";
+            let reasoning = isDeep ? `<div class="deep-thought-box">🌐 Multi-Tasking Deep Search Active for: "${escapeHtml(q)}"</div>` : "";
             let cleanQ = q.trim();
             let lower = cleanQ.toLowerCase();
 
-            // 1. Math check (BigInt support for huge additions)
-            const mathAddMatch = cleanQ.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
-            if (mathAddMatch) {
+            // 1. Tower of Hanoi in C++
+            if (lower.includes('tower of hanoi') || (lower.includes('hanoi') && lower.includes('c++'))) {
+                return reasoning + `Here is the optimal recursive solution for the **Tower of Hanoi** problem implemented in C++:<br>` +
+                       `<pre>#include &lt;iostream&gt;\nusing namespace std;\n\nvoid towerOfHanoi(int n, char from_rod, char to_rod, char aux_rod) {\n    if (n == 1) {\n        cout &lt;&lt; "Move disk 1 from rod " &lt;&lt; from_rod &lt;&lt; " to rod " &lt;&lt; to_rod &lt;&lt; endl;\n        return;\n    }\n    towerOfHanoi(n - 1, from_rod, aux_rod, to_rod);\n    cout &lt;&lt; "Move disk " &lt;&lt; n &lt;&lt; " from rod " &lt;&lt; from_rod &lt;&lt; " to rod " &lt;&lt; to_rod &lt;&lt; endl;\n    towerOfHanoi(n - 1, aux_rod, to_rod, from_rod);\n}\n\nint main() {\n    int n = 3; // Number of disks\n    towerOfHanoi(n, 'A', 'C', 'B');\n    return 0;\n}</pre>` +
+                       `This solution runs with a time complexity of $O(2^n)$. Let me know if you need an iterative version using stacks!`;
+            }
+
+            // 2. High-precision Multi-Digit Multiplication & Math (BigInt support)
+            const multMatch = cleanQ.match(/(\d+)\s*(?:times|\*|\x)\s*(\d+)/i);
+            if (multMatch) {
                 try {
-                    const sum = BigInt(mathAddMatch[1]) + BigInt(mathAddMatch[2]);
-                    return reasoning + `The sum of ${mathAddMatch[1]} and ${mathAddMatch[2]} is:<br><br><span style="font-family: monospace; font-size: 17px; color: #fff;">${sum.toString()}</span>`;
+                    const num1 = BigInt(multMatch[1]);
+                    const num2 = BigInt(multMatch[2]);
+                    const product = num1 * num2;
+                    return reasoning + `Multiplying **${multMatch[1]}** and **${multMatch[2]}** with high precision:<br><br>` +
+                           `<span style="font-family: monospace; font-size: 18px; color: #fff; background: #121212; padding: 8px 12px; border-radius: 6px; border: 1px solid #262626; display: inline-block;">${product.toString()}</span>`;
                 } catch(e) {}
             }
 
-            // Standard basic math expression check
+            const addMatch = cleanQ.replace(/\s+/g, '').match(/^(\d+)\+(\d+)$/);
+            if (addMatch) {
+                try {
+                    const sum = BigInt(addMatch[1]) + BigInt(addMatch[2]);
+                    return reasoning + `The sum is: <br><br><span style="font-family: monospace; font-size: 18px; color: #fff;">${sum.toString()}</span>`;
+                } catch(e) {}
+            }
+
             if (/^[\d\+\-\*\/\(\)\.\s]+$/.test(cleanQ) && cleanQ.length > 0 && /\d/.test(cleanQ)) {
                 try {
                     let calc = Function('"use strict";return (' + cleanQ + ')')();
@@ -414,30 +434,27 @@
                 } catch(e) {}
             }
 
-            // 2. Exact match casual check (Fixing false triggers like "yo wsp")
+            // 3. Casual greetings
             if (lower === 'yo' || lower === 'wsp' || lower === 'yo wsp' || lower === 'whats up' || lower === 'what is up') {
-                return reasoning + `Yoo! Everything's running smooth. What are we working on right now, ${currentUserName}?`;
+                return reasoning + `Yoo! Systems are fully operational and ready for multi-tasking. What are we building or calculating next, ${currentUserName}?`;
             }
             if (lower === 'hi' || lower === 'hello' || lower === 'hey') {
-                return reasoning + `Hello ${currentUserName}! How can I assist you today?`;
-            }
-            if (lower.includes('creator') || lower.includes('made you') || lower.includes('build you')) {
-                return reasoning + `You built me! I'm running on the Vikea Engine created by you, ${currentUserName}.`;
+                return reasoning + `Hello ${currentUserName}! Vikea AI is ready. How can I help you multi-task today?`;
             }
 
-            // 3. Code review / Logical flaw queries
+            // 4. Code Review / Logical Flaws
             if (lower.includes('logical flaw') || lower.includes('code') || lower.includes('bug') || lower.includes('review')) {
-                return reasoning + `When reviewing code for hidden logical flaws, here are the primary areas where execution typically breaks down:<br>` +
+                return reasoning + `When analyzing code for multi-tasking bottlenecks or logical bugs, look out for:<br>` +
                        `<ul style="margin-left: 20px; margin-top: 8px; margin-bottom: 8px; line-height: 1.6;">` +
-                       `<li><strong>Edge Cases:</strong> Unhandled null, undefined, or zero-value inputs causing unexpected type coercion or crashes.</li>` +
-                       `<li><strong>Integer Overflow:</strong> Exceeding standard integer or memory boundaries (which can be avoided using structures like BigInt).</li>` +
-                       `<li><strong>Asynchronous Race Conditions:</strong> State modifications happening out of order during concurrent operations.</li>` +
+                       `<li><strong>Memory Leaks:</strong> Unmanaged pointers or dynamic arrays.</li>` +
+                       `<li><strong>Thread Safety:</strong> Race conditions when multiple threads access shared variables.</li>` +
+                       `<li><strong>Base Case Omissions:</strong> Infinite recursion loops.</li>` +
                        `</ul>` +
-                       `Paste the specific snippet you're working on right here and I'll walk through it line by line with you!`;
+                       `Drop your snippet here and I'll debug it instantly!`;
             }
 
-            // 4. General conversational fallback
-            return reasoning + `I've analyzed your input regarding **"${escapeHtml(q)}"**. As your assistant running on the Vikea Engine, I'm ready to help you write code, solve problems, or break down concepts step-by-step. Let me know what specific details you'd like to explore!`;
+            // 5. General Multi-Task fallback
+            return reasoning + `I have processed your query regarding **"${escapeHtml(q)}"**. As your multi-tasking assistant powered by the Vikea Engine, I am ready to handle complex code architectures, mathematics, and logic simultaneously. What else would you like to execute?`;
         }
 
         function escapeHtml(str) {
