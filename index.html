@@ -48,17 +48,17 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* Galaxy Welcome Screen */
-        .galaxy-welcome-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #05050f 0%, #000000 100%); z-index: 5; user-select: none; }
+        /* Centered Galaxy Welcome Screen */
+        .galaxy-welcome-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #050510 0%, #000000 100%); z-index: 5; user-select: none; }
         
-        .galaxy-stage { position: relative; width: 1000px; height: 500px; display: flex; align-items: center; justify-content: center; }
-        .galaxy-label-left { position: absolute; left: 80px; font-size: 54px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
-        .galaxy-label-right { position: absolute; right: 80px; font-size: 54px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
+        .galaxy-stage { position: relative; width: 100%; max-width: 1100px; height: 500px; display: flex; align-items: center; justify-content: center; }
+        .galaxy-label-left { position: absolute; left: 10%; font-size: 56px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
+        .galaxy-label-right { position: absolute; right: 10%; font-size: 56px; font-weight: 400; color: #ffffff; letter-spacing: 1px; }
         
         #galaxyCanvas { width: 600px; height: 500px; cursor: grab; }
         #galaxyCanvas:active { cursor: grabbing; }
 
-        .launch-chat-btn { margin-top: 10px; background-color: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px 32px; border-radius: 30px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); z-index: 10; display: flex; align-items: center; gap: 8px; }
+        .launch-chat-btn { margin-top: 20px; background-color: rgba(255, 255, 255, 0.08); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); padding: 12px 32px; border-radius: 30px; font-size: 15px; font-weight: 500; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); z-index: 10; display: flex; align-items: center; gap: 8px; }
         .launch-chat-btn:hover { background-color: #fff; color: #000; border-color: #fff; transform: scale(1.05); }
 
         /* Chat Stream Area */
@@ -138,7 +138,7 @@
                 <div class="galaxy-label-right">AI</div>
             </div>
             <button class="launch-chat-btn" onclick="openChatInterface()">
-                <span class="material-symbols-outlined">chat_bubble</span>
+                <span class="material-symbols-outlined" style="font-size: 18px;">chat</span>
                 Start Chatting
             </button>
         </div>
@@ -193,20 +193,20 @@
             }
         }
 
-        // Interactive Spiral Galaxy Simulation (Drag to stretch & rotate)
+        // Full Interactive Spiral Galaxy Simulation (Drag to stretch & rotate)
         const gCanvas = document.getElementById('galaxyCanvas');
         const gCtx = gCanvas ? gCanvas.getContext('2d') : null;
-        const starCount = 600;
+        const starCount = 700;
         const stars = [];
 
         for (let i = 0; i < starCount; i++) {
             const arm = i % 2 === 0 ? 0 : Math.PI;
-            const r = Math.pow(Math.random(), 1.5) * 220;
-            const theta = r * 0.015 + arm + (Math.random() - 0.5) * 0.3;
+            const r = Math.pow(Math.random(), 1.4) * 210;
+            const theta = r * 0.018 + arm + (Math.random() - 0.5) * 0.35;
             stars.push({
                 baseR: r,
                 baseTheta: theta,
-                size: Math.random() * 2.2 + 0.5,
+                size: Math.random() * 2.3 + 0.4,
                 brightness: Math.random(),
                 colorShift: Math.random()
             });
@@ -229,8 +229,8 @@
                 if (!isDragging) return;
                 const dx = e.clientX - lastMouseX;
                 const dy = e.clientY - lastMouseY;
-                stretchX = Math.max(0.5, Math.min(2.0, stretchX + dx * 0.005));
-                stretchY = Math.max(0.5, Math.min(2.0, stretchY - dy * 0.005));
+                stretchX = Math.max(0.5, Math.min(2.2, stretchX + dx * 0.005));
+                stretchY = Math.max(0.5, Math.min(2.2, stretchY - dy * 0.005));
                 lastMouseX = e.clientX;
                 lastMouseY = e.clientY;
             });
@@ -241,7 +241,7 @@
         function renderGalaxy() {
             if (!gCtx) return;
             gCtx.clearRect(0, 0, 600, 500);
-            galaxyAngle += 0.003;
+            galaxyAngle += 0.0025;
 
             const cx = 300, cy = 250;
 
@@ -250,21 +250,21 @@
                 const x = cx + Math.cos(currentTheta) * s.baseR * stretchX;
                 const y = cy + Math.sin(currentTheta) * s.baseR * stretchY;
 
-                gCtx.fillStyle = s.colorShift > 0.8 ? '#aaccff' : (s.colorShift > 0.4 ? '#ffffff' : '#ffeedd');
+                gCtx.fillStyle = s.colorShift > 0.75 ? '#aaccff' : (s.colorShift > 0.35 ? '#ffffff' : '#ffeedd');
                 gCtx.shadowColor = gCtx.fillStyle;
-                gCtx.shadowBlur = s.size * 3;
+                gCtx.shadowBlur = s.size * 3.5;
                 gCtx.beginPath();
                 gCtx.arc(x, y, s.size, 0, Math.PI * 2);
                 gCtx.fill();
                 gCtx.shadowBlur = 0;
             });
 
-            // Bright Core
+            // Bright Center Core
             gCtx.fillStyle = '#ffffff';
             gCtx.shadowColor = '#ffffff';
-            gCtx.shadowBlur = 20;
+            gCtx.shadowBlur = 25;
             gCtx.beginPath();
-            gCtx.arc(cx, cy, 6, 0, Math.PI * 2);
+            gCtx.arc(cx, cy, 6.5, 0, Math.PI * 2);
             gCtx.fill();
             gCtx.shadowBlur = 0;
 
