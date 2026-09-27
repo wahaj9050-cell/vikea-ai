@@ -162,7 +162,7 @@
                 
                 <div class="glow-border-wrapper">
                     <div class="centered-prompt-box">
-                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about cells, atoms, diseases, or math GCSE questions..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
+                        <textarea class="centered-textarea" id="vibeInput" placeholder="Ask about photosynthesis, Ohm's law, quadratic formula, or vaccines..." rows="1" onkeydown="handleKey(event, 'vibe')"></textarea>
                         <div class="prompt-toolbar">
                             <div class="toolbar-left">
                                 <div class="deep-search-chip" id="vibeDeepSearchChip" onclick="toggleDeepSearchFromChip()">
@@ -433,20 +433,70 @@
                 return reasoning + `The weather right now is clear and comfortable around 18°C with light breezes.`;
             }
             if (lower.includes('time') || lower.includes('date')) {
-                return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()}, ${currentUserName}!`;
+                return reasoning + `The current time is ${new Date().toLocaleTimeString()} on ${new Date().toLocaleDateString()},${currentUserName}!`;
             }
             if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
                 return reasoning + `Hello ${currentUserName}! Ready to ace your GCSE Science and Math exams today?`;
             }
 
+            // 1. Photosynthesis
+            if (lower.includes('photosynthesis')) {
+                return reasoning + `### GCSE AQA Biology: Photosynthesis<br><br>` +
+                       `<strong>1. Word Equation:</strong><br>` +
+                       `Carbon dioxide + Water $\\rightarrow$ Glucose + Oxygen (in the presence of light and chlorophyll).<br><br>` +
+                       `<strong>2. Balanced Chemical Equation:</strong><br>` +
+                       `$$6CO_2 + 6H_2O \\xrightarrow{\\text{light}} C_6H_{12}O_6 + 6O_2$$
+<br>` +
+                       `<strong>3. Key Details:</strong><br>` +
+                       `* It is an **endothermic reaction** because it absorbs energy from the environment (sunlight).<br>` +
+                       `* Takes place inside chloroplasts within plant leaf cells.`;
+            }
+
+            // 2. Ohm's Law & Physics
+            if (lower.includes('ohm') || lower.includes('current') || lower.includes('resistance')) {
+                return reasoning + `### GCSE AQA Physics: Ohm's Law & Electrical Circuits<br><br>` +
+                       `<strong>1. The Formula:</strong><br>` +
+                       `$$V = I \\times R$$
+<br>` +
+                       `* **V** = Potential Difference (Voltage) in Volts (V)<br>` +
+                       `* **I** = Current in Amperes (A)<br>` +
+                       `* **R** = Resistance in Ohms ($\\Omega$)<br><br>` +
+                       `<strong>2. Calculating Current ($I$):</strong><br>` +
+                       `If you need to find current, rearrange the formula to: $$I = \\frac{V}{R}$$<br>` +
+                       `<em>Example:</em> If a 12V battery is connected to a 4$\\Omega$ resistor, the current is $12 / 4 = 3\\text{A}$.`;
+            }
+
+            // 3. Quadratic Formula (Math)
+            if (lower.includes('quadratic')) {
+                return reasoning + `### GCSE Mathematics: The Quadratic Formula<br><br>` +
+                       `<strong>1. The Formula:</strong><br>` +
+                       `Used to find the roots (solutions) of any quadratic equation in the standard form $ax^2 + bx + c = 0$:<br>` +
+                       $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$<br>` +
+                       `<strong>2. Step-by-Step Breakdown:</strong><br>` +
+                       `* Identify coefficients $a$, $b$, and $c$ from your equation.<br>` +
+                       `* Substitute them into the formula.<br>` +
+                       `* Calculate the discriminant ($\\Delta = b^2 - 4ac$) to find how many solutions exist (positive = 2 solutions, zero = 1 solution, negative = no real solutions).`;
+            }
+
+            // 4. Vaccines (Biology)
+            if (lower.includes('vaccine') || lower.includes('vaccines')) {
+                return reasoning + `### GCSE AQA Biology: How Vaccines Work<br><br>` +
+                       `<strong>1. The Process:</strong><br>` +
+                       `* A small amount of **dead, weakened, or inactive pathogen** is injected into the body.<br>` +
+                       `* White blood cells (**lymphocytes**) detect the foreign antigens on the pathogen.<br>` +
+                       `* Lymphocytes produce specific complementary **antibodies** to destroy the pathogen.<br><br>` +
+                       `<strong>2. Long-term Immunity:</strong><br>` +
+                       `* **Memory cells** remain in the blood. If the live pathogen enters later, antibodies are produced *much faster* and in *larger quantities*, preventing infection before symptoms show.`;
+            }
+
             // GCSE Diseases (Communicable & Non-Communicable)
             if (lower.includes('disease') || lower.includes('comunible') || lower.includes('communicable') || lower.includes('health')) {
                 return reasoning + `### GCSE AQA Biology: Communicable vs Non-Communicable Diseases<br><br>` +
-                       `**1. Communicable (Infectious) Diseases:**<br>` +
+                       `<strong>1. Communicable (Infectious) Diseases:</strong><br>` +
                        `* **Definition:** Diseases that **can** be spread from person to person or between animals and people.<br>` +
                        `* **Cause:** Caused by pathogens such as **bacteria, viruses, fungi, and protists**.<br>` +
                        `* **Examples:** Measles, Malaria, Salmonella, and HIV/AIDS.<br><br>` +
-                       `**2. Non-Communicable Diseases:**<br>` +
+                       `<strong>2. Non-Communicable Diseases:</strong><br>` +
                        `* **Definition:** Diseases that **cannot** be spread between organisms; they are not caused by pathogens.<br>` +
                        `* **Cause:** Caused by genetics, lifestyle factors (like diet, smoking, lack of exercise), or environmental exposures.<br>` +
                        `* **Examples:** Cardiovascular disease (heart disease), most types of cancer, type 2 diabetes, and chronic lung diseases.`;
@@ -496,7 +546,7 @@
             }
 
             // Default General Response
-            return reasoning + `I have analyzed your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully equipped to help with AQA Biology cells, Chemistry atoms, diseases, or math problems, ${currentUserName}!`;
+            return reasoning + `I have analyzed your query regarding <strong>"${escapeHtml(q)}"</strong>. As your GCSE Science & Universal Engine, I am fully equipped to help with AQA Biology, Chemistry, Physics, and Math, ${currentUserName}!`;
         }
 
         function escapeHtml(str) {
