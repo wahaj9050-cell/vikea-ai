@@ -10,6 +10,7 @@
         :root {
             --bg-color: #000000;
             --sidebar-bg: #0a0a0a;
+            --surface-color: #121212;
             --surface-hover: #1f1f1f;
             --text-primary: #ffffff;
             --text-secondary: #a0a0a0;
@@ -45,13 +46,13 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* WELCOME SCREEN: Plug in your Galaxy background image URL below */
+        /* Welcome screen with Galaxy background */
         .welcome-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('YOUR_GALAXY_IMAGE_URL_HERE.jpg') no-repeat center center;
+            background: url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
-            background-color: #050505; /* Fallback color if image path is pending */
+            background-color: #050505;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -60,7 +61,6 @@
             transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1), background-color 0.9s ease, opacity 0.9s ease;
         }
         
-        /* Zoom-in to pic then go black transition effect */
         .welcome-screen.zoom-to-black {
             transform: scale(3.5);
             background-color: #000000;
@@ -111,11 +111,11 @@
             letter-spacing: 0.5px;
         }
 
-        /* CHAT SCREEN: Plug in your Earth/Horizon background image URL below */
+        /* Chat screen background (Earth sunrise / Space horizon) */
         .chat-container-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: url('YOUR_EARTH_HORIZON_IMAGE_URL_HERE.jpg') no-repeat center center;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') no-repeat center center;
             background-size: cover;
             background-color: #000000;
             display: none;
@@ -125,7 +125,7 @@
         .chat-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.65); /* Darkens background slightly so text reads easily */
+            background-color: rgba(0, 0, 0, 0.65);
             display: flex;
             flex-direction: column;
             z-index: 2;
@@ -234,14 +234,12 @@
 
         function startChatTransition() {
             const welcome = document.getElementById('welcomeScreen');
-            welcome.classList.add('zoom-to-black'); // Triggers zoom-in and fade to black
+            welcome.classList.add('zoom-to-black');
 
             setTimeout(() => {
                 welcome.style.display = 'none';
                 const chatBg = document.getElementById('chatContainerBg');
                 chatBg.style.display = 'flex';
-                
-                // Triggers AI greeting using your format: "Hi, [name] how can i help you?"[cite: 19]
                 triggerInitialGreeting();
             }, 800);
         }
@@ -269,8 +267,10 @@
                 document.getElementById('modelBadgeHeader').innerText = "Universal Engine Active";
             } else if (mode === 'cells') {
                 document.getElementById('navCells').classList.add('active-mode');
+                document.getElementById('modelBadgeHeader').innerText = "GCSE Cell Biology Active";
             } else if (mode === 'periodic') {
                 document.getElementById('navPeriodic').classList.add('active-mode');
+                document.getElementById('modelBadgeHeader').innerText = "AQA Periodic Table Active";
             }
         }
 
