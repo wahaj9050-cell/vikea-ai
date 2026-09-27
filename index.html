@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI v6.2 - Filled Galaxy & Black Hole Engine</title>
+    <title>Vikea AI v6.3 - Deep Universe Galaxy & Black Hole Transition</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -48,8 +48,8 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
 
-        /* Full Screen Galaxy & Black Hole Stage */
-        .galaxy-welcome-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #050512 0%, #000000 100%); z-index: 5; user-select: none; }
+        /* Full-Screen Galaxy & Black Hole Stage */
+        .galaxy-welcome-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #030308 0%, #000000 100%); z-index: 5; user-select: none; }
         
         .galaxy-stage { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
         .galaxy-label-left { position: absolute; left: 15%; font-size: 72px; font-weight: 400; color: #ffffff; letter-spacing: 1px; z-index: 6; pointer-events: none; }
@@ -132,7 +132,7 @@
             <div class="model-badge-header" id="modelBadgeHeader">Universal Engine Active</div>
         </header>
 
-        <!-- Full-Screen Galaxy & Black Hole Explosion Stage -->
+        <!-- Full-Screen Galaxy & Black Hole Stage -->
         <div class="galaxy-welcome-container" id="galaxyWelcomeScreen">
             <div class="galaxy-stage">
                 <div class="galaxy-label-left">Vikea</div>
@@ -140,11 +140,11 @@
                 <div class="galaxy-label-right">AI</div>
             </div>
             <div class="launch-chat-container">
-                <button class="launch-chat-btn" onclick="openChatInterface()">
+                <button class="launch-chat-btn" onclick="launchChatWithBlackHole()">
                     <span class="material-symbols-outlined" style="font-size: 18px;">chat</span>
                     Start Chatting
                 </button>
-                <div class="version-tag">Vikea AI Engine v6.2.0 • GPT-6 Quantum Core</div>
+                <div class="version-tag">Vikea AI Engine v6.3.0 • GPT-6 Quantum Core</div>
             </div>
         </div>
 
@@ -176,6 +176,14 @@
             }
         }
 
+        function launchChatWithBlackHole() {
+            // Trigger the transition, then open chat
+            triggerTransitionBlackHole();
+            setTimeout(() => {
+                openChatInterface();
+            }, 1800);
+        }
+
         function openChatInterface() {
             document.getElementById('galaxyWelcomeScreen').style.display = 'none';
             document.getElementById('chatStream').style.display = 'flex';
@@ -198,7 +206,7 @@
             }
         }
 
-        // Full Screen Solid Circle Galaxy & Swelling Black Hole Engine
+        // Full Screen Galaxy & Deep Universe Background Star Field Engine
         const gCanvas = document.getElementById('galaxyCanvas');
         const gCtx = gCanvas ? gCanvas.getContext('2d') : null;
 
@@ -210,33 +218,44 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        const starCount = 9000; // Massive star density covering the whole circle disk seamlessly
+        // 1. Galaxy Spiral Stars
+        const starCount = 10000;
         const stars = [];
-
         for (let i = 0; i < starCount; i++) {
             const armIndex = i % 3;
             const armOffset = armIndex * ((Math.PI * 2) / 3);
-            const targetR = Math.pow(Math.random(), 0.85) * 420; // Full disk spread filling gaps completely
-            const targetTheta = targetR * 0.012 + armOffset + (Math.random() - 0.5) * 0.7; // Filled spread distribution
+            const targetR = Math.pow(Math.random(), 0.8) * 450;
+            const targetTheta = targetR * 0.012 + armOffset + (Math.random() - 0.5) * 0.8;
             
             stars.push({
                 targetR: targetR,
                 targetTheta: targetTheta,
-                currentR: 2.0, 
-                currentTheta: targetTheta + Math.random() * 4,
-                size: Math.random() * 1.9 + 0.3,
+                currentR: targetR,
+                currentTheta: targetTheta,
+                size: Math.random() * 1.8 + 0.3,
                 colorType: Math.random()
             });
         }
 
-        let explosionProgress = 0; 
+        // 2. Background Universe Star Dust Dots (filling the whole screen area)
+        const bgStarCount = 400;
+        const bgStars = [];
+        for(let i=0; i<bgStarCount; i++) {
+            bgStars.push({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                size: Math.random() * 1.2 + 0.2,
+                alpha: Math.random() * 0.7 + 0.2
+            });
+        }
+
         let galaxyAngle = 0;
         let stretchX = 1.0;
         let stretchY = 1.0;
         let isDragging = false;
         let lastMouseX = 0, lastMouseY = 0;
 
-        // Interactive dragging to stretch the galaxy
+        // Interactive dragging to stretch galaxy
         if (gCanvas) {
             gCanvas.addEventListener('mousedown', (e) => {
                 isDragging = true;
@@ -257,65 +276,54 @@
             window.addEventListener('mouseup', () => { isDragging = false; });
         }
 
-        // Black hole swell pulse state when a user sends a question
         let blackHolePulse = 0;
+        let isTransitioning = false;
+
+        function triggerTransitionBlackHole() {
+            isTransitioning = true;
+            blackHolePulse = 2.5; // Huge swell
+        }
 
         function triggerBlackHolePulse() {
-            blackHolePulse = 1.0; // Swells up instantly
+            blackHolePulse = 1.2; // Question prompt swell
         }
 
         function renderGalaxy() {
             if (!gCtx || !gCanvas) return;
             gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-            
-            if (explosionProgress < 1.0) {
-                explosionProgress += 0.015;
-            }
 
-            // Decay pulse back down over a few seconds
-            if (blackHolePulse > 0) {
-                blackHolePulse -= 0.01;
-            }
-
-            galaxyAngle += 0.001;
             const cx = gCanvas.width / 2;
             const cy = gCanvas.height / 2;
 
-            // Render Black Hole Event Horizon with 'V' inside, swelling on questions
-            const currentBhRadius = (45 + (blackHolePulse * 65)) * (2.1 - explosionProgress);
-            
-            if (explosionProgress < 0.98 || blackHolePulse > 0.01) {
-                const bhGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, currentBhRadius * 1.8);
-                bhGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
-                bhGlow.addColorStop(0.35, 'rgba(255, 130, 40, 0.85)');
-                bhGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                gCtx.fillStyle = bhGlow;
+            // Draw Background Universe Star Dust Dots across the whole space
+            bgStars.forEach(bs => {
+                gCtx.fillStyle = `rgba(255, 255, 255, ${bs.alpha})`;
                 gCtx.beginPath();
-                gCtx.arc(cx, cy, currentBhRadius * 1.8, 0, Math.PI * 2);
+                gCtx.arc(bs.x, bs.y, bs.size, 0, Math.PI * 2);
                 gCtx.fill();
+            });
 
-                // Rotating Black Hole Center Ring
-                gCtx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-                gCtx.lineWidth = 2.5;
-                gCtx.beginPath();
-                gCtx.arc(cx, cy, currentBhRadius * 0.6, 0, Math.PI * 2);
-                gCtx.stroke();
-
-                // 'V' Inside the rotating center
-                gCtx.fillStyle = '#ffffff';
-                gCtx.font = `bold ${Math.floor(16 + blackHolePulse * 12)}px 'Google Sans', sans-serif`;
-                gCtx.textAlign = 'center';
-                gCtx.textBaseline = 'middle';
-                gCtx.fillText("V", cx, cy);
+            if (blackHolePulse > 0) {
+                blackHolePulse -= 0.015;
+            }
+            if (isTransitioning && blackHolePulse <= 0.1) {
+                isTransitioning = false;
             }
 
-            // Update and draw each star flowing outward into the filled circular galaxy
+            galaxyAngle += 0.001;
+
+            // Render organic spiral stars (NO harsh center ring outline, completely organic core)
             stars.forEach(s => {
-                s.currentR += (s.targetR - s.currentR) * 0.05;
-                
                 const activeTheta = s.targetTheta + galaxyAngle;
-                const x = cx + Math.cos(activeTheta) * s.currentR * stretchX;
-                const y = cy + Math.sin(activeTheta) * s.currentR * stretchY;
+                
+                // If transitioning, collapse stars into center briefly
+                let currentRadius = s.targetR;
+                if(isTransitioning) {
+                    currentRadius *= (2.5 - blackHolePulse);
+                }
+
+                const x = cx + Math.cos(activeTheta) * currentRadius * stretchX;
+                const y = cy + Math.sin(activeTheta) * currentRadius * stretchY;
 
                 if (s.colorType > 0.75) {
                     gCtx.fillStyle = '#bce0ff';
@@ -333,16 +341,47 @@
                 gCtx.shadowBlur = 0;
             });
 
-            // Permanent Galactic Core Glow
-            const coreGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, 55);
-            coreGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
-            coreGlow.addColorStop(0.4, 'rgba(255, 230, 200, 0.8)');
+            // Soft natural galactic core glow (no rigid circle outline)
+            const coreGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, 65);
+            coreGlow.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+            coreGlow.addColorStop(0.35, 'rgba(255, 230, 200, 0.6)');
             coreGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
             
             gCtx.fillStyle = coreGlow;
             gCtx.beginPath();
-            gCtx.arc(cx, cy, 55, 0, Math.PI * 2);
+            gCtx.arc(cx, cy, 65, 0, Math.PI * 2);
             gCtx.fill();
+
+            // Active Black Hole with rotating 'V' inside (appears on question send / chat launch)
+            if (blackHolePulse > 0.05) {
+                const bhRadius = 35 + (blackHolePulse * 50);
+                const bhGlow = gCtx.createRadialGradient(cx, cy, 2, cx, cy, bhRadius * 2);
+                bhGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+                bhGlow.addColorStop(0.4, 'rgba(255, 120, 30, 0.8)');
+                bhGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                gCtx.fillStyle = bhGlow;
+                gCtx.beginPath();
+                gCtx.arc(cx, cy, bhRadius * 2, 0, Math.PI * 2);
+                gCtx.fill();
+
+                // Rotating ring & 'V'
+                gCtx.save();
+                gCtx.translate(cx, cy);
+                gCtx.rotate(galaxyAngle * 3);
+                gCtx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+                gCtx.lineWidth = 2.5;
+                gCtx.beginPath();
+                gCtx.arc(0, 0, bhRadius * 0.7, 0, Math.PI * 2);
+                gCtx.stroke();
+                gCtx.restore();
+
+                gCtx.fillStyle = '#ffffff';
+                gCtx.font = `bold ${Math.floor(18 + blackHolePulse * 10)}px 'Google Sans', sans-serif`;
+                gCtx.textAlign = 'center';
+                gCtx.textBaseline = 'middle';
+                gCtx.fillText("V", cx, cy);
+            }
 
             requestAnimationFrame(renderGalaxy);
         }
