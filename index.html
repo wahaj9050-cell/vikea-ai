@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI Alpha</title>
+    <title>Vikea AI Alpha - Gemini Connected</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -26,8 +26,11 @@
         
         aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; z-index: 10; }
         .sidebar-top { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 80px); padding-right: 4px; }
-        .brand-header { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; padding: 4px 8px; color: #fff; }
+        .brand-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; color: #fff; }
+        .brand-left { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; }
         .brand-logo-icon { width: 28px; height: 28px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+        .api-key-btn { background: none; border: 1px solid #444; color: #aaa; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .api-key-btn:hover { color: #fff; border-color: #fff; }
         
         .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
         .new-chat-btn:hover { background-color: #2a2a2a; }
@@ -51,7 +54,7 @@
         .user-info { font-size: 13px; color: var(--text-primary); }
 
         .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
-        header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; flex-shrink: 0; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
 
         /* Welcome Entrance Screen */
@@ -81,7 +84,6 @@
         .title-left { font-size: 64px; font-weight: 700; letter-spacing: 4px; color: #ffffff; }
         .title-right { font-size: 64px; font-weight: 700; letter-spacing: 4px; color: #ffffff; }
 
-        /* Classic White V with 8 Dots Circling It */
         .orbit-container {
             position: relative;
             width: 110px;
@@ -115,14 +117,8 @@
         }
 
         .dot { position: absolute; width: 7px; height: 7px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 0 8px #ffffff; }
-        .d1 { top: 2px; left: 51px; }
-        .d2 { top: 16px; left: 83px; }
-        .d3 { top: 51px; left: 101px; }
-        .d4 { top: 85px; left: 83px; }
-        .d5 { top: 100px; left: 51px; }
-        .d6 { top: 85px; left: 18px; }
-        .d7 { top: 51px; left: 0px; }
-        .d8 { top: 16px; left: 18px; }
+        .d1 { top: 2px; left: 51px; } .d2 { top: 16px; left: 83px; } .d3 { top: 51px; left: 101px; } .d4 { top: 85px; left: 83px; }
+        .d5 { top: 100px; left: 51px; } .d6 { top: 85px; left: 18px; } .d7 { top: 51px; left: 0px; } .d8 { top: 16px; left: 18px; }
 
         @keyframes spinOrbit {
             0% { transform: rotate(0deg); }
@@ -130,29 +126,14 @@
         }
 
         .start-chat-btn {
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            padding: 14px 40px;
-            border-radius: 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 10px;
+            background: #ffffff; color: #000000; border: none; padding: 14px 40px; border-radius: 30px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-bottom: 10px;
         }
         .start-chat-btn:hover { background: #e0e0e0; transform: scale(1.04); }
-
         .version-label { font-size: 11px; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.5px; }
 
-        .white-flash-screen {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #ffffff;
-            display: none;
-            z-index: 30;
-        }
+        .white-flash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; display: none; z-index: 30; }
 
+        /* Chat Layout with proper fixed scrolling */
         .chat-container-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -162,46 +143,71 @@
             z-index: 5;
         }
         .chat-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
-            z-index: 2;
+            height: 100%;
+            width: 100%;
+            position: relative;
         }
 
-        .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 950px; width: 100%; margin: 0 auto; scroll-behavior: smooth; z-index: 3; }
+        .chat-stream {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 950px;
+            width: 100%;
+            margin: 0 auto;
+            scroll-behavior: smooth;
+        }
         
         .center-greeting-box {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex: 1;
+            margin: auto 0;
             text-align: center;
             gap: 12px;
             color: #ffffff;
             font-size: 32px;
             font-weight: 500;
-            min-height: 50vh;
+            padding: 40px 0;
         }
 
-        .message { display: flex; gap: 14px; max-width: 100%; }
+        .message { display: flex; gap: 14px; max-width: 100%; width: 100%; }
         .message.user { flex-direction: row-reverse; align-self: flex-end; }
-        .message.ai { justify-content: flex-start; align-self: flex-start; width: 100%; }
+        .message.ai { justify-content: flex-start; align-self: flex-start; }
         
         .message-avatar { width: 32px; height: 32px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
         .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
-        .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; }
+        .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; max-width: 75%; }
 
         .deep-search-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid #444; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; font-weight: 600; }
 
-        .input-area { padding: 16px 24px 20px 24px; max-width: 950px; width: 100%; margin: 0 auto; z-index: 3; flex-shrink: 0; }
+        .input-area { padding: 16px 24px 20px 24px; max-width: 950px; width: 100%; margin: 0 auto; flex-shrink: 0; background: var(--bg-color); }
         .input-box-wrapper { background-color: #111111; border-radius: 28px; padding: 12px 18px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; min-height: 24px; max-height: 120px; }
         
         .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; flex-shrink: 0; }
         .send-btn:hover { opacity: 0.85; transform: scale(1.05); }
         footer { text-align: center; padding: 4px; color: var(--text-secondary); font-size: 11px; }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal-box { background: #111; border: 1px solid #333; border-radius: 16px; padding: 24px; width: 400px; max-width: 90%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); color: #fff; }
+        .modal-box h3 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .modal-box p { font-size: 13px; color: #aaa; line-height: 1.4; }
+        .modal-input { width: 100%; padding: 10px 14px; background: #000; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
+        .modal-input:focus { border-color: #fff; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+        .modal-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; }
+        .modal-btn.cancel { background: #222; color: #fff; }
+        .modal-btn.save { background: #fff; color: #000; }
+        
+        .plugin-toggle-row { display: flex; align-items: center; justify-content: space-between; background: #080808; padding: 10px 14px; border-radius: 8px; border: 1px solid #222; }
     </style>
 </head>
 <body>
@@ -209,8 +215,11 @@
     <aside>
         <div class="sidebar-top">
             <div class="brand-header">
-                <div class="brand-logo-icon">V</div>
-                <span>Vikea AI</span>
+                <div class="brand-left">
+                    <div class="brand-logo-icon">V</div>
+                    <span>Vikea AI</span>
+                </div>
+                <button class="api-key-btn" onclick="openApiKeyModal()" title="Set Gemini API Key">API Key</button>
             </div>
             <button class="new-chat-btn" onclick="location.reload()">
                 <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
@@ -221,7 +230,7 @@
             <div class="sidebar-nav">
                 <button class="nav-item" onclick="openPluginsModal()">
                     <span class="material-symbols-outlined">extension</span>
-                    Plugins
+                    Plugins & Tools
                 </button>
             </div>
 
@@ -247,7 +256,7 @@
                     <span class="material-symbols-outlined">biotech</span>
                     GCSE Cell Biology
                 </button>
-                <button class="nav-item" id="navPeriodic" onclick="switchEngineMode('periodic')">
+                <button class="nav-item" id="navPeriodic" onclick="switchEngineMode('science')">
                     <span class="material-symbols-outlined">science</span>
                     AQA Periodic Table & Atoms
                 </button>
@@ -289,14 +298,8 @@
                 <span class="title-left">VIKEA</span>
                 <div class="orbit-container" id="welcomeOrbit">
                     <div class="orbit-ring" id="welcomeRing">
-                        <div class="dot d1"></div>
-                        <div class="dot d2"></div>
-                        <div class="dot d3"></div>
-                        <div class="dot d4"></div>
-                        <div class="dot d5"></div>
-                        <div class="dot d6"></div>
-                        <div class="dot d7"></div>
-                        <div class="dot d8"></div>
+                        <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div>
+                        <div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div>
                     </div>
                     <div class="orbit-center-v">V</div>
                 </div>
@@ -304,33 +307,80 @@
             </div>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
                 <button class="start-chat-btn" onclick="startChatTransition()">Get Started / Chat</button>
-                <div class="version-label">Version Alpha • Vikea Engine</div>
+                <div class="version-label">Version Alpha • Gemini-Powered</div>
             </div>
         </div>
 
-        <!-- White Flash Transition Screen -->
         <div class="white-flash-screen" id="whiteFlashScreen"></div>
 
-        <!-- Chat Screen Background -->
+        <!-- Chat Screen -->
         <div class="chat-container-bg" id="chatContainerBg">
             <div class="chat-overlay">
                 <div class="chat-stream" id="chatStream">
-                    <!-- Middle Greeting Box -->
                     <div class="center-greeting-box" id="centerGreetingBox">
                         <h1>How can I help u</h1>
                     </div>
                 </div>
                 <div class="input-area" id="activeInputArea">
                     <div class="input-box-wrapper">
-                        <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event)"></textarea>
+                        <textarea id="activeInput" placeholder="Ask Vikea AI anything (Gemini connected)..." rows="1" onkeydown="handleKey(event)"></textarea>
                         <div class="prompt-toolbar" style="display:flex; justify-content:flex-end; border:none; padding-top:0;">
                             <button class="send-btn" onclick="sendFromActiveArea()">
                                 <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
                             </button>
                         </div>
                     </div>
-                    <footer>Made with Vikea Multi-Universal Engine © 2026</footer>
+                    <footer>Made with Vikea Alpha & Gemini API © 2026</footer>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Key Modal -->
+    <div class="modal-overlay" id="apiKeyModal">
+        <div class="modal-box">
+            <h3><span class="material-symbols-outlined">key</span> Gemini API Key Setup</h3>
+            <p>Enter your Google Gemini API Key to connect Vikea Alpha directly to Gemini. Your key is stored securely in your browser storage only.</p>
+            <input type="password" id="apiKeyInput" class="modal-input" placeholder="Paste your API key here (AIzaSy...)">
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeApiKeyModal()">Cancel</button>
+                <button class="modal-btn save" onclick="saveApiKey()">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plugins Modal -->
+    <div class="modal-overlay" id="pluginsModal">
+        <div class="modal-box" style="width: 440px;">
+            <h3><span class="material-symbols-outlined">extension</span> Vikea Plugin Ecosystem</h3>
+            <p>Enable external plugins to extend Vikea Alpha's capabilities during chat responses.</p>
+            
+            <div class="plugin-toggle-row">
+                <div style="font-size:13px; font-weight:500;">🌍 Web Search Grounding</div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="pluginWebSearch" class="deep-checkbox" checked>
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="plugin-toggle-row">
+                <div style="font-size:13px; font-weight:500;">💻 Python Code Executor</div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="pluginCodeExec" class="deep-checkbox" checked>
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="plugin-toggle-row">
+                <div style="font-size:13px; font-weight:500;">🧠 Long-Term Memory Extension</div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="pluginMemory" class="deep-checkbox">
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn save" onclick="closePluginsModal()">Save & Close</button>
             </div>
         </div>
     </div>
@@ -338,6 +388,7 @@
     <script>
         let currentUserName = "Wahaj";
         let currentMode = "universal";
+        let userApiKey = localStorage.getItem('vikea_gemini_api_key') || "";
 
         function changeUserName() {
             const newName = prompt("Enter your new name:", currentUserName);
@@ -348,13 +399,31 @@
             }
         }
 
+        function openApiKeyModal() {
+            document.getElementById('apiKeyInput').value = userApiKey;
+            document.getElementById('apiKeyModal').style.display = 'flex';
+        }
+        function closeApiKeyModal() {
+            document.getElementById('apiKeyModal').style.display = 'none';
+        }
+        function saveApiKey() {
+            const val = document.getElementById('apiKeyInput').value.trim();
+            userApiKey = val;
+            localStorage.setItem('vikea_gemini_api_key', val);
+            closeApiKeyModal();
+            alert("Gemini API Key saved successfully! Vikea Alpha is now connected.");
+        }
+
         function openPluginsModal() {
             if (document.getElementById('welcomeScreen').style.display !== 'none') {
                 startChatTransition();
-                setTimeout(() => { alert("Plugins Manager: Connected to Vikea Plugin Ecosystem successfully!"); }, 5200);
+                setTimeout(() => { document.getElementById('pluginsModal').style.display = 'flex'; }, 5200);
             } else {
-                alert("Plugins Manager: Connected to Vikea Plugin Ecosystem successfully!");
+                document.getElementById('pluginsModal').style.display = 'flex';
             }
+        }
+        function closePluginsModal() {
+            document.getElementById('pluginsModal').style.display = 'none';
         }
 
         function startChatTransition() {
@@ -372,6 +441,9 @@
                         flash.style.display = 'none';
                         document.getElementById('chatContainerBg').style.display = 'flex';
                         document.getElementById('activeInput').focus();
+                        if (!userApiKey) {
+                            openApiKeyModal();
+                        }
                     }, 400); 
                 }, 5000);
             }
@@ -401,7 +473,7 @@
                 document.getElementById('navCells').classList.add('active-mode');
                 badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">biotech</span> GCSE Cell Biology Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>GCSE Cell Biology</strong> mode. Hit me with organelle questions!</div>`;
-            } else if (mode === 'periodic') {
+            } else if (mode === 'science') {
                 document.getElementById('navPeriodic').classList.add('active-mode');
                 badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">science</span> AQA Periodic Table Active`;
                 aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>AQA Periodic Table & Atoms</strong> mode. Let's study chemistry!</div>`;
@@ -452,62 +524,70 @@
             stream.appendChild(userMsgDiv);
             stream.scrollTop = stream.scrollHeight;
 
-            if (isDeepSearchOn) {
-                const searchingDiv = document.createElement('div');
-                searchingDiv.className = 'message ai';
-                searchingDiv.id = 'searchIndicator';
-                searchingDiv.innerHTML = `
-                    <div class="message-avatar">V</div>
-                    <div class="message-content" style="color: var(--text-secondary); display:flex; align-items:center; gap:8px;">
-                        <span class="material-symbols-outlined" style="animation: spin 1.5s linear infinite; font-size: 18px;">progress_activity</span>
-                        Performing Deep Search across database...
-                    </div>
-                `;
-                stream.appendChild(searchingDiv);
-                stream.scrollTop = stream.scrollHeight;
-                await new Promise(r => setTimeout(r, 1400));
-                document.getElementById('searchIndicator').remove();
-            } else {
-                await new Promise(r => setTimeout(r, 500));
-            }
-
             const aiMsgDiv = document.createElement('div');
             aiMsgDiv.className = 'message ai';
-            
-            let responseText = generateSmartResponse(currentMode, query);
+            aiMsgDiv.innerHTML = `
+                <div class="message-avatar">V</div>
+                <div class="message-content" style="color: var(--text-secondary); display:flex; align-items:center; gap:8px;">
+                    <span class="material-symbols-outlined" style="animation: spin 1.5s linear infinite; font-size: 18px;">progress_activity</span>
+                    Thinking with Gemini AI...
+                </div>
+            `;
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+
+            let responseText = "";
+
+            if (!userApiKey) {
+                responseText = `⚠️ **Gemini API Key Missing!** Please click the **"API Key"** button at the top left of your sidebar, paste your Google Gemini API key, and try again.`;
+            } else {
+                try {
+                    let systemInstruction = "You are Vikea Alpha, a helpful AI assistant.";
+                    if (currentMode === 'cells') systemInstruction = "You are an expert GCSE Cell Biology tutor. Give precise biological explanations.";
+                    if (currentMode === 'science') systemInstruction = "You are an expert AQA Chemistry tutor specializing in atoms and the periodic table.";
+                    if (currentMode === 'coder') systemInstruction = "You are an elite senior software engineer. Write clean code and breakdown technical logic.";
+                    if (currentMode === 'roast') systemInstruction = `You are a savage, funny roasting AI assistant talking to ${currentUserName}. Keep it witty and playful.`;
+                    if (currentMode === 'philosopher') systemInstruction = "You are a deep philosopher contemplating existence, reality, and truth.";
+
+                    if (isDeepSearchOn) systemInstruction += " Deep Search is active: provide comprehensive, verified details.";
+
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${userApiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: query }] }],
+                            systemInstruction: { parts: [{ text: systemInstruction }] }
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.candidates && data.candidates[0].content.parts[0].text) {
+                        responseText = data.candidates[0].content.parts[0].text;
+                    } else if (data.error) {
+                        responseText = `Error from Gemini API: ${data.error.message}`;
+                    } else {
+                        responseText = "Received an empty response from Gemini.";
+                    }
+                } catch (err) {
+                    responseText = `Connection Error: Failed to reach Gemini API. (${err.message})`;
+                }
+            }
+
             let deepSearchHTML = isDeepSearchOn ? `<div class="deep-search-tag"><span class="material-symbols-outlined" style="font-size: 13px;">travel_explore</span> Deep Search Verified</div><br>` : '';
 
             aiMsgDiv.innerHTML = `
                 <div class="message-avatar">V</div>
-                <div class="message-content">${deepSearchHTML}${responseText}</div>
+                <div class="message-content">${deepSearchHTML}${formatMarkdown(responseText)}</div>
             `;
-            stream.appendChild(aiMsgDiv);
             stream.scrollTop = stream.scrollHeight;
         }
 
-        function generateSmartResponse(mode, query) {
-            const q = query.toLowerCase();
-            
-            if (mode === 'cells') {
-                if (q.includes('ribosome')) return "Ribosomes are tiny structures responsible for **protein synthesis**.";
-                return `Regarding **"${escapeHtml(query)}"** in GCSE Cell Biology: Cells use organelles to maintain specialized life processes.`;
-            } 
-            else if (mode === 'periodic') {
-                if (q.includes('halogen')) return "Group 7 elements (halogens) show a decrease in reactivity down the group.";
-                return `Under AQA Chemistry rules regarding **"${escapeHtml(query)}"**, atoms bond to achieve full outer electron shells.`;
-            }
-            else if (mode === 'coder') {
-                return `Here is the coding breakdown for <strong>"${escapeHtml(query)}"</strong>: Make sure your logic handles edge cases and uses clean modular structures.`;
-            }
-            else if (mode === 'roast') {
-                return `Bro really asked <strong>"${escapeHtml(query)}"</strong> expecting me to do all the heavy lifting while you sit there. Classic ${currentUserName} behavior. 🔥`;
-            }
-            else if (mode === 'philosopher') {
-                return `To ponder <strong>"${escapeHtml(query)}"</strong> is to gaze into the very nature of existence. What is knowledge if not an endless pursuit of truth?`;
-            }
-            else {
-                return `Processed your request regarding <strong>"${escapeHtml(query)}"</strong> with Vikea Alpha. What would you like to explore next?`;
-            }
+        function formatMarkdown(text) {
+            // Simple helper for bold text and line breaks
+            return escapeHtml(text)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*(?!\*)/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
         }
 
         function escapeHtml(str) {
