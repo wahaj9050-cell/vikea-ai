@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI v2.0</title>
+    <title>Vikea AI Alpha</title>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
@@ -54,7 +54,7 @@
         header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; }
         .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
 
-        /* Welcome Screen Background (Pure Black, No Bar) */
+        /* Welcome Entrance Screen */
         .welcome-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -68,7 +68,6 @@
             transition: opacity 0.5s ease;
         }
 
-        /* VIKEA far left, AI far right layout */
         .welcome-content {
             display: flex;
             align-items: center;
@@ -79,19 +78,8 @@
             margin-bottom: auto;
         }
 
-        .title-left {
-            font-size: 64px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #ffffff;
-        }
-
-        .title-right {
-            font-size: 64px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #ffffff;
-        }
+        .title-left { font-size: 64px; font-weight: 700; letter-spacing: 4px; color: #ffffff; }
+        .title-right { font-size: 64px; font-weight: 700; letter-spacing: 4px; color: #ffffff; }
 
         /* Classic White V with 8 Dots Circling It */
         .orbit-container {
@@ -126,7 +114,6 @@
             animation: spinOrbit 4s linear infinite;
         }
 
-        /* 8 White Dots distributed evenly */
         .dot { position: absolute; width: 7px; height: 7px; background-color: #ffffff; border-radius: 50%; box-shadow: 0 0 8px #ffffff; }
         .d1 { top: 2px; left: 51px; }
         .d2 { top: 16px; left: 83px; }
@@ -142,7 +129,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Get Started Button at the Bottom */
         .start-chat-btn {
             background: #ffffff;
             color: #000000;
@@ -155,18 +141,10 @@
             transition: 0.3s;
             margin-bottom: 10px;
         }
-        .start-chat-btn:hover {
-            background: #e0e0e0;
-            transform: scale(1.04);
-        }
+        .start-chat-btn:hover { background: #e0e0e0; transform: scale(1.04); }
 
-        .version-label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 0.5px;
-        }
+        .version-label { font-size: 11px; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.5px; }
 
-        /* White Flash Transition Screen */
         .white-flash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -175,7 +153,6 @@
             z-index: 30;
         }
 
-        /* Chat Screen Background */
         .chat-container-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -192,10 +169,8 @@
             z-index: 2;
         }
 
-        /* Fixed scrolling: Fully scrollable chat stream */
         .chat-stream { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; max-width: 950px; width: 100%; margin: 0 auto; scroll-behavior: smooth; z-index: 3; }
         
-        /* Centered "How can I help u" message in the middle */
         .center-greeting-box {
             display: flex;
             flex-direction: column;
@@ -241,6 +216,14 @@
                 <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
                 New chat
             </button>
+
+            <div class="sidebar-section-title">Extensions</div>
+            <div class="sidebar-nav">
+                <button class="nav-item" onclick="openPluginsModal()">
+                    <span class="material-symbols-outlined">extension</span>
+                    Plugins
+                </button>
+            </div>
 
             <div class="sidebar-section-title">Advanced Settings</div>
             <div class="deep-search-box">
@@ -299,7 +282,7 @@
             </div>
         </header>
 
-        <!-- Welcome Entrance Screen: VIKEA left, AI right, 8 white dots circling white V -->
+        <!-- Welcome Entrance Screen -->
         <div class="welcome-screen" id="welcomeScreen">
             <div></div>
             <div class="welcome-content">
@@ -321,7 +304,7 @@
             </div>
             <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
                 <button class="start-chat-btn" onclick="startChatTransition()">Get Started / Chat</button>
-                <div class="version-label">Version 2.0 • Vikea Engine</div>
+                <div class="version-label">Version Alpha • Vikea Engine</div>
             </div>
         </div>
 
@@ -365,16 +348,23 @@
             }
         }
 
+        function openPluginsModal() {
+            if (document.getElementById('welcomeScreen').style.display !== 'none') {
+                startChatTransition();
+                setTimeout(() => { alert("Plugins Manager: Connected to Vikea Plugin Ecosystem successfully!"); }, 5200);
+            } else {
+                alert("Plugins Manager: Connected to Vikea Plugin Ecosystem successfully!");
+            }
+        }
+
         function startChatTransition() {
             const welcome = document.getElementById('welcomeScreen');
             const ring = document.getElementById('welcomeRing');
             const flash = document.getElementById('whiteFlashScreen');
             
             if (welcome.style.display !== 'none') {
-                // Accelerating dots animation: gets faster and faster
-                ring.style.animation = 'spinOrbit 0.3s cubic-bezier(0.5, 0, 0.5, 1) infinite';
+                ring.style.animation = 'spinOrbit 0.25s cubic-bezier(0.5, 0, 0.5, 1) infinite';
 
-                // After exactly 5 seconds, flash white and pop into chat
                 setTimeout(() => {
                     flash.style.display = 'block';
                     setTimeout(() => {
@@ -516,7 +506,7 @@
                 return `To ponder <strong>"${escapeHtml(query)}"</strong> is to gaze into the very nature of existence. What is knowledge if not an endless pursuit of truth?`;
             }
             else {
-                return `Processed your request regarding <strong>"${escapeHtml(query)}"</strong> with Vikea v2.0. What would you like to explore next?`;
+                return `Processed your request regarding <strong>"${escapeHtml(query)}"</strong> with Vikea Alpha. What would you like to explore next?`;
             }
         }
 
