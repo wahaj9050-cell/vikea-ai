@@ -3,231 +3,575 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikea AI</title>
+    <title>Vikea AI Alpha - Smart Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #050505;
+            --surface-color: #111111;
+            --surface-hover: #1c1c1c;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border-color: #222222;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Google Sans', 'Roboto', sans-serif; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
-        body {
-            background-color: #0b0b0c;
-            color: #f1f1f1;
-            height: 100vh;
-            overflow: hidden;
-        }
+        body { background-color: var(--bg-color); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
+        
+        aside { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; justify-content: space-between; padding: 16px; border-right: 1px solid var(--border-color); flex-shrink: 0; z-index: 10; }
+        .sidebar-top { display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 80px); padding-right: 4px; }
+        .brand-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; color: #fff; }
+        .brand-left { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 500; }
+        .brand-logo-icon { width: 28px; height: 28px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; }
+        
+        .new-chat-btn { background-color: var(--surface-hover); color: var(--text-primary); border: 1px solid var(--border-color); padding: 10px 16px; border-radius: 24px; display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 14px; font-weight: 500; width: fit-content; transition: 0.2s; }
+        .new-chat-btn:hover { background-color: #2a2a2a; }
 
-        /* --- ENTRANCE OVERLAY --- */
-        #entrance-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: #0b0b0c;
+        .sidebar-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); margin: 8px 0 4px 8px; font-weight: 600; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { background: none; border: none; color: var(--text-secondary); padding: 9px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13.5px; text-align: left; width: 100%; transition: 0.2s; }
+        .nav-item:hover { background-color: var(--surface-hover); color: var(--text-primary); }
+        .nav-item.active-mode { background-color: #222; color: #fff; border: 1px solid #444; }
+
+        .deep-search-box { background: rgba(255, 255, 255, 0.04); border: 1px solid #333; border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .deep-search-info { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; font-weight: 500; }
+        .toggle-switch { position: relative; width: 36px; height: 20px; background-color: #333; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background-color: white; top: 2px; left: 2px; transition: 0.3s; }
+        input.deep-checkbox { display: none; }
+        input.deep-checkbox:checked + .toggle-switch { background-color: #fff; }
+        input.deep-checkbox:checked + .toggle-switch::after { transform: translateX(16px); background-color: #000; }
+
+        .user-profile-row { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; background-color: var(--surface-hover); border: 1px solid var(--border-color); cursor: pointer; }
+        .user-avatar { width: 32px; height: 32px; background-color: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .user-info { font-size: 13px; color: var(--text-primary); }
+
+        .main-container { flex: 1; display: flex; flex-direction: column; height: 100vh; position: relative; overflow: hidden; }
+        header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; font-size: 18px; font-weight: 500; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); background-color: var(--bg-color); z-index: 10; flex-shrink: 0; }
+        .model-badge-header { font-size: 12px; background-color: var(--surface-hover); color: #fff; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 6px; }
+
+        /* Welcome Entrance Screen (Sidebar-free view) */
+        .welcome-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000000;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            z-index: 1000;
+            justify-content: space-between;
+            padding: 50px 40px;
+            z-index: 20;
             transition: opacity 0.5s ease;
         }
 
-        .entrance-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .logo-animation-container {
+        .welcome-content {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 30px;
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 2px;
+            width: 100%;
+            max-width: 900px;
+            margin: auto 0;
         }
 
-        /* Moving text elements (Vikea & AI) */
-        .moving-text {
-            transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
-        }
+        .title-left { font-size: 56px; font-weight: 700; letter-spacing: 3px; color: #ffffff; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
+        .title-right { font-size: 56px; font-weight: 700; letter-spacing: 3px; color: #ffffff; transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1); }
 
-        /* Thinner white spinning circle loader with V logo in middle */
-        .spinner-wrapper {
+        .orbit-container {
             position: relative;
             width: 70px;
             height: 70px;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
         }
 
-        .thin-spinner {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-top: 2px solid #ffffff;
+        .orbit-center-v {
+            width: 36px;
+            height: 36px;
+            background: #ffffff;
+            color: #000000;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .center-v-logo {
-            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
             font-weight: bold;
-            color: #fff;
             z-index: 2;
         }
 
-        @keyframes spin {
+        .orbit-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-top: 2px solid #ffffff;
+            border-radius: 50%;
+            animation: spinOrbit 1s linear infinite;
+        }
+
+        @keyframes spinOrbit {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        /* Enhanced Get Started Button */
-        .get-started-btn {
+        .start-chat-btn {
             background: linear-gradient(135deg, #ffffff, #dcdcdc);
-            color: #0b0b0c;
+            color: #000000;
             border: none;
-            padding: 14px 32px;
-            font-size: 1rem;
-            font-weight: 700;
+            padding: 14px 40px;
             border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            margin-top: 10px;
+            transition: 0.3s;
+            margin-bottom: 10px;
         }
+        .start-chat-btn:hover { background: #ffffff; transform: scale(1.04); box-shadow: 0 6px 25px rgba(255, 255, 255, 0.4); }
+        .version-label { font-size: 11px; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.5px; }
+        .loading-percentage { font-size: 13px; color: #888; letter-spacing: 1px; margin-top: -15px; }
 
-        .get-started-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(255, 255, 255, 0.4);
-            background: linear-gradient(135deg, #ffffff, #ffffff);
-        }
+        .white-flash-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; display: none; z-index: 30; }
 
-        .loading-percentage {
-            font-size: 0.9rem;
-            color: #888;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
-
-        /* --- MAIN APP LAYOUT (Hidden initially) --- */
-        #main-app {
+        /* Chat Layout */
+        .chat-container-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000000;
             display: none;
-            height: 100vh;
-            display: flex;
+            flex-direction: column;
+            z-index: 5;
         }
-
-        .sidebar {
-            width: 260px;
-            background-color: #121214;
-            border-right: 1px solid #222;
+        .chat-overlay {
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            gap: 20px;
+            height: 100%;
+            width: 100%;
+            position: relative;
         }
 
-        .chat-area {
+        .chat-stream {
             flex: 1;
+            overflow-y: auto;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            background-color: #0b0b0c;
+            gap: 24px;
+            max-width: 950px;
+            width: 100%;
+            margin: 0 auto;
+            scroll-behavior: smooth;
         }
+        
+        .center-greeting-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: auto 0;
+            text-align: center;
+            gap: 12px;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 500;
+            padding: 40px 0;
+        }
+
+        .message { display: flex; gap: 14px; max-width: 100%; width: 100%; }
+        .message.user { flex-direction: row-reverse; align-self: flex-end; }
+        .message.ai { justify-content: flex-start; align-self: flex-start; }
+        
+        .message-avatar { width: 32px; height: 32px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
+        .message.ai .message-content { color: var(--text-primary); font-size: 15px; line-height: 1.6; width: 100%; word-break: break-word; }
+        .message.user .message-content { background-color: var(--surface-hover); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 18px 18px 4px 18px; font-size: 15px; word-break: break-word; max-width: 75%; }
+
+        .deep-search-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid #444; padding: 2px 8px; border-radius: 6px; margin-bottom: 8px; font-weight: 600; }
+
+        .input-area { padding: 16px 24px 20px 24px; max-width: 950px; width: 100%; margin: 0 auto; flex-shrink: 0; background: var(--bg-color); }
+        .input-box-wrapper { background-color: #111111; border-radius: 28px; padding: 12px 18px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        #activeInput { background: none; border: none; color: var(--text-primary); font-size: 15px; resize: none; outline: none; width: 100%; min-height: 24px; max-height: 120px; }
+        
+        .send-btn { background-color: #fff; color: #000; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-weight: bold; flex-shrink: 0; }
+        .send-btn:hover { opacity: 0.85; transform: scale(1.05); }
+        footer { text-align: center; padding: 4px; color: var(--text-secondary); font-size: 11px; }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal-box { background: #111; border: 1px solid #333; border-radius: 16px; padding: 24px; width: 440px; max-width: 90%; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.9); color: #fff; }
+        .modal-box h3 { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .modal-box p { font-size: 13px; color: #aaa; line-height: 1.4; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
+        .modal-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; }
+        .modal-btn.save { background: #fff; color: #000; }
+        
+        .plugin-toggle-row { display: flex; align-items: center; justify-content: space-between; background: #080808; padding: 10px 14px; border-radius: 8px; border: 1px solid #222; }
     </style>
 </head>
 <body>
 
-    <!-- Entrance Screen -->
-    <div id="entrance-screen">
-        <div class="entrance-content">
-            <div class="logo-animation-container">
-                <span class="moving-text" id="text-vikea">VIKEA</span>
-                
-                <div class="spinner-wrapper">
-                    <div class="thin-spinner" id="loader-spinner"></div>
-                    <div class="center-v-logo">V</div>
+    <aside>
+        <div class="sidebar-top">
+            <div class="brand-header">
+                <div class="brand-left">
+                    <div class="brand-logo-icon">V</div>
+                    <span>Vikea AI</span>
                 </div>
+            </div>
+            <button class="new-chat-btn" onclick="location.reload()">
+                <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                New chat
+            </button>
 
-                <span class="moving-text" id="text-ai">AI</span>
+            <div class="sidebar-section-title">Extensions</div>
+            <div class="sidebar-nav">
+                <button class="nav-item" onclick="openPluginsModal()">
+                    <span class="material-symbols-outlined">extension</span>
+                    Plugins & Tools
+                </button>
             </div>
 
-            <div class="loading-percentage" id="load-counter">Loading... 0%</div>
+            <div class="sidebar-section-title">Advanced Settings</div>
+            <div class="deep-search-box">
+                <div class="deep-search-info">
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: #fff;">travel_explore</span>
+                    <span>Deep Search Mode</span>
+                </div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="deepSearchCheckbox" class="deep-checkbox">
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
 
-            <button class="get-started-btn" id="start-btn">Get Started / Chat</button>
+            <div class="sidebar-section-title">Engine & Moods</div>
+            <div class="sidebar-nav">
+                <button class="nav-item active-mode" id="navUniversal" onclick="switchEngineMode('universal')">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    Multi-Universal Core
+                </button>
+                <button class="nav-item" id="navCells" onclick="switchEngineMode('cells')">
+                    <span class="material-symbols-outlined">biotech</span>
+                    GCSE Cell Biology
+                </button>
+                <button class="nav-item" id="navPeriodic" onclick="switchEngineMode('science')">
+                    <span class="material-symbols-outlined">science</span>
+                    AQA Periodic Table & Atoms
+                </button>
+                <button class="nav-item" id="navCoder" onclick="switchEngineMode('coder')">
+                    <span class="material-symbols-outlined">terminal</span>
+                    Elite Coder Mode
+                </button>
+                <button class="nav-item" id="navRoast" onclick="switchEngineMode('roast')">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    Savage Roast Mode
+                </button>
+                <button class="nav-item" id="navPhilosopher" onclick="switchEngineMode('philosopher')">
+                    <span class="material-symbols-outlined">psychology</span>
+                    Deep Philosopher
+                </button>
+            </div>
+        </div>
+        <div class="sidebar-bottom">
+            <div class="user-profile-row" onclick="changeUserName()" title="Click to change name">
+                <div class="user-avatar" id="userAvatarLetter">W</div>
+                <div class="user-info" id="userNameLabel">Wahaj</div>
+            </div>
+        </div>
+    </aside>
+
+    <div class="main-container">
+        <header>
+            <span id="headerTitle">Vikea AI Assistant</span>
+            <div class="model-badge-header" id="modelBadgeHeader">
+                <span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">bolt</span>
+                Universal Engine Active
+            </div>
+        </header>
+
+        <!-- Welcome Entrance Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div></div>
+            <div class="welcome-content">
+                <span class="title-left" id="textVikea">VIKEA</span>
+                <div class="orbit-container" id="welcomeOrbit">
+                    <div class="orbit-ring" id="welcomeRing"></div>
+                    <div class="orbit-center-v">V</div>
+                </div>
+                <span class="title-right" id="textAi">AI</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%;">
+                <div class="loading-percentage" id="loadCounter">Loading... 0%</div>
+                <button class="start-chat-btn" id="startBtn">Get Started / Chat</button>
+                <div class="version-label">Version Alpha • Smart Engine</div>
+            </div>
+        </div>
+
+        <div class="white-flash-screen" id="whiteFlashScreen"></div>
+
+        <!-- Chat Screen -->
+        <div class="chat-container-bg" id="chatContainerBg">
+            <div class="chat-overlay">
+                <div class="chat-stream" id="chatStream">
+                    <div class="center-greeting-box" id="centerGreetingBox">
+                        <h1>How can I help u</h1>
+                    </div>
+                </div>
+                <div class="input-area" id="activeInputArea">
+                    <div class="input-box-wrapper">
+                        <textarea id="activeInput" placeholder="Ask Vikea AI anything..." rows="1" onkeydown="handleKey(event)"></textarea>
+                        <div class="prompt-toolbar" style="display:flex; justify-content:flex-end; border:none; padding-top:0;">
+                            <button class="send-btn" onclick="sendFromActiveArea()">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
+                            </button>
+                        </div>
+                    </div>
+                    <footer>Made with Vikea Alpha © 2026</footer>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Main App (Revealed after clicking) -->
-    <div id="main-app" style="display: none;">
-        <div class="sidebar">
-            <h3>Vikea AI Alpha</h3>
-            <p style="color: #666; font-size: 0.85rem;">Sidebar loaded successfully.</p>
-        </div>
-        <div class="chat-area">
-            <div style="padding: 20px;">
-                <h2>Welcome to Vikea Chat</h2>
+    <!-- Plugins Modal -->
+    <div class="modal-overlay" id="pluginsModal">
+        <div class="modal-box">
+            <h3><span class="material-symbols-outlined">extension</span> Vikea Plugin Ecosystem</h3>
+            <p>Active extensions running locally inside Vikea Alpha's engine environment.</p>
+            
+            <div class="plugin-toggle-row">
+                <div style="font-size:13px; font-weight:500;">🌐 Web Search Grounding</div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="pluginWebSearch" class="deep-checkbox" checked>
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="plugin-toggle-row">
+                <div style="font-size:13px; font-weight:500;">⚡ Python Code Executor</div>
+                <label style="display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="pluginCodeExec" class="deep-checkbox" checked>
+                    <div class="toggle-switch"></div>
+                </label>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn save" onclick="closePluginsModal()">Save & Close</button>
             </div>
         </div>
     </div>
 
     <script>
-        const startBtn = document.getElementById('start-btn');
-        const entranceScreen = document.getElementById('entrance-screen');
-        const mainApp = document.getElementById('main-app');
-        
-        const textVikea = document.getElementById('text-vikea');
-        const textAi = document.getElementById('text-ai');
-        const spinner = document.getElementById('loader-spinner');
-        const loadCounter = document.getElementById('load-counter');
+        let currentUserName = "Wahaj";
+        let currentMode = "universal";
+        let loadPercent = 0;
+        const loadCounter = document.getElementById('loadCounter');
+        const spinnerRing = document.getElementById('welcomeRing');
 
-        let currentPercent = 0;
+        // Progressive loader with faster speed increments
+        let loadInterval = setInterval(() => {
+            loadPercent += Math.floor(Math.random() * 5) + 2;
+            if (loadPercent >= 100) {
+                loadPercent = 100;
+                loadCounter.innerText = "Loading... 100%";
+                clearInterval(loadInterval);
+            } else {
+                loadCounter.innerText = `Loading... ${loadPercent}%`;
+                if (loadPercent > 35) spinnerRing.style.animationDuration = '0.6s';
+                if (loadPercent > 70) spinnerRing.style.animationDuration = '0.3s';
+                if (loadPercent > 90) spinnerRing.style.animationDuration = '0.15s';
+            }
+        }, 50);
 
-        // Simulate dynamic faster-and-faster loading progress
-        function startLoadingSequence() {
-            let speed = 50; // starts at 50ms interval increments
-            
-            let interval = setInterval(() => {
-                currentPercent += Math.floor(Math.random() * 4) + 1; // Increment loading
-                
-                if (currentPercent >= 100) {
-                    currentPercent = 100;
-                    loadCounter.innerText = `Loading... 100%`;
-                    clearInterval(interval);
-                } else {
-                    loadCounter.innerText = `Loading... ${currentPercent}%`;
-                    
-                    // Make it spin faster and faster after 50ms milestones
-                    if(currentPercent > 30) spinner.style.animationDuration = '0.7s';
-                    if(currentPercent > 60) spinner.style.animationDuration = '0.4s';
-                    if(currentPercent > 85) spinner.style.animationDuration = '0.2s';
-                }
-            }, speed);
-        }
+        document.getElementById('startBtn').addEventListener('click', startChatTransition);
 
-        // Trigger load sequence right on start
-        startLoadingSequence();
+        function startChatTransition() {
+            const welcome = document.getElementById('welcomeScreen');
+            const flash = document.getElementById('whiteFlashScreen');
+            const textV = document.getElementById('textVikea');
+            const textA = document.getElementById('textAi');
 
-        // Transition into the main app on click
-        startBtn.addEventListener('click', () => {
-            // Animate text moving together towards the center logo
-            textVikea.style.transform = 'translateX(65px)';
-            textAi.style.transform = 'translateX(-65px)';
-            spinner.style.animationDuration = '0.1s';
+            // Slide titles towards center logo smoothly
+            textV.style.transform = 'translateX(85px)';
+            textA.style.transform = 'translateX(-85px)';
+            spinnerRing.style.animationDuration = '0.08s';
 
             setTimeout(() => {
-                entranceScreen.style.opacity = '0';
+                flash.style.display = 'block';
                 setTimeout(() => {
-                    entranceScreen.style.display = 'none';
-                    mainApp.style.display = 'flex';
-                }, 500);
+                    welcome.style.display = 'none';
+                    flash.style.display = 'none';
+                    document.getElementById('chatContainerBg').style.display = 'flex';
+                    document.getElementById('activeInput').focus();
+                }, 350);
+            }, 500);
+        }
+
+        function changeUserName() {
+            const newName = prompt("Enter your new name:", currentUserName);
+            if (newName && newName.trim() !== "") {
+                currentUserName = newName.trim();
+                document.getElementById('userNameLabel').innerText = currentUserName;
+                document.getElementById('userAvatarLetter').innerText = currentUserName.charAt(0).toUpperCase();
+            }
+        }
+
+        function openPluginsModal() {
+            if (document.getElementById('welcomeScreen').style.display !== 'none') {
+                startChatTransition();
+                setTimeout(() => { document.getElementById('pluginsModal').style.display = 'flex'; }, 600);
+            } else {
+                document.getElementById('pluginsModal').style.display = 'flex';
+            }
+        }
+        function closePluginsModal() {
+            document.getElementById('pluginsModal').style.display = 'none';
+        }
+
+        function switchEngineMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active-mode'));
+            
+            if (document.getElementById('welcomeScreen').style.display !== 'none') {
+                startChatTransition();
+            }
+            
+            const badge = document.getElementById('modelBadgeHeader');
+            const greetingBox = document.getElementById('centerGreetingBox');
+            if (greetingBox) greetingBox.remove(); 
+
+            const stream = document.getElementById('chatStream');
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+
+            if (mode === 'universal') {
+                document.getElementById('navUniversal').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">bolt</span> Universal Engine Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>Multi-Universal Core</strong>. Ready for anything!</div>`;
+            } else if (mode === 'cells') {
+                document.getElementById('navCells').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">biotech</span> GCSE Cell Biology Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>GCSE Cell Biology</strong> mode. Hit me with organelle questions!</div>`;
+            } else if (mode === 'science') {
+                document.getElementById('navPeriodic').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">science</span> AQA Periodic Table Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Switched to <strong>AQA Periodic Table & Atoms</strong> mode. Let's study chemistry!</div>`;
+            } else if (mode === 'coder') {
+                document.getElementById('navCoder').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">terminal</span> Elite Coder Mode Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Elite Coder mode online. Let's write clean code.</div>`;
+            } else if (mode === 'roast') {
+                document.getElementById('navRoast').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">local_fire_department</span> Savage Roast Mode Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Roast mode active. Don't cry when I cook you, ${currentUserName}. What's up?</div>`;
+            } else if (mode === 'philosopher') {
+                document.getElementById('navPhilosopher').classList.add('active-mode');
+                badge.innerHTML = `<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">psychology</span> Deep Philosopher Active`;
+                aiMsgDiv.innerHTML = `<div class="message-avatar">V</div><div class="message-content">Welcome to Deep Philosopher mode. Let us contemplate the universe.</div>`;
+            }
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function handleKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendFromActiveArea();
+            }
+        }
+
+        function sendFromActiveArea() {
+            const input = document.getElementById('activeInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const greetingBox = document.getElementById('centerGreetingBox');
+            if (greetingBox) greetingBox.remove();
+
+            input.value = '';
+            processUserQuery(text);
+        }
+
+        function processUserQuery(query) {
+            const stream = document.getElementById('chatStream');
+            const userInitial = currentUserName.charAt(0).toUpperCase();
+            const isDeepSearchOn = document.getElementById('deepSearchCheckbox').checked;
+
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user';
+            userMsgDiv.innerHTML = `<div class="message-avatar">${userInitial}</div><div class="message-content">${escapeHtml(query)}</div>`;
+            stream.appendChild(userMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+            aiMsgDiv.innerHTML = `
+                <div class="message-avatar">V</div>
+                <div class="message-content" style="color: var(--text-secondary);">Thinking...</div>
+            `;
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+
+            setTimeout(() => {
+                let responseText = generateSmartAnswer(query, currentMode);
+                let deepSearchHTML = isDeepSearchOn ? `<div class="deep-search-tag"><span class="material-symbols-outlined" style="font-size: 13px;">travel_explore</span> Deep Search Verified</div><br>` : '';
+
+                aiMsgDiv.innerHTML = `
+                    <div class="message-avatar">V</div>
+                    <div class="message-content">${deepSearchHTML}${formatMarkdown(responseText)}</div>
+                `;
+                stream.scrollTop = stream.scrollHeight;
             }, 600);
-        });
+        }
+
+        function generateSmartAnswer(query, mode) {
+            const q = query.toLowerCase();
+
+            if (mode === 'cells') {
+                if (q.includes('mitochondria')) return "Mitochondria are known as the **powerhouse of the cell**. They release energy through aerobic respiration.";
+                if (q.includes('nucleus')) return "The **nucleus** contains genetic material (DNA) that controls the activities of the cell.";
+                if (q.includes('ribosome')) return "**Ribosomes** are responsible for protein synthesis within the cell.";
+                return `In **GCSE Cell Biology**, regarding "${query}": Remember that animal and plant cells share key structures like the cell membrane, cytoplasm, and nucleus, while plant cells also have a cell wall, chloroplasts, and a permanent vacuole.`;
+            }
+
+            if (mode === 'science') {
+                if (q.includes('atom') || q.includes('element')) return "An **atom** consists of a nucleus containing protons and neutrons, surrounded by electrons in shell orbits.";
+                return `In **AQA Chemistry** regarding "${query}": Elements in the periodic table are arranged in order of atomic number so that elements with similar properties fall into the same columns (groups).`;
+            }
+
+            if (mode === 'coder') {
+                if (q.includes('html')) return "HTML stands for **HyperText Markup Language**. It forms the structural backbone of web pages, just like your Vikea index.html file!";
+                return `For your coding query ("${query}"), make sure to check your syntax, handle async functions properly, and structure your CSS grid or flexbox container correctly.`;
+            }
+
+            if (mode === 'roast') {
+                return `Bruh, you're asking "${query}" like it's gonna solve your life problems. Let's be real, even your web browser is getting tired of loading your tabs! 🔥`;
+            }
+
+            if (mode === 'philosopher') {
+                return `To ponder "${query}" is to gaze into the vast mirror of existence. What we perceive as reality is merely a reflection of our curiosity.`;
+            }
+
+            // Universal mode fallback
+            if (q.includes('hello') || q.includes('hi')) return `Hello ${currentUserName}! How can I help you build or explore today with Vikea Alpha?`;
+            if (q.includes('weather')) return "I am running locally on your Vikea Alpha engine, so I can't check outdoor weather satellites directly, but it's looking like a classic study day!";
+            
+            return `That's an interesting question about "${query}". Vikea Alpha's Multi-Universal Core is tracking this query. Feel free to switch between GCSE Cell Biology, Coder Mode, or any other side profile for targeted assistance!`;
+        }
+
+        function formatMarkdown(text) {
+            return escapeHtml(text)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*(?!\*)/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
     </script>
 </body>
 </html>
