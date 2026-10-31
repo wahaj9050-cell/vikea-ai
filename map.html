@@ -266,23 +266,22 @@
 
         #mapView { flex: 1; width: 100%; height: 100%; }
 
-        /* Images Studio View Styles */
-        .image-studio-container { flex: 1; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; max-width: 1000px; width: 100%; margin: 0 auto; gap: 24px; }
-        .image-prompt-bar { display: flex; gap: 12px; background: var(--surface-color); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 24px; align-items: center; }
+        /* Images Studio View Styles (ChatGPT Classic Style) */
+        .image-studio-container { flex: 1; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; max-width: 900px; width: 100%; margin: 0 auto; gap: 24px; }
+        .image-prompt-bar { display: flex; gap: 12px; background: var(--surface-color); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 24px; align-items: center; margin-top: 10px; }
         .image-prompt-bar input { flex: 1; background: none; border: none; color: #fff; font-size: 15px; outline: none; }
         .generate-btn { background: #fff; color: #000; border: none; padding: 10px 24px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .generate-btn:hover { opacity: 0.85; }
 
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .gallery-card { background: var(--surface-color); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
-        .gallery-card img { width: 100%; height: 180px; object-fit: cover; }
-        .gallery-card-info { padding: 14px; display: flex; flex-direction: column; gap: 6px; }
-        .gallery-card-title { font-size: 15px; font-weight: 600; color: #fff; }
-        .gallery-card-desc { font-size: 13px; color: var(--text-secondary); }
-
-        .gen-status-box { background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; display: none; flex-direction: column; gap: 12px; align-items: center; text-align: center; }
-        .progress-bar-track { width: 100%; max-height: 6px; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
-        .progress-bar-fill { width: 0%; height: 100%; background: #fff; transition: width 1s linear; }
+        .image-stream { flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-bottom: 20px; }
+        .chat-bubble-ai { display: flex; gap: 14px; max-width: 100%; width: 100%; align-items: flex-start; }
+        .generated-img-result { max-width: 450px; width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .chatgpt-loader { display: inline-flex; align-items: center; gap: 6px; padding: 4px 0; }
+        .chatgpt-dot { width: 8px; height: 8px; background-color: #888; border-radius: 50%; animation: pulseDot 1.4s infinite ease-in-out both; }
+        .chatgpt-dot:nth-child(1) { animation-delay: -0.32s; }
+        .chatgpt-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes pulseDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
     </style>
 </head>
 <body>
@@ -417,7 +416,7 @@
             <div id="mapView"></div>
         </div>
 
-        <!-- Images Studio View -->
+        <!-- Images Studio View (ChatGPT Classic Style) -->
         <div class="view-section" id="imagesViewSection">
             <header>
                 <span>Vikea Images Studio</span>
@@ -427,50 +426,17 @@
                 </div>
             </header>
             <div class="image-studio-container">
+                <div class="image-stream" id="imageStream">
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto 0; text-align: center; gap: 12px; color: #888; font-size: 20px;">
+                        <span class="material-symbols-outlined" style="font-size: 48px;">auto_awesome</span>
+                        <p>What image would you like to create today?</p>
+                    </div>
+                </div>
+
                 <div class="image-prompt-bar">
                     <span class="material-symbols-outlined" style="color: #888;">auto_awesome</span>
-                    <input type="text" id="imagePromptInput" placeholder="Create me an image of..." />
+                    <input type="text" id="imagePromptInput" placeholder="Create me an image of..." onkeydown="handleImageKey(event)" />
                     <button class="generate-btn" onclick="generateImage()">Generate</button>
-                </div>
-
-                <div class="gen-status-box" id="genStatusBox">
-                    <div style="font-weight: 600; font-size: 15px;" id="genStatusText">Synthesizing pixels... (30s remaining)</div>
-                    <div class="progress-bar-track">
-                        <div class="progress-bar-fill" id="progressBarFill"></div>
-                    </div>
-                </div>
-
-                <h2 style="font-size: 18px; font-weight: 600; margin-top: 10px;">System Gallery & Creations</h2>
-                <div class="gallery-grid" id="galleryGrid">
-                    <!-- Pre-loaded System Gallery Items -->
-                    <div class="gallery-card">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800" alt="Golden Lake Sunset" />
-                        <div class="gallery-card-info">
-                            <div class="gallery-card-title">Golden Lake Sunset</div>
-                            <div class="gallery-card-desc">Stunning natural photograph capturing a warm golden sunset over a calm lake[cite: 6].</div>
-                        </div>
-                    </div>
-                    <div class="gallery-card">
-                        <img src="https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=800" alt="Deep Sea Cavern" />
-                        <div class="gallery-card-info">
-                            <div class="gallery-card-title">Deep Sea Cavern</div>
-                            <div class="gallery-card-desc">Magnificent underwater landscape with crystal-blue water and sunbeams[cite: 7].</div>
-                        </div>
-                    </div>
-                    <div class="gallery-card">
-                        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800" alt="Cyberpunk Metropolis" />
-                        <div class="gallery-card-info">
-                            <div class="gallery-card-title">Cyberpunk Metropolis</div>
-                            <div class="gallery-card-desc">Futuristic high-tech neon city at night with flying vehicles and billboards[cite: 8].</div>
-                        </div>
-                    </div>
-                    <div class="gallery-card">
-                        <img src="https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800" alt="Neon River Walk" />
-                        <div class="gallery-card-info">
-                            <div class="gallery-card-title">Neon River Walk</div>
-                            <div class="gallery-card-desc">Vibrant city waterfront path reflecting colorful neon lights from skyscrapers[cite: 9].</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -534,46 +500,68 @@
             }
         }
 
+        function handleImageKey(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                generateImage();
+            }
+        }
+
         function generateImage() {
             const promptInput = document.getElementById('imagePromptInput');
             const promptText = promptInput.value.trim();
             if (!promptText) return;
 
-            const statusBox = document.getElementById('genStatusBox');
-            const statusText = document.getElementById('genStatusText');
-            const progressBar = document.getElementById('progressBarFill');
+            const imageStream = document.getElementById('imageStream');
             
-            statusBox.style.display = 'flex';
-            progressBar.style.width = '0%';
-            
-            let timeLeft = 30;
-            statusText.innerText = `Synthesizing pixels for "${promptText}"... (${timeLeft}s remaining)`;
+            // Clear initial placeholder if present
+            if (imageStream.querySelector('p')) {
+                imageStream.innerHTML = '';
+            }
 
-            let timerInterval = setInterval(() => {
-                timeLeft--;
-                let percent = ((30 - timeLeft) / 30) * 100;
-                progressBar.style.width = percent + '%';
-                
-                if (timeLeft > 0) {
-                    statusText.innerText = `Rendering neural layers & lighting... (${timeLeft}s remaining)`;
-                } else {
-                    clearInterval(timerInterval);
-                    statusBox.style.display = 'none';
-                    
-                    const galleryGrid = document.getElementById('galleryGrid');
-                    const newCard = document.createElement('div');
-                    newCard.className = 'gallery-card';
-                    newCard.innerHTML = `
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="${promptText}" />
-                        <div class="gallery-card-info">
-                            <div class="gallery-card-title">${escapeHtml(promptText)}</div>
-                            <div class="gallery-card-desc">Generated via Vikea Neural Studio for ${currentUserName}.</div>
-                        </div>
-                    `;
-                    galleryGrid.prepend(newCard);
-                    promptInput.value = '';
-                }
-            }, 1000);
+            // Append User Prompt Bubble
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.innerHTML = `<div class="message-avatar">${currentUserName.charAt(0).toUpperCase()}</div><div class="message-content">Create me an image of ${escapeHtml(promptText)}</div>`;
+            imageStream.appendChild(userMsg);
+
+            // Append ChatGPT Classic Loader Bubble
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'chat-bubble-ai';
+            aiMsg.innerHTML = `
+                <div class="message-avatar">V</div>
+                <div class="message-content" style="width: 100%;">
+                    <div id="loadingStatusText">Thinking about your request...</div>
+                    <div class="chat-loader" id="chatLoaderDots">
+                        <div class="chatgpt-dot"></div>
+                        <div class="chatgpt-dot"></div>
+                        <div class="chatgpt-dot"></div>
+                    </div>
+                </div>
+            `;
+            imageStream.appendChild(aiMsg);
+            imageStream.scrollTop = imageStream.scrollHeight;
+            promptInput.value = '';
+
+            // Simulate 30-sec ChatGPT Generation Steps
+            setTimeout(() => {
+                document.getElementById('loadingStatusText').innerText = `Creating image for "${promptText}"...`;
+            }, 10000);
+
+            setTimeout(() => {
+                document.getElementById('loadingStatusText').innerText = `Synthesizing neural details...`;
+            }, 20000);
+
+            setTimeout(() => {
+                aiMsg.innerHTML = `
+                    <div class="message-avatar">V</div>
+                    <div class="message-content" style="width: 100%;">
+                        <p>Here is the image of <strong>${escapeHtml(promptText)}</strong>:</p>
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="${promptText}" class="generated-img-result" />
+                    </div>
+                `;
+                imageStream.scrollTop = imageStream.scrollHeight;
+            }, 30000);
         }
 
         function startChatTransition() {
