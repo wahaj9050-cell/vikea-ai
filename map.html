@@ -74,14 +74,8 @@
             display: inline-block;
         }
 
-        .title-left.fade-left {
-            opacity: 0;
-            transform: translateX(-250px);
-        }
-        .title-right.fade-right {
-            opacity: 0;
-            transform: translateX(250px);
-        }
+        .title-left.fade-left { opacity: 0; transform: translateX(-250px); }
+        .title-right.fade-right { opacity: 0; transform: translateX(250px); }
 
         .orbit-container {
             position: relative;
@@ -120,9 +114,7 @@
             animation: spinDotsRing 4s linear infinite;
         }
 
-        .orbit-container.stop-spinning .dots-ring-layer {
-            animation-play-state: paused !important;
-        }
+        .orbit-container.stop-spinning .dots-ring-layer { animation-play-state: paused !important; }
 
         @keyframes spinDotsRing {
             0% { transform: rotate(0deg); }
@@ -142,10 +134,7 @@
         .d1 { top: 2px; left: 51px; } .d2 { top: 16px; left: 83px; } .d3 { top: 51px; left: 101px; } .d4 { top: 85px; left: 83px; }
         .d5 { top: 100px; left: 51px; } .d6 { top: 85px; left: 18px; } .d7 { top: 51px; left: 0px; } .d8 { top: 16px; left: 18px; }
 
-        .stage-og-contract .dot { 
-            top: 51px !important; 
-            left: 51px !important; 
-        }
+        .stage-og-contract .dot { top: 51px !important; left: 51px !important; }
         .stage-og-contract .orbit-center-v { 
             animation: vStarShakePulse 0.08s infinite alternate !important; 
             background: #ffffff;
@@ -266,9 +255,16 @@
 
         #mapView { flex: 1; width: 100%; height: 100%; }
 
-        /* Images Studio View Styles (ChatGPT Classic Style) */
-        .image-studio-container { flex: 1; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; max-width: 900px; width: 100%; margin: 0 auto; gap: 24px; }
-        .image-prompt-bar { display: flex; gap: 12px; background: var(--surface-color); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 24px; align-items: center; margin-top: 10px; }
+        /* Images Studio View Styles with Side Ideas Bar */
+        .image-studio-layout { display: flex; flex: 1; height: calc(100vh - 61px); overflow: hidden; }
+        .image-studio-container { flex: 1; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; max-width: 800px; margin: 0 auto; gap: 24px; }
+        
+        .ideas-sidebar { width: 260px; background: var(--sidebar-bg); border-left: 1px solid var(--border-color); padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        .ideas-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; }
+        .idea-chip { background: var(--surface-color); border: 1px solid var(--border-color); color: #fff; padding: 10px 14px; border-radius: 12px; font-size: 13px; cursor: pointer; text-align: left; transition: 0.2s; }
+        .idea-chip:hover { background: var(--surface-hover); border-color: #444; }
+
+        .image-prompt-bar { display: flex; gap: 12px; background: var(--surface-color); border: 1px solid var(--border-color); padding: 12px 18px; border-radius: 24px; align-items: center; margin-top: auto; }
         .image-prompt-bar input { flex: 1; background: none; border: none; color: #fff; font-size: 15px; outline: none; }
         .generate-btn { background: #fff; color: #000; border: none; padding: 10px 24px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .generate-btn:hover { opacity: 0.85; }
@@ -416,7 +412,7 @@
             <div id="mapView"></div>
         </div>
 
-        <!-- Images Studio View (ChatGPT Classic Style) -->
+        <!-- Images Studio View (ChatGPT Classic Style + Quick Ideas Sidebar) -->
         <div class="view-section" id="imagesViewSection">
             <header>
                 <span>Vikea Images Studio</span>
@@ -425,18 +421,31 @@
                     Neural Diffusion Engine
                 </div>
             </header>
-            <div class="image-studio-container">
-                <div class="image-stream" id="imageStream">
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto 0; text-align: center; gap: 12px; color: #888; font-size: 20px;">
-                        <span class="material-symbols-outlined" style="font-size: 48px;">auto_awesome</span>
-                        <p>What image would you like to create today?</p>
+            <div class="image-studio-layout">
+                <div class="image-studio-container">
+                    <div class="image-stream" id="imageStream">
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: auto 0; text-align: center; gap: 12px; color: #888; font-size: 20px;">
+                            <span class="material-symbols-outlined" style="font-size: 48px;">auto_awesome</span>
+                            <p>What image would you like to create today?</p>
+                        </div>
+                    </div>
+
+                    <div class="image-prompt-bar">
+                        <span class="material-symbols-outlined" style="color: #888;">auto_awesome</span>
+                        <input type="text" id="imagePromptInput" placeholder="Create me an image of..." onkeydown="handleImageKey(event)" />
+                        <button class="generate-btn" onclick="generateImage()">Generate</button>
                     </div>
                 </div>
 
-                <div class="image-prompt-bar">
-                    <span class="material-symbols-outlined" style="color: #888;">auto_awesome</span>
-                    <input type="text" id="imagePromptInput" placeholder="Create me an image of..." onkeydown="handleImageKey(event)" />
-                    <button class="generate-btn" onclick="generateImage()">Generate</button>
+                <!-- Quick Ideas Sidebar -->
+                <div class="ideas-sidebar">
+                    <div class="ideas-title">Prompt Ideas</div>
+                    <button class="idea-chip" onclick="triggerIdea('Golden lake sunset over mountains')">🌅 Golden lake sunset</button>
+                    <button class="idea-chip" onclick="triggerIdea('Deep sea underwater ocean cavern')">🌊 Deep sea cavern</button>
+                    <button class="idea-chip" onclick="triggerIdea('Cyberpunk neon Tokyo city at night')">🌆 Cyberpunk metropolis</button>
+                    <button class="idea-chip" onclick="triggerIdea('Mystical floating castle in the clouds')">🏰 Floating castle</button>
+                    <button class="idea-chip" onclick="triggerIdea('Cosmic galaxy nebula with glowing stars')">✨ Cosmic galaxy nebula</button>
+                    <button class="idea-chip" onclick="triggerIdea('Fierce dragon flying over medieval ruins')">🐉 Epic dragon battle</button>
                 </div>
             </div>
         </div>
@@ -507,6 +516,11 @@
             }
         }
 
+        function triggerIdea(ideaText) {
+            document.getElementById('imagePromptInput').value = ideaText;
+            generateImage();
+        }
+
         function generateImage() {
             const promptInput = document.getElementById('imagePromptInput');
             const promptText = promptInput.value.trim();
@@ -514,25 +528,24 @@
 
             const imageStream = document.getElementById('imageStream');
             
-            // Clear initial placeholder if present
             if (imageStream.querySelector('p')) {
                 imageStream.innerHTML = '';
             }
 
-            // Append User Prompt Bubble
+            // Append User Prompt
             const userMsg = document.createElement('div');
             userMsg.className = 'message user';
             userMsg.innerHTML = `<div class="message-avatar">${currentUserName.charAt(0).toUpperCase()}</div><div class="message-content">Create me an image of ${escapeHtml(promptText)}</div>`;
             imageStream.appendChild(userMsg);
 
-            // Append ChatGPT Classic Loader Bubble
+            // Append ChatGPT Loader Bubble
             const aiMsg = document.createElement('div');
             aiMsg.className = 'chat-bubble-ai';
             aiMsg.innerHTML = `
                 <div class="message-avatar">V</div>
                 <div class="message-content" style="width: 100%;">
-                    <div id="loadingStatusText">Thinking about your request...</div>
-                    <div class="chat-loader" id="chatLoaderDots">
+                    <div id="loadingStatusText">Making first draft...</div>
+                    <div class="chat-loader" id="chatLoaderDots" style="margin-top: 8px;">
                         <div class="chatgpt-dot"></div>
                         <div class="chatgpt-dot"></div>
                         <div class="chatgpt-dot"></div>
@@ -543,25 +556,41 @@
             imageStream.scrollTop = imageStream.scrollHeight;
             promptInput.value = '';
 
-            // Simulate 30-sec ChatGPT Generation Steps
+            // Exact 6-Stage Loading Sequence
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = `Creating image for "${promptText}"...`;
-            }, 10000);
+                document.getElementById('loadingStatusText').innerText = 'Polishing...';
+            }, 4000);
 
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = `Synthesizing neural details...`;
+                document.getElementById('loadingStatusText').innerText = 'Setting the scene...';
+            }, 8000);
+
+            setTimeout(() => {
+                document.getElementById('loadingStatusText').innerText = 'Adding final drafts...';
+            }, 12000);
+
+            setTimeout(() => {
+                document.getElementById('loadingStatusText').innerText = 'Adding last touches...';
+            }, 16000);
+
+            setTimeout(() => {
+                document.getElementById('loadingStatusText').innerText = 'Almost done...';
             }, 20000);
 
             setTimeout(() => {
+                // Dynamic Image based on prompt keywords using Unsplash Source API
+                const encodedQuery = encodeURIComponent(promptText);
+                const dynamicImgUrl = `https://source.unsplash.com/800x600/?${encodedQuery}`;
+
                 aiMsg.innerHTML = `
                     <div class="message-avatar">V</div>
                     <div class="message-content" style="width: 100%;">
                         <p>Here is the image of <strong>${escapeHtml(promptText)}</strong>:</p>
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="${promptText}" class="generated-img-result" />
+                        <img src="${dynamicImgUrl}" alt="${promptText}" class="generated-img-result" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800'" />
                     </div>
                 `;
                 imageStream.scrollTop = imageStream.scrollHeight;
-            }, 30000);
+            }, 24000);
         }
 
         function startChatTransition() {
@@ -643,100 +672,4 @@
             aiMsgDiv.className = 'message ai';
 
             if (mode === 'universal') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">bolt</span> Universal Engine Active';
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Switched to <strong>Multi-Universal Core</strong>. Ready for anything!</div>';
-            } else if (mode === 'cells') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">biotech</span> GCSE Cell Biology Active';
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Switched to <strong>GCSE Cell Biology</strong> mode. Hit me with organelle questions!</div>';
-            } else if (mode === 'science') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">science</span> AQA Periodic Table Active';
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Switched to <strong>AQA Periodic Table & Atoms</strong> mode. Let\'s study chemistry!</div>';
-            } else if (mode === 'coder') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">terminal</span> Elite Coder Mode Active';
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Elite Coder mode online. Let\'s write clean code.</div>';
-            } else if (mode === 'roast') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">local_fire_department</span> Savage Roast Mode Active';
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Roast mode active. Don\'t cry when I cook you, ' + currentUserName + '. What\'s up?</div>';
-            } else if (mode === 'philosopher') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">psychology</span> Deep Philosopher Active';
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Welcome to Deep Philosopher mode. Let us contemplate the universe.</div>';
-            }
-            stream.appendChild(aiMsgDiv);
-            stream.scrollTop = stream.scrollHeight;
-        }
-
-        function handleKey(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendFromActiveArea();
-            }
-        }
-
-        function sendFromActiveArea() {
-            const input = document.getElementById('activeInput');
-            const text = input.value.trim();
-            if (!text) return;
-            
-            const greetingBox = document.getElementById('centerGreetingBox');
-            if (greetingBox) greetingBox.remove();
-
-            input.value = '';
-            processUserQuery(text);
-        }
-
-        function processUserQuery(query) {
-            const stream = document.getElementById('chatStream');
-            const userInitial = currentUserName.charAt(0).toUpperCase();
-
-            const userMsgDiv = document.createElement('div');
-            userMsgDiv.className = 'message user';
-            userMsgDiv.innerHTML = '<div class="message-avatar">' + userInitial + '</div><div class="message-content">' + escapeHtml(query) + '</div>';
-            stream.appendChild(userMsgDiv);
-            stream.scrollTop = stream.scrollHeight;
-
-            const aiMsgDiv = document.createElement('div');
-            aiMsgDiv.className = 'message ai';
-            aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content" style="color: var(--text-secondary);">Thinking...</div>';
-            stream.appendChild(aiMsgDiv);
-            stream.scrollTop = stream.scrollHeight;
-
-            setTimeout(() => {
-                let responseText = generateSmartAnswer(query, currentMode);
-                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">' + formatMarkdown(responseText) + '</div>';
-                stream.scrollTop = stream.scrollHeight;
-            }, 600);
-        }
-
-        function generateSmartAnswer(query, mode) {
-            const q = query.toLowerCase();
-
-            if (q.includes('who is your owner') || q.includes('who made you') || q.includes('owner')) {
-                return "I'm really glad that Wahaj made me! It took him months and now I'm ready to destroy the knowledge that this universe has indeed with my owner (Wahaj's) help!";
-            }
-
-            if (mode === 'cells') {
-                if (q.includes('mitochondria')) return "Mitochondria are known as the **powerhouse of the cell**. They release energy through aerobic respiration.";
-                return "In **GCSE Cell Biology**, regarding \"" + query + "\": Remember that animal and plant cells share key structures like the cell membrane, cytoplasm, and nucleus.";
-            }
-            if (mode === 'science') return "In **AQA Chemistry** regarding \"" + query + "\": Elements in the periodic table are arranged by atomic number.";
-            if (mode === 'coder') return "For your coding query (\"" + query + "\"), make sure to check your syntax and structure your layout correctly.";
-            if (mode === 'roast') return "Bruh, you're asking \"" + query + "\" like it's gonna solve your life problems. Let's be real! 🔥";
-            if (mode === 'philosopher') return "To ponder \"" + query + "\" is to gaze into the vast mirror of existence.";
-
-            if (q.includes('hello') || q.includes('hi')) return "Hello " + currentUserName + "! How can I help you build or explore today with Vikea Alpha?";
-            return "That's an interesting question about \"" + query + "\". Vikea Alpha's Multi-Universal Core is tracking this query.";
-        }
-
-        function formatMarkdown(text) {
-            return escapeHtml(text)
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*(?!\*)/g, '<em>$1</em>')
-                .replace(/\n/g, '<br>');
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-    </script>
-</body>
-</html>
+                badge.innerHTML = '<span
