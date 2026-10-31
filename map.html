@@ -272,7 +272,7 @@
 
         .image-stream { flex: 1; display: flex; flex-direction: column; gap: 20px; overflow-y: auto; padding-bottom: 20px; }
         .chat-bubble-ai { display: flex; gap: 14px; max-width: 100%; width: 100%; align-items: flex-start; }
-        .generated-img-result { max-width: 450px; width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .generated-img-result { max-width: 480px; width: 100%; border-radius: 12px; border: 1px solid var(--border-color); margin-top: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
         .chatgpt-loader { display: inline-flex; align-items: center; gap: 6px; padding: 4px 0; }
         .chatgpt-dot { width: 8px; height: 8px; background-color: #888; border-radius: 50%; animation: pulseDot 1.4s infinite ease-in-out both; }
@@ -539,13 +539,13 @@
                 imageStream.innerHTML = '';
             }
 
-            // Append User Prompt
+            // Append User Prompt Bubble
             const userMsg = document.createElement('div');
             userMsg.className = 'message user';
             userMsg.innerHTML = `<div class="message-avatar">${currentUserName.charAt(0).toUpperCase()}</div><div class="message-content">Create me an image of ${escapeHtml(promptText)}</div>`;
             imageStream.appendChild(userMsg);
 
-            // Append ChatGPT Loader Bubble
+            // Append ChatGPT Classic Loader Bubble
             const aiMsg = document.createElement('div');
             aiMsg.className = 'chat-bubble-ai';
             aiMsg.innerHTML = `
@@ -563,36 +563,42 @@
             imageStream.scrollTop = imageStream.scrollHeight;
             promptInput.value = '';
 
-            // Exact 6-Stage Loading Sequence requested by user
+            // Exact 6-Stage Loading Sequence in order
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = 'Polishing...';
+                const statusEl = document.getElementById('loadingStatusText');
+                if (statusEl) statusEl.innerText = 'Polishing...';
             }, 3000);
 
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = 'Setting the scene...';
+                const statusEl = document.getElementById('loadingStatusText');
+                if (statusEl) statusEl.innerText = 'Setting the scene...';
             }, 6000);
 
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = 'Adding final drafts...';
+                const statusEl = document.getElementById('loadingStatusText');
+                if (statusEl) statusEl.innerText = 'Adding final drafts...';
             }, 9000);
 
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = 'Adding last touches...';
+                const statusEl = document.getElementById('loadingStatusText');
+                if (statusEl) statusEl.innerText = 'Adding last touches...';
             }, 12000);
 
             setTimeout(() => {
-                document.getElementById('loadingStatusText').innerText = 'Almost done...';
+                const statusEl = document.getElementById('loadingStatusText');
+                if (statusEl) statusEl.innerText = 'Almost done...';
             }, 15000);
 
             setTimeout(() => {
+                // Fully dynamic AI image generator URL mapping the query string directly
                 const encodedQuery = encodeURIComponent(promptText);
-                const dynamicImgUrl = `https://source.unsplash.com/800x600/?${encodedQuery}`;
+                const dynamicImgUrl = `https://image.pollinations.ai/prompt/${encodedQuery}?width=800&height=600&nologo=true`;
 
                 aiMsg.innerHTML = `
                     <div class="message-avatar">V</div>
                     <div class="message-content" style="width: 100%;">
                         <p>Here is the image of <strong>${escapeHtml(promptText)}</strong>:</p>
-                        <img src="${dynamicImgUrl}" alt="${promptText}" class="generated-img-result" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800'" />
+                        <img src="${dynamicImgUrl}" alt="${promptText}" class="generated-img-result" crossorigin="anonymous" />
                     </div>
                 `;
                 imageStream.scrollTop = imageStream.scrollHeight;
@@ -690,7 +696,7 @@
                 badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">terminal</span> Elite Coder Mode Active';
                 aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Elite Coder mode online. Let\'s write clean code.</div>';
             } else if (mode === 'roast') {
-                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">local_fire_department</span> Savage Roast Mode Active';
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">local_fire_department</span> Savage Roast Mode 🔥';
                 aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Roast mode active. Don\'t cry when I cook you, ' + currentUserName + '. What\'s up?</div>';
             } else if (mode === 'philosopher') {
                 badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">psychology</span> Deep Philosopher Active';
@@ -753,10 +759,10 @@
                 if (q.includes('mitochondria')) return "Mitochondria are known as the **powerhouse of the cell**. They release energy through aerobic respiration.";
                 return "In **GCSE Cell Biology**, regarding \"" + query + "\": Remember that animal and plant cells share key structures like the cell membrane, cytoplasm, and nucleus.";
             }
-            if (mode === 'science') return "In **AQA Chemistry** regarding \"" + query + "\": Elements in the periodic table are arranged by atomic number.";
-            if (mode === 'coder') return "For your coding query (\"" + query + "\"), make sure to check your syntax and structure your layout correctly.";
-            if (mode === 'roast') return "Bruh, you're asking \"" + query + "\" like it's gonna solve your life problems. Let's be real! 🔥";
-            if (mode === 'philosopher') return "To ponder \"" + query + "\" is to gaze into the vast mirror of existence.";
+            if (q.includes('science')) return "In **AQA Chemistry** regarding \"" + query + "\": Elements in the periodic table are arranged by atomic number.";
+            if (q.includes('coder')) return "For your coding query (\"" + query + "\"), make sure to check your syntax and structure your layout correctly.";
+            if (q.includes('roast')) return "Bruh, you're asking \"" + query + "\" like it's gonna solve your life problems. Let's be real! 🔥";
+            if (q.includes('philosopher')) return "To ponder \"" + query + "\" is to gaze into the vast mirror of existence.";
 
             if (q.includes('hello') || q.includes('hi')) return "Hello " + currentUserName + "! How can I help you build or explore today with Vikea Alpha?";
             return "That's an interesting question about \"" + query + "\". Vikea Alpha's Multi-Universal Core is tracking this query.";
