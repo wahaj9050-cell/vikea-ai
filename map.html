@@ -32,7 +32,7 @@
             overflow: hidden; 
         }
 
-        /* 100% COVERAGE OVERLAY (Hides Sidebar & All Header Toolbars Completely) */
+        /* FULLSCREEN INTRO OVERLAY (Covers entire screen & hides sidebar) */
         #welcomeScreen {
             position: fixed;
             top: 0;
@@ -47,6 +47,11 @@
             padding: 50px 40px;
             z-index: 999999;
             overflow: hidden;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        #welcomeScreen.pull-down-reveal {
+            transform: translateY(100vh);
         }
 
         .welcome-content {
@@ -65,11 +70,10 @@
             font-weight: 700; 
             letter-spacing: 4px; 
             color: #ffffff; 
-            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             display: inline-block;
         }
 
-        /* Directional Title Slides */
         .title-left.fade-left {
             opacity: 0;
             transform: translateX(-250px);
@@ -103,22 +107,17 @@
             transition: transform 0.3s ease, background 0.3s ease, opacity 0.4s ease, box-shadow 0.3s ease;
         }
 
-        /* Outer White Ring Disabled */
-        .orbit-ring {
-            display: none !important;
-        }
-
         .dot { 
             position: absolute; 
             width: 7px; 
             height: 7px; 
             background-color: #ffffff; 
             border-radius: 50%; 
-            box-shadow: 0 0 10px #ffffff; 
+            box-shadow: 0 0 8px #ffffff; 
             transition: all 0.4s ease;
         }
 
-        /* Default Orbiting Placement */
+        /* Orbiting positions without outer ring */
         .d1 { top: 2px; left: 51px; } .d2 { top: 16px; left: 83px; } .d3 { top: 51px; left: 101px; } .d4 { top: 85px; left: 83px; }
         .d5 { top: 100px; left: 51px; } .d6 { top: 85px; left: 18px; } .d7 { top: 51px; left: 0px; } .d8 { top: 16px; left: 18px; }
 
@@ -131,91 +130,80 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Phase 2: Inward Dot Contraction & Star Pulse Shake */
+        /* Phase 2: Inward Dot Contraction & Shiver Star Pulse */
         .stage-og-contract .dot { 
             top: 51px !important; 
             left: 51px !important; 
         }
         .stage-og-contract .orbit-center-v { 
-            animation: starShakePulse 0.1s infinite alternate; 
+            animation: vShiverPulse 0.08s infinite alternate; 
             background: #ffffff;
             box-shadow: 0 0 30px #ffffff, 0 0 60px #ffffff, 0 0 90px #ffffff;
         }
 
-        @keyframes starShakePulse {
-            0% { transform: scale(1) translate(-2px, -2px); }
-            100% { transform: scale(1.3) translate(2px, 2px); }
+        @keyframes vShiverPulse {
+            0% { transform: scale(1) translate(-3px, -3px); }
+            100% { transform: scale(1.25) translate(3px, 3px); }
         }
 
-        /* Phase 3: 5-Second Army Battle Swarm */
-        .stage-army-fight .orbit-container { animation: none; }
-        .stage-army-fight .dot {
-            animation: armyBattle 0.22s infinite alternate ease-in-out;
+        /* Floor Line for Battle Alignment */
+        .floor-line {
+            position: absolute;
+            bottom: -30px;
+            left: -200px;
+            right: -200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
-        .stage-army-fight .d1 { animation-delay: 0.02s; }
-        .stage-army-fight .d2 { animation-delay: 0.04s; }
-        .stage-army-fight .d3 { animation-delay: 0.06s; }
-        .stage-army-fight .d4 { animation-delay: 0.08s; }
-        .stage-army-fight .d5 { animation-delay: 0.10s; }
-        .stage-army-fight .d6 { animation-delay: 0.12s; }
-        .stage-army-fight .d7 { animation-delay: 0.14s; }
-        .stage-army-fight .d8 { animation-delay: 0.16s; }
-
-        @keyframes armyBattle {
-            0% { transform: translate(-50px, -40px) scale(1.2); }
-            50% { transform: translate(50px, 40px) scale(0.8); }
-            100% { transform: translate(-30px, 50px) scale(1.5); }
+        .stage-battle-march .floor-line {
+            opacity: 1;
         }
 
-        /* Phase 4: Attack V & Destroy V */
-        .stage-attack-v .dot {
-            animation: none !important;
-            top: 51px !important;
-            left: 51px !important;
-            transform: scale(2.2);
-            box-shadow: 0 0 20px #ffffff;
+        /* Phase 3: Straight Floor Battle March & Sword Stabs */
+        .stage-battle-march .orbit-container { animation: none; }
+        .stage-battle-march .dot {
+            top: 90px !important; /* Fixed level floor plane */
+            animation: swordStab 0.4s infinite alternate ease-in-out;
         }
-        .stage-attack-v .orbit-center-v {
-            animation: vFinalShake 0.08s infinite alternate !important;
-            opacity: 0.5;
+
+        .stage-battle-march .d1 { left: -120px !important; animation-delay: 0.0s; }
+        .stage-battle-march .d2 { left: -80px !important; animation-delay: 0.05s; }
+        .stage-battle-march .d3 { left: -40px !important; animation-delay: 0.10s; }
+        .stage-battle-march .d4 { left: 0px !important; animation-delay: 0.15s; }
+        .stage-battle-march .d5 { left: 100px !important; animation-delay: 0.20s; }
+        .stage-battle-march .d6 { left: 140px !important; animation-delay: 0.25s; }
+        .stage-battle-march .d7 { left: 180px !important; animation-delay: 0.30s; }
+        .stage-battle-march .d8 { left: 220px !important; animation-delay: 0.35s; }
+
+        @keyframes swordStab {
+            0% { transform: scaleX(1) translateY(0); }
+            50% { transform: scaleX(2.5) translateX(15px); box-shadow: -10px 0 12px #ffffff; }
+            100% { transform: scaleX(1) translateY(-5px); }
         }
-        @keyframes vFinalShake {
-            0% { transform: translate(-8px, -8px) scale(1.4); }
+
+        /* V Shivers & Fades Away */
+        .stage-v-shiver-kill .orbit-center-v {
+            animation: vKillShiver 0.06s infinite alternate !important;
+            opacity: 0.2;
+        }
+        @keyframes vKillShiver {
+            0% { transform: translate(-8px, -8px) scale(1.3); }
             100% { transform: translate(8px, 8px) scale(0.6); }
         }
 
         .stage-v-dead .orbit-center-v {
             opacity: 0 !important;
             transform: scale(0) !important;
-            transition: all 0.5s ease;
+            transition: all 0.4s ease;
         }
 
-        /* Phase 5: Launch to Ceiling */
-        .stage-ceiling .dot {
-            top: -700px !important;
-            opacity: 0;
-            transition: top 0.7s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        /* Phase 4: Ascend Dots to Ceiling */
+        .stage-ceiling-ascend .dot {
+            top: -350px !important;
+            transition: top 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
-
-        /* Phase 6: 3D Paper Curtain Pull Down Overlay */
-        #pullCurtain {
-            position: fixed;
-            top: -110%;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #ffffff;
-            z-index: 1000000;
-            transition: top 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-            clip-path: polygon(
-                0% 0%, 100% 0%, 100% 96%, 
-                95% 99%, 90% 95%, 85% 99%, 80% 96%, 75% 99%, 70% 95%, 65% 99%, 60% 95%, 
-                55% 99%, 50% 96%, 45% 99%, 40% 95%, 35% 99%, 30% 96%, 25% 99%, 20% 95%, 
-                15% 99%, 10% 96%, 5% 99%, 0% 95%
-            );
-        }
-        #pullCurtain.drop { top: 0%; }
-        #pullCurtain.lift { top: 110%; }
 
         .start-chat-btn {
             background: #ffffff; 
@@ -232,7 +220,7 @@
         .start-chat-btn:hover { background: #e0e0e0; transform: scale(1.04); }
         .version-label { font-size: 11px; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.5px; }
 
-        /* MAIN APP LAYOUT */
+        /* APP LAYOUT */
         aside { 
             width: 280px; 
             background-color: var(--sidebar-bg); 
@@ -293,10 +281,7 @@
 </head>
 <body>
 
-    <!-- Paper Curtain Element -->
-    <div id="pullCurtain"></div>
-
-    <!-- Entrance Overlay Screen (Z-INDEX 999999 OVER EVERYTHING) -->
+    <!-- Intro Full Overlay Screen -->
     <div id="welcomeScreen">
         <div></div>
         <div class="welcome-content" id="welcomeContent">
@@ -305,6 +290,7 @@
                 <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div>
                 <div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div>
                 <div class="orbit-center-v" id="orbitCenterV">V</div>
+                <div class="floor-line"></div>
             </div>
             <span class="title-right" id="titleRight">AI</span>
         </div>
@@ -376,7 +362,7 @@
         </div>
     </aside>
 
-    <!-- Main Content Container -->
+    <!-- Main Container -->
     <div class="main-container">
         <!-- Chat View -->
         <div class="view-section active-view" id="chatView">
@@ -479,48 +465,45 @@
             const titleLeft = document.getElementById('titleLeft');
             const titleRight = document.getElementById('titleRight');
             const orbit = document.getElementById('welcomeOrbit');
-            const curtain = document.getElementById('pullCurtain');
 
-            // 1. VIKEA fades left, AI fades right
+            // 1. Title Slides Left / Right
             titleLeft.classList.add('fade-left');
             titleRight.classList.add('fade-right');
 
-            // 2. Dots go inside V, V shakes with Star Pulse ("ting ting")
+            // 2. Inward dot pulse & V shiver
             setTimeout(() => {
                 orbit.classList.add('stage-og-contract');
-            }, 600);
+            }, 500);
 
-            // 3. 5-second Army Battle Swarm
+            // 3. March on Floor Plane with Sword Stabs
             setTimeout(() => {
                 orbit.classList.remove('stage-og-contract');
-                orbit.classList.add('stage-army-fight');
-            }, 1400);
+                orbit.classList.add('stage-battle-march');
+            }, 1200);
 
-            // 4. Attack V & Destroy V
+            // 4. V Shivers, cracks, and vanishes
             setTimeout(() => {
-                orbit.classList.remove('stage-army-fight');
-                orbit.classList.add('stage-attack-v');
+                orbit.classList.add('stage-v-shiver-kill');
                 setTimeout(() => {
                     orbit.classList.add('stage-v-dead');
-                }, 800);
-            }, 6400); // 1.4s + 5.0s army fight
+                }, 500);
+            }, 3000);
 
-            // 5. Shoot to Ceiling
+            // 5. Dots ascend together to the ceiling
             setTimeout(() => {
-                orbit.classList.add('stage-ceiling');
-            }, 7600);
+                orbit.classList.add('stage-ceiling-ascend');
+            }, 3800);
 
-            // 6. Pull down curtain and lift to reveal chat
+            // 6. Dots physically pull down the welcome screen
             setTimeout(() => {
-                curtain.classList.add('drop');
-            }, 8200);
+                welcome.classList.add('pull-down-reveal');
+            }, 4500);
 
+            // Finish reveal & focus input
             setTimeout(() => {
                 welcome.style.display = 'none';
-                curtain.classList.remove('drop');
-                curtain.classList.add('lift');
                 document.getElementById('activeInput').focus();
-            }, 8800);
+            }, 5300);
         }
 
         function startNewChat() {
@@ -639,7 +622,7 @@
             }
             if (mode === 'science') return "In **AQA Chemistry** regarding \"" + query + "\": Elements in the periodic table are arranged by atomic number.";
             if (mode === 'coder') return "For your coding query (\"" + query + "\"), make sure to check your syntax and structure your layout correctly.";
-            if (mode === 'roast') return "Bruh, you're asking \"" + query + "\" like it's gonna solve your life problems. Let's be real wtf your gona do! 🔥";
+            if (mode === 'roast') return "Bruh, you're asking \"" + query + "\" like it's gonna solve your life problems. Let's be real! 🔥";
             if (mode === 'philosopher') return "To ponder \"" + query + "\" is to gaze into the vast mirror of existence.";
 
             if (q.includes('hello') || q.includes('hi')) return "Hello " + currentUserName + "! How can I help you build or explore today with Vikea Alpha?";
