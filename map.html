@@ -32,7 +32,7 @@
             overflow: hidden; 
         }
 
-        /* FULLSCREEN INTRO OVERLAY (Covers entire screen & hides sidebar) */
+        /* Fullscreen Overlay - Completely Hides Sidebar & Header */
         #welcomeScreen {
             position: fixed;
             top: 0;
@@ -92,6 +92,7 @@
             justify-content: center;
         }
 
+        /* Center V - LOCKED UPRIGHT (Never Rotates) */
         .orbit-center-v {
             width: 54px;
             height: 54px;
@@ -103,8 +104,31 @@
             justify-content: center;
             font-size: 28px;
             font-weight: bold;
-            z-index: 2;
-            transition: transform 0.3s ease, background 0.3s ease, opacity 0.4s ease, box-shadow 0.3s ease;
+            z-index: 5;
+            position: absolute;
+            top: 28px;
+            left: 28px;
+            transform: none !important;
+            transition: background 0.3s ease, opacity 0.4s ease, box-shadow 0.3s ease;
+        }
+
+        /* Dots Ring Layer (Rotates around the stationary V) */
+        .dots-ring-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            animation: spinDotsRing 4s linear infinite;
+        }
+
+        .orbit-container.stop-spinning .dots-ring-layer {
+            animation-play-state: paused !important;
+        }
+
+        @keyframes spinDotsRing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .dot { 
@@ -117,36 +141,27 @@
             transition: all 0.4s ease;
         }
 
-        /* Orbiting positions without outer ring */
+        /* Dot Locations around the V */
         .d1 { top: 2px; left: 51px; } .d2 { top: 16px; left: 83px; } .d3 { top: 51px; left: 101px; } .d4 { top: 85px; left: 83px; }
         .d5 { top: 100px; left: 51px; } .d6 { top: 85px; left: 18px; } .d7 { top: 51px; left: 0px; } .d8 { top: 16px; left: 18px; }
 
-        .orbit-container.spin-dots {
-            animation: spinDots 4s linear infinite;
-        }
-
-        @keyframes spinDots {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Phase 2: Inward Dot Contraction & Shiver Star Pulse */
+        /* Phase 2: Inward Dot Contraction & Star Pulse Shake */
         .stage-og-contract .dot { 
             top: 51px !important; 
             left: 51px !important; 
         }
         .stage-og-contract .orbit-center-v { 
-            animation: vShiverPulse 0.08s infinite alternate; 
+            animation: vStarShakePulse 0.08s infinite alternate !important; 
             background: #ffffff;
             box-shadow: 0 0 30px #ffffff, 0 0 60px #ffffff, 0 0 90px #ffffff;
         }
 
-        @keyframes vShiverPulse {
-            0% { transform: scale(1) translate(-3px, -3px); }
-            100% { transform: scale(1.25) translate(3px, 3px); }
+        @keyframes vStarShakePulse {
+            0% { transform: translate(-3px, -3px) scale(1) !important; }
+            100% { transform: translate(3px, 3px) scale(1.25) !important; }
         }
 
-        /* Floor Line for Battle Alignment */
+        /* Floor Line */
         .floor-line {
             position: absolute;
             bottom: -30px;
@@ -161,10 +176,10 @@
             opacity: 1;
         }
 
-        /* Phase 3: Straight Floor Battle March & Sword Stabs */
-        .stage-battle-march .orbit-container { animation: none; }
+        /* Phase 3: Straight Level Floor March & Sword Stabs */
+        .stage-battle-march .dots-ring-layer { animation: none !important; transform: none !important; }
         .stage-battle-march .dot {
-            top: 90px !important; /* Fixed level floor plane */
+            top: 90px !important;
             animation: swordStab 0.4s infinite alternate ease-in-out;
         }
 
@@ -183,14 +198,14 @@
             100% { transform: scaleX(1) translateY(-5px); }
         }
 
-        /* V Shivers & Fades Away */
+        /* V Shivers & Vanishes */
         .stage-v-shiver-kill .orbit-center-v {
             animation: vKillShiver 0.06s infinite alternate !important;
             opacity: 0.2;
         }
         @keyframes vKillShiver {
-            0% { transform: translate(-8px, -8px) scale(1.3); }
-            100% { transform: translate(8px, 8px) scale(0.6); }
+            0% { transform: translate(-8px, -8px) scale(1.3) !important; }
+            100% { transform: translate(8px, 8px) scale(0.6) !important; }
         }
 
         .stage-v-dead .orbit-center-v {
@@ -220,7 +235,7 @@
         .start-chat-btn:hover { background: #e0e0e0; transform: scale(1.04); }
         .version-label { font-size: 11px; color: rgba(255, 255, 255, 0.4); letter-spacing: 0.5px; }
 
-        /* APP LAYOUT */
+        /* Sidebar & App Layout */
         aside { 
             width: 280px; 
             background-color: var(--sidebar-bg); 
@@ -286,10 +301,12 @@
         <div></div>
         <div class="welcome-content" id="welcomeContent">
             <span class="title-left" id="titleLeft">VIKEA</span>
-            <div class="orbit-container spin-dots" id="welcomeOrbit">
-                <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div>
-                <div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div>
+            <div class="orbit-container" id="welcomeOrbit">
                 <div class="orbit-center-v" id="orbitCenterV">V</div>
+                <div class="dots-ring-layer" id="dotsRingLayer">
+                    <div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div><div class="dot d4"></div>
+                    <div class="dot d5"></div><div class="dot d6"></div><div class="dot d7"></div><div class="dot d8"></div>
+                </div>
                 <div class="floor-line"></div>
             </div>
             <span class="title-right" id="titleRight">AI</span>
@@ -466,22 +483,25 @@
             const titleRight = document.getElementById('titleRight');
             const orbit = document.getElementById('welcomeOrbit');
 
-            // 1. Title Slides Left / Right
+            // 1. Stop Orbiting Immediately on click
+            orbit.classList.add('stop-spinning');
+
+            // 2. Title Slides Left / Right
             titleLeft.classList.add('fade-left');
             titleRight.classList.add('fade-right');
 
-            // 2. Inward dot pulse & V shiver
+            // 3. Inward dot pulse & V star-shiver
             setTimeout(() => {
                 orbit.classList.add('stage-og-contract');
             }, 500);
 
-            // 3. March on Floor Plane with Sword Stabs
+            // 4. March on Floor Plane with Sword Stabs
             setTimeout(() => {
                 orbit.classList.remove('stage-og-contract');
                 orbit.classList.add('stage-battle-march');
             }, 1200);
 
-            // 4. V Shivers, cracks, and vanishes
+            // 5. V Shivers, cracks, and vanishes
             setTimeout(() => {
                 orbit.classList.add('stage-v-shiver-kill');
                 setTimeout(() => {
@@ -489,12 +509,12 @@
                 }, 500);
             }, 3000);
 
-            // 5. Dots ascend together to the ceiling
+            // 6. Dots ascend together to the ceiling
             setTimeout(() => {
                 orbit.classList.add('stage-ceiling-ascend');
             }, 3800);
 
-            // 6. Dots physically pull down the welcome screen
+            // 7. Dots physically pull down the welcome screen
             setTimeout(() => {
                 welcome.classList.add('pull-down-reveal');
             }, 4500);
