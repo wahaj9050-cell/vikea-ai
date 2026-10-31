@@ -356,4 +356,126 @@
             const flash = document.getElementById('whiteFlashScreen');
             
             if (welcome.style.display !== 'none') {
-                ring.style.animation = 'spinOrbit 0.25s cubic-bezier
+                ring.style.animation = 'spinOrbit 0.25s cubic-bezier(0.5, 0, 0.5, 1) infinite';
+
+                setTimeout(() => {
+                    flash.style.display = 'block';
+                    setTimeout(() => {
+                        welcome.style.display = 'none';
+                        flash.style.display = 'none';
+                        document.getElementById('activeInput').focus();
+                    }, 400); 
+                }, 5000);
+            }
+        }
+
+        function switchEngineMode(mode) {
+            switchView('chat');
+            currentMode = mode;
+            
+            const badge = document.getElementById('modelBadgeHeader');
+            const greetingBox = document.getElementById('centerGreetingBox');
+            if (greetingBox) greetingBox.remove(); 
+
+            const stream = document.getElementById('chatStream');
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+
+            if (mode === 'universal') {
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">bolt</span> Universal Engine Active';
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Switched to <strong>Multi-Universal Core</strong>. Ready for anything!</div>';
+            } else if (mode === 'cells') {
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">biotech</span> GCSE Cell Biology Active';
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Switched to <strong>GCSE Cell Biology</strong> mode. Hit me with organelle questions!</div>';
+            } else if (mode === 'science') {
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">science</span> AQA Periodic Table Active';
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Switched to <strong>AQA Periodic Table & Atoms</strong> mode. Let\'s study chemistry!</div>';
+            } else if (mode === 'coder') {
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">terminal</span> Elite Coder Mode Active';
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Elite Coder mode online. Let\'s write clean code.</div>';
+            } else if (mode === 'roast') {
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">local_fire_department</span> Savage Roast Mode Active';
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Roast mode active. Don\'t cry when I cook you, ' + currentUserName + '. What\'s up?</div>';
+            } else if (mode === 'philosopher') {
+                badge.innerHTML = '<span class="material-symbols-outlined" style="font-size: 14px; color: #fff;">psychology</span> Deep Philosopher Active';
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">Welcome to Deep Philosopher mode. Let us contemplate the universe.</div>';
+            }
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function handleKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendFromActiveArea();
+            }
+        }
+
+        function sendFromActiveArea() {
+            const input = document.getElementById('activeInput');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const greetingBox = document.getElementById('centerGreetingBox');
+            if (greetingBox) greetingBox.remove();
+
+            input.value = '';
+            processUserQuery(text);
+        }
+
+        function processUserQuery(query) {
+            const stream = document.getElementById('chatStream');
+            const userInitial = currentUserName.charAt(0).toUpperCase();
+
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user';
+            userMsgDiv.innerHTML = '<div class="message-avatar">' + userInitial + '</div><div class="message-content">' + escapeHtml(query) + '</div>';
+            stream.appendChild(userMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai';
+            aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content" style="color: var(--text-secondary);">Thinking...</div>';
+            stream.appendChild(aiMsgDiv);
+            stream.scrollTop = stream.scrollHeight;
+
+            setTimeout(() => {
+                let responseText = generateSmartAnswer(query, currentMode);
+                aiMsgDiv.innerHTML = '<div class="message-avatar">V</div><div class="message-content">' + formatMarkdown(responseText) + '</div>';
+                stream.scrollTop = stream.scrollHeight;
+            }, 600);
+        }
+
+        function generateSmartAnswer(query, mode) {
+            const q = query.toLowerCase();
+
+            if (q.includes('who is your owner') || q.includes('who made you') || q.includes('owner')) {
+                return "I'm really glad that Wahaj made me! It took him months and now I'm ready to destroy the knowledge that this universe has indeed with my owner (Wahaj's) help!";
+            }
+
+            if (mode === 'cells') {
+                if (q.includes('mitochondria')) return "Mitochondria are known as the **powerhouse of the cell**. They release energy through aerobic respiration.";
+                return "In **GCSE Cell Biology**, regarding \"" + query + "\": Remember that animal and plant cells share key structures like the cell membrane, cytoplasm, and nucleus.";
+            }
+            if (mode === 'science') return "In **AQA Chemistry** regarding \"" + query + "\": Elements in the periodic table are arranged by atomic number.";
+            if (mode === 'coder') return "For your coding query (\"" + query + "\"), make sure to check your syntax and structure your layout correctly.";
+            if (mode === 'roast') return "Bruh, you're asking \"" + query + "\" like it's gonna solve your life problems. Let's be real! 🔥";
+            if (mode === 'philosopher') return "To ponder \"" + query + "\" is to gaze into the vast mirror of existence.";
+
+            if (q.includes('hello') || q.includes('hi')) return "Hello " + currentUserName + "! How can I help you build or explore today with Vikea Alpha?";
+            return "That's an interesting question about \"" + query + "\". Vikea Alpha's Multi-Universal Core is tracking this query.";
+        }
+
+        function formatMarkdown(text) {
+            return escapeHtml(text)
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*(?!\*)/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
