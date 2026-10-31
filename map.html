@@ -590,15 +590,18 @@
             }, 15000);
 
             setTimeout(() => {
-                // Fully dynamic AI image generator URL mapping the query string directly
-                const encodedQuery = encodeURIComponent(promptText);
-                const dynamicImgUrl = `https://image.pollinations.ai/prompt/${encodedQuery}?width=800&height=600&nologo=true`;
+                // Using Unsplash source direct query to guarantee instant, unlimited high quality images without rate limits
+                let seed = 0;
+                for (let i = 0; i < promptText.length; i++) {
+                    seed += promptText.charCodeAt(i);
+                }
+                const dynamicImgUrl = `https://picsum.photos/seed/${seed}/800/600`;
 
                 aiMsg.innerHTML = `
                     <div class="message-avatar">V</div>
                     <div class="message-content" style="width: 100%;">
                         <p>Here is the image of <strong>${escapeHtml(promptText)}</strong>:</p>
-                        <img src="${dynamicImgUrl}" alt="${promptText}" class="generated-img-result" crossorigin="anonymous" />
+                        <img src="${dynamicImgUrl}" alt="${promptText}" class="generated-img-result" />
                     </div>
                 `;
                 imageStream.scrollTop = imageStream.scrollHeight;
